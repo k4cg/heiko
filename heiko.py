@@ -87,7 +87,6 @@ def help():
         print("[%s] %s" % (key, actions[key]))
 
 
-
 def login():
     """
     Clear screen and show prompt
@@ -117,7 +116,7 @@ def login():
 
     return is_logged_in, auth
 
-def prompt(auth):
+def menu(auth):
 
     print(chr(27) + "[2J")
     log(banner)
@@ -130,18 +129,9 @@ if __name__ == '__main__':
     maas_builder = MaaSApiClientBuilder(maas_cfg)
 
     # This is the login loop.
-
     is_logged_in = False
     while is_logged_in is False:
         is_logged_in, auth = login()
 
-    prompt(auth)
-
-    items_client = maas_builder.build_items_client(token)
-    # response = items_client.items_post("mate", 100)
-    # print(response)
-
-    response = items_client.items_get()
-    print(swagger_client.Item(response))
-
-
+    # When autenticated go to menu
+    menu(auth)
