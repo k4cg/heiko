@@ -17,6 +17,7 @@ KEY_CONSUME_MATE = 2
 KEY_CONSUME_BEER = 3
 KEY_LIST_USERS = 4
 KEY_INSERT_COINS = 5
+KEY_CREATE_USER = 6
 KEY_HELP = 8
 KEY_EXIT = 9
 
@@ -26,6 +27,7 @@ actions = {
     KEY_CONSUME_BEER: "Consume Beer",
     KEY_LIST_USERS: "Show users",
     KEY_INSERT_COINS: "Insert coins",
+    KEY_CREATE_USER: "Create user",
     KEY_HELP: "Help",
     KEY_EXIT: "Exit",
 }
@@ -74,7 +76,7 @@ class MaaSApiClientBuilder:
 def log(msg, serv="INFO"):
     print(msg)
 
-def help():
+def help(auth):
 
     log("Available actions:")
     for key in actions.keys():
@@ -129,10 +131,32 @@ def insert_coins(auth, credits):
 
     cents = int(credits) * 100
     users_client = maas_builder.build_users_client(auth["token"])
-    users_client.users_user_id_credits_add_patch(auth["user"]["id"], cents)
+    print(users_client)
+    users_client.users_user_id_credits_add_patch(str(auth["user"]["id"]), cents)
 
     log("Your credit is now %.2f" % (r["credits"]/100))
         # print("EUR input can range from 1 to 100")
+
+def create_user(auth):
+
+    users_client = maas_builder.build_users_client(auth["token"])
+
+    name = input("Username: ")
+    admin = input("Admin? (y/n): ").lower()[0]
+
+    if admin is 'y':
+        admin = 1
+
+    password = getpass.getpass("Password: ")
+    passwordrepeat = getpass.getpass("Repeat password: ")
+
+    # try:
+    users = users_client.users_post(name, password, passwordrepeat, admin)
+    return True
+    # except:
+    #     log("Error creating user", serv="ERROR")
+    #     return False
+
 
 
 def show_coins(auth):
@@ -174,12 +198,15 @@ def menu(auth):
         coins = input("EUR: ")
         insert_coins(auth, coins)
     if option == KEY_HELP:
-        help()
+        help(auth)
 
     # Admin options
     if auth["user"]["admin"] is True:
         if option == KEY_LIST_USERS:
             list_users(auth)
+
+        if option == KEY_CREATE_USER:
+            create_user(auth)
 
     if option == KEY_EXIT:
         return False, True
@@ -197,7 +224,7 @@ if __name__ == '__main__':
         is_logged_in, auth = login()
         os.system('clear')
         banner(auth)
-        help()
+        help(auth)
 
         # When autenticated go to menu
         is_exit = False
