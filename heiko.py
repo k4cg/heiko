@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import json
 import time
 import getpass
@@ -9,25 +10,6 @@ import swagger_client
 import urllib3
 urllib3.disable_warnings()
 
-# Menu Mapping
-KEY_LIST_ITEMS = 1
-KEY_CONSUME_MATE = 2
-KEY_CONSUME_BEER = 3
-KEY_LIST_USERS = 4
-KEY_INSERT_COINS = 5
-KEY_HELP = 8
-KEY_EXIT = 9
-
-actions = {
-    KEY_LIST_ITEMS: "Show drinks",
-    KEY_CONSUME_MATE: "Consume Mate",
-    KEY_CONSUME_BEER: "Consume Beer",
-    KEY_LIST_USERS: "Show users",
-    KEY_INSERT_COINS: "Insert coins",
-    KEY_HELP: "Help",
-    KEY_EXIT: "Exit",
-}
-
 banner = """
  __  __    _  _____ ___  __  __    _  _____
 |  \/  |  / \|_   _/ _ \|  \/  |  / \|_   _|
@@ -36,6 +18,23 @@ banner = """
 |_|  |_/_/   \_\_| \___/|_|  |_/_/   \_\_|
 
 """
+
+# Menu Mapping
+KEY_LIST_ITEMS = 1
+KEY_CONSUME_MATE = 2
+KEY_CONSUME_BEER = 3
+KEY_LIST_USERS = 4
+KEY_INSERT_COINS = 5
+KEY_EXIT = 9
+
+actions = {
+    KEY_LIST_ITEMS: "Show drinks",
+    KEY_CONSUME_MATE: "Consume Mate",
+    KEY_CONSUME_BEER: "Consume Beer",
+    KEY_LIST_USERS: "Show users",
+    KEY_INSERT_COINS: "Insert coins",
+    KEY_EXIT: "Exit",
+}
 
 class MaaSConfig:
     def __init__(self, host, verify_ssl):
@@ -79,12 +78,13 @@ def log(msg, serv="INFO"):
     print(msg)
 
 def help():
-
+    os.system('clear')
     log(banner)
 
-    print("Available actions:")
+
+    log("Available actions:")
     for key in actions.keys():
-        print("[%s] %s" % (key, actions[key]))
+        log("[%s] %s" % (key, actions[key]))
 
 
 def login():
@@ -94,15 +94,14 @@ def login():
     """
     auth_client = maas_builder.build_auth_api_client()
 
-    print(chr(27) + "[2J")
-
+    os.system('clear')
     log(banner)
     log("Please authenticate yourself!")
 
-    # user = input('User: ')
-    # password = getpass.getpass('Password: ')
-    user = "admin"
-    password = "admin"
+    user = input('User: ')
+    password = getpass.getpass('Password: ')
+    # user = "admin"
+    # password = "admin"
 
     token = None
     is_logged_in = False
@@ -118,13 +117,38 @@ def login():
 
 def menu(auth):
 
-    print(chr(27) + "[2J")
     log(banner)
-    token = auth["token"]
+    help()
+
+    try:
+        option = int(input(">>> "))
+    except ValueError:
+        option = None
+
+    # Normal users menu
+    if option == KEY_LIST_ITEMS:
+        list_items(auth['token'])
+    if option == KEY_CONSUME_MATE:
+        consume(auth['token'], 1)
+    if option == KEY_CONSUME_BEER:
+        consume(auth['token'], 2)
+    if option == KEY_INSERT_COINS:
+        coins = input("EUR: ")
+        insert_coins(auth['token'], auth['user']['id'], coins)
+
+    # Admin options
+    if auth["user"]["admin"] is True:
+        if option == KEY_LIST_USERS:
+            list_users(auth['token'])
+
+    if option == KEY_EXIT:
+        return False
+
 
     return True
 
 if __name__ == '__main__':
+
     maas_cfg = MaaSConfig("https://localhost:8443/v0", False)
     maas_builder = MaaSApiClientBuilder(maas_cfg)
 
@@ -133,5 +157,7 @@ if __name__ == '__main__':
     while is_logged_in is False:
         is_logged_in, auth = login()
 
-    # When autenticated go to menu
-    menu(auth)
+        # When autenticated go to menu
+        is_exit = False
+        while is_exit is False:
+            is_exit = menu(auth)
