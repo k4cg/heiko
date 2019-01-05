@@ -150,14 +150,12 @@ def create_user(auth):
     password = getpass.getpass("Password: ")
     passwordrepeat = getpass.getpass("Repeat password: ")
 
-    # try:
-    users = users_client.users_post(name, password, passwordrepeat, admin)
-    return True
-    # except:
-    #     log("Error creating user", serv="ERROR")
-    #     return False
-
-
+    try:
+        users = users_client.users_post(name, password, passwordrepeat, admin)
+        return True
+    except:
+        log("Error creating user", serv="ERROR")
+        return False
 
 def show_coins(auth):
 
@@ -178,6 +176,12 @@ def banner(auth=None):
     if auth is not None:
         log("Hi %s, current credits: %s\n" % (auth["user"]["username"], auth["user"]["credits"]))
 
+def consume(auth, itemid):
+    items_client = maas_builder.build_items_client(auth["token"])
+    items_client.items_item_id_consume_patch(itemid)
+
+
+
 def menu(auth):
 
     try:
@@ -191,9 +195,9 @@ def menu(auth):
     if option == KEY_LIST_ITEMS:
         list_items(auth)
     if option == KEY_CONSUME_MATE:
-        consume(auth['token'], 1)
+        consume(auth, 1)
     if option == KEY_CONSUME_BEER:
-        consume(auth['token'], 2)
+        consume(auth, 2)
     if option == KEY_INSERT_COINS:
         coins = input("EUR: ")
         insert_coins(auth, coins)
