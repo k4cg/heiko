@@ -10,14 +10,6 @@ import swagger_client
 import urllib3
 urllib3.disable_warnings()
 
-banner = """
- __  __    _  _____ ___  __  __    _  _____
-|  \/  |  / \|_   _/ _ \|  \/  |  / \|_   _|
-| |\/| | / _ \ | || | | | |\/| | / _ \ | |
-| |  | |/ ___ \| || |_| | |  | |/ ___ \| |
-|_|  |_/_/   \_\_| \___/|_|  |_/_/   \_\_|
-
-"""
 
 # Menu Mapping
 KEY_LIST_ITEMS = 1
@@ -25,6 +17,7 @@ KEY_CONSUME_MATE = 2
 KEY_CONSUME_BEER = 3
 KEY_LIST_USERS = 4
 KEY_INSERT_COINS = 5
+KEY_HELP = 8
 KEY_EXIT = 9
 
 actions = {
@@ -33,6 +26,7 @@ actions = {
     KEY_CONSUME_BEER: "Consume Beer",
     KEY_LIST_USERS: "Show users",
     KEY_INSERT_COINS: "Insert coins",
+    KEY_HELP: "Help",
     KEY_EXIT: "Exit",
 }
 
@@ -52,6 +46,9 @@ class MaaSApiClientBuilder:
 
     def build_items_client(self, token):
         return swagger_client.ItemsApi(swagger_client.ApiClient(self.build_config_with_token(token)))
+
+    def build_users_client(self, token):
+        return swagger_client.UsersApi(swagger_client.ApiClient(self.build_config_with_token(token)))
 
     def build_config(self):
         # create an configuration for the general API client
@@ -78,9 +75,6 @@ def log(msg, serv="INFO"):
     print(msg)
 
 def help():
-    os.system('clear')
-    log(banner)
-
 
     log("Available actions:")
     for key in actions.keys():
@@ -95,13 +89,13 @@ def login():
     auth_client = maas_builder.build_auth_api_client()
 
     os.system('clear')
-    log(banner)
+    banner()
     log("Please authenticate yourself!")
 
-    user = input('User: ')
-    password = getpass.getpass('Password: ')
-    # user = "admin"
-    # password = "admin"
+    # user = input('User: ')
+    # password = getpass.getpass('Password: ')
+    user = "admin"
+    password = "admin"
 
     token = None
     is_logged_in = False
@@ -113,39 +107,84 @@ def login():
         log("Wrong username and/or password!",serv="ERROR")
         time.sleep(1)
 
+
     return is_logged_in, auth
 
-def menu(auth):
 
-    log(banner)
-    help()
+def list_items(auth):
+    items_client = maas_builder.build_items_client(auth["token"])
+    log(items_client.items_get())
+
+def list_users(auth):
+    users_client = maas_builder.build_users_client(auth["token"])
+    users = users_client.users_get()
+
+    log("List of current users in the database:\n")
+    log("ID\tCredits\tUsername")
+    for user in users:
+        user = user.to_dict()
+        log("%s\t%s\t%s" % (user["id"], user["credits"], user["username"]))
+
+def insert_coins(auth, credits):
+
+    cents = int(credits) * 100
+    users_client = maas_builder.build_users_client(auth["token"])
+    users_client.users_user_id_credits_add_patch(auth["user"]["id"], cents)
+
+    log("Your credit is now %.2f" % (r["credits"]/100))
+        # print("EUR input can range from 1 to 100")
+
+
+def show_coins(auth):
+
+    users_client = maas_builder.build_users_client(auth["token"])
+    users_client
+    return
+
+def banner(auth=None):
+
+    mate_banner = """
+ __  __    _  _____ ___  __  __    _  _____
+|  \/  |  / \|_   _/ _ \|  \/  |  / \|_   _|
+| |\/| | / _ \ | || | | | |\/| | / _ \ | |
+| |  | |/ ___ \| || |_| | |  | |/ ___ \| |
+|_|  |_/_/   \_\_| \___/|_|  |_/_/   \_\_|
+"""
+    log(mate_banner)
+    if auth is not None:
+        log("Hi %s, current credits: %s\n" % (auth["user"]["username"], auth["user"]["credits"]))
+
+def menu(auth):
 
     try:
         option = int(input(">>> "))
     except ValueError:
-        option = None
+        os.system('clear')
+        banner(auth)
+        option = KEY_HELP
 
     # Normal users menu
     if option == KEY_LIST_ITEMS:
-        list_items(auth['token'])
+        list_items(auth)
     if option == KEY_CONSUME_MATE:
         consume(auth['token'], 1)
     if option == KEY_CONSUME_BEER:
         consume(auth['token'], 2)
     if option == KEY_INSERT_COINS:
         coins = input("EUR: ")
-        insert_coins(auth['token'], auth['user']['id'], coins)
+        insert_coins(auth, coins)
+    if option == KEY_HELP:
+        help()
 
     # Admin options
     if auth["user"]["admin"] is True:
         if option == KEY_LIST_USERS:
-            list_users(auth['token'])
+            list_users(auth)
 
     if option == KEY_EXIT:
-        return False
+        return False, True
 
-
-    return True
+    return True, False
 
 if __name__ == '__main__':
 
@@ -156,8 +195,12 @@ if __name__ == '__main__':
     is_logged_in = False
     while is_logged_in is False:
         is_logged_in, auth = login()
+        os.system('clear')
+        banner(auth)
+        help()
 
         # When autenticated go to menu
         is_exit = False
         while is_exit is False:
-            is_exit = menu(auth)
+            is_logged_in, is_exit = menu(auth)
+
