@@ -18,6 +18,7 @@ KEY_CONSUME_BEER = 3
 KEY_LIST_USERS = 4
 KEY_INSERT_COINS = 5
 KEY_CREATE_USER = 6
+KEY_CREATE_ITEM = 7
 KEY_HELP = 8
 KEY_EXIT = 9
 
@@ -28,6 +29,7 @@ actions = {
     KEY_LIST_USERS: "Show users",
     KEY_INSERT_COINS: "Insert coins",
     KEY_CREATE_USER: "Create user",
+    KEY_CREATE_ITEM: "Create drink",
     KEY_HELP: "Help",
     KEY_EXIT: "Exit",
 }
@@ -176,10 +178,23 @@ def banner(auth=None):
     if auth is not None:
         log("Hi %s, current credits: %s\n" % (auth["user"]["username"], auth["user"]["credits"]))
 
-def consume(auth, itemid):
+def consume_item(auth, itemid):
     items_client = maas_builder.build_items_client(auth["token"])
     items_client.items_item_id_consume_patch(itemid)
 
+def create_item(auth):
+
+    name = input("Name of Drink: ")
+    cost = int(input("Cost: "))
+
+    items_client = maas_builder.build_items_client(auth["token"])
+
+    # this is a quick hack for generating the latest drink id
+    itemsid = int(items_client.items_get()[-1].to_dict()["id"]) + 1
+
+    items_client.items_item_id_patch(itemsid, name, cost)
+
+    return True
 
 
 def menu(auth):
@@ -195,9 +210,9 @@ def menu(auth):
     if option == KEY_LIST_ITEMS:
         list_items(auth)
     if option == KEY_CONSUME_MATE:
-        consume(auth, 1)
+        consume_item(auth, 1)
     if option == KEY_CONSUME_BEER:
-        consume(auth, 2)
+        consume_item(auth, 2)
     if option == KEY_INSERT_COINS:
         coins = input("EUR: ")
         insert_coins(auth, coins)
@@ -211,6 +226,9 @@ def menu(auth):
 
         if option == KEY_CREATE_USER:
             create_user(auth)
+
+        if option == KEY_CREATE_ITEM:
+            create_item(auth)
 
     if option == KEY_EXIT:
         return False, True
