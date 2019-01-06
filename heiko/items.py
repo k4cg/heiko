@@ -2,7 +2,7 @@ import random
 import swagger_client
 from string import ascii_letters
 
-import heiko.menu.log
+from heiko.utils import log
 
 
 ### ItemsApi Functions
@@ -41,13 +41,13 @@ def consume_item(auth, client, itemid):
 
     try:
         client.items_item_id_consume_patch(itemid)
-        menu.log(random.choice(cheers_msgs) + " Prost!", serv="SUCCESS")
+        log(random.choice(cheers_msgs) + " Prost!", serv="SUCCESS")
         return True
     except swagger_client.rest.ApiException:
-        menu.log("Not enough credits, dude.", serv="ERROR")
+        log("Not enough credits, dude.", serv="ERROR")
         return False
     except:
-        menu.log("Something went wrong, contact developer!")
+        log("Something went wrong, contact developer!")
         return False
 
 def create_item(auth, client):
@@ -60,27 +60,27 @@ def create_item(auth, client):
 
     name = input("Name of Drink: ")
     if not all(c in ascii_letters+'-' for c in name):
-        menu.log("Username not valid. Please be alphanumerical.", serv="ERROR")
+        log("Username not valid. Please be alphanumerical.", serv="ERROR")
         return False
 
     if len(name) > 32:
-        menu.log("Name of item is too long (max: 32)", serv="ERROR")
+        log("Name of item is too long (max: 32)", serv="ERROR")
         return False
 
     if len(name) < 3:
-        menu.log("Name of item is too short (min: 3)", serv="ERROR")
+        log("Name of item is too short (min: 3)", serv="ERROR")
         return False
 
     cost = float(input("Price in EUR: ")) * 100
 
     if cost < 0:
-        menu.log("Negative price is not allowed ;)", serv="ERROR")
+        log("Negative price is not allowed ;)", serv="ERROR")
         return False
 
     try:
         client.items_post(name, cost)
     except:
-        menu.log("Item could not be created in the backend", serv="ERROR")
+        log("Item could not be created in the backend", serv="ERROR")
         return False
 
     return True
