@@ -2,7 +2,7 @@ import random
 import swagger_client
 from string import ascii_letters
 
-from heiko.menu import log
+from heiko.utils import log
 
 
 ### ItemsApi Functions

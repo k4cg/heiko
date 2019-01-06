@@ -5,6 +5,7 @@ from sty import fg
 import swagger_client
 from heiko.items import list_items, consume_item, create_item
 from heiko.users import add_credits, list_users, create_user
+from heiko.utils import log
 
 ### User Menu Mapping
 
@@ -31,7 +32,7 @@ actions = {
     KEY_EXIT: "Exit",
 }
 
-def menu(auth, items_client, users_client):
+def user_menu(auth, items_client, users_client):
     """
     Shows the menu to the user, clears screen, draws the navigation screen
     This is kind of the main loop of heiko. If you need new options, add them here
@@ -76,22 +77,6 @@ def menu(auth, items_client, users_client):
 
     return True, False
 
-def log(msg, serv="INFO"):
-    """
-    Interface to print informations to the user.
-
-    :msg: str
-    :serv: [ INFO, ERROR, SUCCESS ]
-    :returns: bool
-    """
-    if serv.upper() == "ERROR":
-        msg = fg.red + "Error: " + msg + fg.rs
-    elif serv.upper() == "SUCCESS":
-        msg = fg.green + msg + fg.rs
-
-    print(msg)
-
-    return True
 
 def banner(auth=None):
     """
