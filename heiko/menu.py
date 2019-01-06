@@ -7,30 +7,47 @@ from heiko.items import list_items, consume_item, create_item
 from heiko.users import add_credits, list_users, create_user
 from heiko.utils import log
 
+
 ### User Menu Mapping
+USER_KEY_CONSUME_MATE = 1
+USER_KEY_CONSUME_BEER = 2
+USER_KEY_CONSUME_SCHORLE = 3 #TODO
+USER_KEY_CONSUME_COLA = 4 #TODO
+USER_KEY_INSERT_COINS = 5
+USER_KEY_SHOW_STATS = 6 # TODO
+USER_KEY_ADMINISTRATION = 7 #TODO
+USER_KEY_EXIT = 9
+USER_KEY_HELP = "?"
 
-# Menu Mapping
-KEY_LIST_ITEMS = 1
-KEY_CONSUME_MATE = 2
-KEY_CONSUME_BEER = 3
-KEY_LIST_USERS = 4
-KEY_INSERT_COINS = 5
-KEY_CREATE_USER = 6
-KEY_CREATE_ITEM = 7
-KEY_HELP = 8
-KEY_EXIT = 9
-
-actions = {
-    KEY_LIST_ITEMS: "Show drinks",
-    KEY_CONSUME_MATE: "Consume Mate",
-    KEY_CONSUME_BEER: "Consume Beer",
-    KEY_LIST_USERS: "Show users",
-    KEY_INSERT_COINS: "Insert coins",
-    KEY_CREATE_USER: "Create user",
-    KEY_CREATE_ITEM: "Create drink",
-    KEY_HELP: "Help",
-    KEY_EXIT: "Exit",
+user_actions = {
+    USER_KEY_CONSUME_MATE: "Consume Club Mate",
+    USER_KEY_CONSUME_BEER: "Consume Bier",
+    USER_KEY_CONSUME_SCHORLE: "Consume Apfelschorle",
+    USER_KEY_CONSUME_COLA: "Consume Mate Cola",
+    USER_KEY_INSERT_COINS: "Insert coins",
+    USER_KEY_ADMINISTRATION: "Administration",
+    USER_KEY_EXIT: "Exit",
+    USER_KEY_HELP: "Help",
 }
+
+### Admin Menu Mapping
+ADMIN_KEY_LIST_ITEMS = 1
+ADMIN_KEY_LIST_USERS = 2
+ADMIN_KEY_CREATE_USER = 3
+ADMIN_KEY_CREATE_ITEM = 4
+ADMIN_KEY_EXIT = 9
+ADMIN_KEY_HELP = "?"
+
+admin_actions = {
+    ADMIN_KEY_LIST_ITEMS: "Show drinks",
+    ADMIN_KEY_LIST_USERS: "Show users",
+    ADMIN_KEY_CREATE_USER: "Create user",
+    ADMIN_KEY_CREATE_ITEM: "Create drink",
+    ADMIN_KEY_EXIT: "Exit",
+    ADMIN_KEY_HELP: "Help",
+}
+
+### Functions
 
 def user_menu(auth, items_client, users_client):
     """
@@ -39,6 +56,8 @@ def user_menu(auth, items_client, users_client):
     otherwise they are not being executed.
 
     :auth: dict
+    :items_client: object
+    :users_client: object
     :returns: is_logged_in, is_exit (both bool)
     """
 
@@ -48,34 +67,80 @@ def user_menu(auth, items_client, users_client):
     except ValueError:
         os.system('clear')
         banner(auth)
-        option = KEY_HELP
+        option = USER_KEY_HELP
 
-    if option == KEY_LIST_ITEMS:
-        list_items(auth, items_client)
-    if option == KEY_CONSUME_MATE:
+    if option == USER_KEY_CONSUME_MATE:
         consume_item(auth, items_client, 1)
-    if option == KEY_CONSUME_BEER:
+
+    if option == USER_KEY_CONSUME_BEER:
         consume_item(auth, items_client, 2)
-    if option == KEY_INSERT_COINS:
+
+    if option == USER_KEY_CONSUME_SCHORLE:
+        consume_item(auth, items_client, 3)
+
+    if option == USER_KEY_CONSUME_SCHORLE:
+        consume_item(auth, items_client, 4)
+
+    if option == USER_KEY_INSERT_COINS:
         add_credits(auth, users_client)
-    if option == KEY_HELP:
-        help(auth)
 
-    # Admin options
-    if auth["user"]["admin"] is True:
-        if option == KEY_LIST_USERS:
-            list_users(auth, users_client)
+    if option == USER_KEY_SHOW_STATS:
+        log("Not implemented yet", serv="ERROR")
 
-        if option == KEY_CREATE_USER:
-            create_user(auth, users_client)
+    if option == USER_KEY_ADMINISTRATION:
+        is_exit = False
+        while is_exit is False:
+            is_exit = admin_menu(auth, items_client, users_client)
 
-        if option == KEY_CREATE_ITEM:
-            create_item(auth, items_client)
+    if option == USER_KEY_HELP:
+        show_help(auth, admin=False)
 
-    if option == KEY_EXIT:
+    if option == USER_KEY_EXIT:
         return False, True
 
     return True, False
+
+
+def admin_menu(auth, items_client, users_client):
+    """
+    Shows the menu to the admin, clears screen, draws the navigation screen
+
+    :auth: dict
+    :returns: is_logged_in, is_exit (both bool)
+    """
+
+    if auth["user"]["admin"] is False:
+        log("Meeeep. Not an administrator, but nice try.", serv="ERROR")
+        log("Computer says no.", serv="ERROR")
+        return True # is_exit
+
+    try:
+        option = int(input(">>> "))
+    except ValueError:
+        os.system('clear')
+        banner(auth)
+        option = ADMIN_KEY_HELP
+
+    if option == ADMIN_KEY_LIST_ITEMS:
+        list_items(auth, items_client)
+
+    if option == ADMIN_KEY_LIST_USERS:
+        list_users(auth, users_client)
+
+    if option == ADMIN_KEY_CREATE_USER:
+        create_user(auth, users_client)
+
+    if option == ADMIN_KEY_CREATE_ITEM:
+        create_item(auth, items_client)
+
+    if option == ADMIN_KEY_HELP:
+        show_help(auth, admin=True)
+
+    if option == ADMIN_KEY_EXIT:
+        log("Switching back to normal menu, sir.", serv="SUCCESS")
+        return True
+
+    return False
 
 
 def banner(auth=None):
@@ -104,7 +169,7 @@ def banner(auth=None):
     return True
 
 
-def help(auth):
+def show_help(auth, admin=False):
     """
     Shows the basic navigation to the user.
 
@@ -112,11 +177,17 @@ def help(auth):
     :returns: bool
     """
 
+    if admin is True:
+        actions = admin_actions
+    else:
+        actions = user_actions
+
     log("Available actions:")
     for key in actions.keys():
         log("[%s] %s" % (key, actions[key]))
 
     return True
+
 
 def login(maas_builder):
     """

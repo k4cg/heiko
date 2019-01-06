@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
         os.system('clear')
         banner(auth)
-        help(auth)
+        show_help(auth)
 
         # When autenticated go to menu
         is_exit = False
