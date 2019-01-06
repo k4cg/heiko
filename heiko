@@ -8,11 +8,13 @@ import json
 import time
 import getpass
 import swagger_client
+from string import ascii_letters
 
 # temp for annoying error msg
 import urllib3
 urllib3.disable_warnings()
 
+### User Menu Mapping
 
 # Menu Mapping
 KEY_LIST_ITEMS = 1
@@ -36,6 +38,9 @@ actions = {
     KEY_HELP: "Help",
     KEY_EXIT: "Exit",
 }
+
+
+### Bindings to swagger_client
 
 class MaaSConfig:
     def __init__(self, host, verify_ssl):
@@ -78,25 +83,68 @@ class MaaSApiClientBuilder:
 
         return api_client_config
 
+### Misc functions
+
 def log(msg, serv="INFO"):
-    if serv is "ERROR":
+    """
+    Interface to print informations to the user.
+
+    :msg: str
+    :serv: [ INFO, ERROR, SUCCESS ]
+    :returns: bool
+    """
+    if serv.upper() == "ERROR":
         msg = fg.red + "Error: " + msg + fg.rs
-    elif serv is "SUCCESS":
+    elif serv.upper() == "SUCCESS":
         msg = fg.green + msg + fg.rs
 
     print(msg)
 
+    return True
+
+def banner(auth=None):
+    """
+    Prints a fancy ascii art banner to user and (if already logged in)
+    greets the person with username and current credits
+
+    :auth: dict
+    :returns: bool
+    """
+
+    mate_banner = """
+ __  __    _  _____ ___  __  __    _  _____
+|  \/  |  / \|_   _/ _ \|  \/  |  / \|_   _|
+| |\/| | / _ \ | || | | | |\/| | / _ \ | |
+| |  | |/ ___ \| || |_| | |  | |/ ___ \| |
+|_|  |_/_/   \_\_| \___/|_|  |_/_/   \_\_|
+"""
+    log(mate_banner)
+    if auth is not None:
+        log("Hi %s, current credits: %.2f\n" % (auth["user"]["username"], auth["user"]["credits"] / 100))
+
+    return True
+
+
 def help(auth):
+    """
+    Shows the basic navigation to the user.
+
+    :auth: dict
+    :returns: bool
+    """
 
     log("Available actions:")
     for key in actions.keys():
         log("[%s] %s" % (key, actions[key]))
 
+    return True
 
 def login():
     """
-    Clear screen and show prompt
-    :returns: tupel
+    Shows banner, asks user to authenticate via username/password
+    and creates auth token that we reuse after auth was successful once.
+
+    :returns: tuple
     """
     auth_client = maas_builder.build_auth_api_client()
 
@@ -119,111 +167,18 @@ def login():
         log("Wrong username and/or password!",serv="ERROR")
         time.sleep(1)
 
-
     return is_logged_in, auth
 
 
-def list_items(auth):
-    items_client = maas_builder.build_items_client(auth["token"])
-    log(items_client.items_get())
-
-def list_users(auth):
-    users_client = maas_builder.build_users_client(auth["token"])
-    users = users_client.users_get()
-
-    log("List of current users in the database:\n")
-    log("ID\tCredits\tUsername")
-    for user in users:
-        user = user.to_dict()
-        log("%s\t%s\t%s" % (user["id"], user["credits"], user["username"]))
-
-def add_credits(auth):
-
-    try:
-        credits = float(input("EUR: "))
-        if credits < 0 or credits > 100:
-            raise ValueError
-    except ValueError:
-        log("Invalid input. Valid values: 1-100",serv="ERROR")
-        return False
-
-    cents = float(credits) * 100
-    users_client = maas_builder.build_users_client(auth["token"])
-    users_client.users_user_id_credits_add_patch(str(auth["user"]["id"]), cents)
-
-    auth["user"]["credits"] = auth["user"]["credits"] + cents
-    log("Your credit is now %.2f" % (auth["user"]["credits"] / 100), serv="SUCCESS")
-    # print("EUR input can range from 1 to 100")
-
-def create_user(auth):
-
-    users_client = maas_builder.build_users_client(auth["token"])
-
-    name = input("Username: ")
-    admin = input("Admin? (y/n): ").lower()[0]
-
-    if admin is 'y':
-        admin = 1
-
-    password = getpass.getpass("Password: ")
-    passwordrepeat = getpass.getpass("Repeat password: ")
-
-    try:
-        users = users_client.users_post(name, password, passwordrepeat, admin)
-        return True
-    except:
-        log("Error creating user", serv="ERROR")
-        return False
-
-def banner(auth=None):
-
-    mate_banner = """
- __  __    _  _____ ___  __  __    _  _____
-|  \/  |  / \|_   _/ _ \|  \/  |  / \|_   _|
-| |\/| | / _ \ | || | | | |\/| | / _ \ | |
-| |  | |/ ___ \| || |_| | |  | |/ ___ \| |
-|_|  |_/_/   \_\_| \___/|_|  |_/_/   \_\_|
-"""
-    log(mate_banner)
-    if auth is not None:
-        log("Hi %s, current credits: %.2f\n" % (auth["user"]["username"], auth["user"]["credits"] / 100))
-
-def consume_item(auth, itemid):
-
-    cheers_msgs = [
-        "Have fun!"
-        "Well.. just hackspace things."
-        "Nice loscher stuff <3"
-        "Beer mh? How are your projects going?"
-    ]
-
-    try:
-        items_client = maas_builder.build_items_client(auth["token"])
-        items_client.items_item_id_consume_patch(itemid)
-        log(random.choice(cheers_msgs) + " Prost!", serv="SUCCESS")
-        return True
-    except swagger_client.rest.ApiException:
-        log("Not enough credits, dude.", serv="ERROR")
-        return False
-    except:
-        log("Something went wrong, contact developer!")
-        return False
-
-
-
-def create_item(auth):
-
-    name = input("Name of Drink: ")
-    cost = int(input("Cost: "))
-
-    items_client = maas_builder.build_items_client(auth["token"])
-
-    items_client.items_post(name, cost)
-
-    return True
-
-
 def menu(auth):
+    """
+    Shows the menu to the user, clears screen, draws the navigation screen
+    This is kind of the main loop of heiko. If you need new options, add them here
+    otherwise they are not being executed.
+
+    :auth: dict
+    :returns: is_logged_in, is_exit (both bool)
+    """
 
     try:
         option = int(input(">>> "))
@@ -258,6 +213,180 @@ def menu(auth):
         return False, True
 
     return True, False
+
+### ItemsApi Functions
+
+def list_items(auth):
+    """
+    Lists all items in the database to an admin
+
+    :auth: dict
+    :returns: bool
+    """
+
+    try:
+        items_client = maas_builder.build_items_client(auth["token"])
+        log(items_client.items_get())
+    except swagger_client.rest.ApiException:
+        log("Could not show items from the database.",serv="ERROR")
+
+    return True
+
+
+### UserApi Functions for Admins
+
+def list_users(auth):
+    """
+    Shows all users from the database to an successfully authenticated administrator
+
+    :auth: dict
+    :returns: bool
+    """
+
+    try:
+        users_client = maas_builder.build_users_client(auth["token"])
+        users = users_client.users_get()
+    except swagger_client.rest.ApiException:
+        log("Could fetch users from the database.",serv="ERROR")
+        return False
+
+    log("List of current users in the database:\n")
+    log("ID\tCredits\tUsername")
+    for user in users:
+        user = user.to_dict()
+        log("%s\t%s\t%s" % (user["id"], user["credits"], user["username"]))
+
+    return True
+
+def create_user(auth):
+    """
+    Asks administrator for details and
+    creates a new user in the database.
+
+    :auth: dict
+    :returns: bool
+    """
+
+    users_client = maas_builder.build_users_client(auth["token"])
+
+    name = input("Username: ")
+
+    if not all(c in ascii_letters+'-' for c in name):
+        log("Username not valid. Please be alphanumerical.", serv="Error")
+        return False
+
+    admin = input("Admin? (y/n): ").lower()[0]
+
+    if admin is 'y':
+        admin = 1
+
+    password = getpass.getpass("Password: ")
+    passwordrepeat = getpass.getpass("Repeat password: ")
+
+    try:
+        users = users_client.users_post(name, password, passwordrepeat, admin)
+        return True
+    except:
+        log("Error creating user", serv="ERROR")
+        return False
+
+def create_item(auth):
+    """
+    Asks admin for details and creates new item in the backend
+
+    :auth: dict
+    :returns: bool
+    """
+
+    name = input("Name of Drink: ")
+    if not all(c in ascii_letters+'-' for c in name):
+        log("Username not valid. Please be alphanumerical.", serv="ERROR")
+        return False
+
+    if len(name) > 32:
+        log("Name of item is too long (max: 32)", serv="ERROR")
+        return False
+
+    cost = float(input("Price in EUR: ")) * 100
+
+    if cost < 0:
+        log("Negative price is not allowed ;)", serv="ERROR")
+        return False
+
+    try:
+        items_client = maas_builder.build_items_client(auth["token"])
+        items_client.items_post(name, cost)
+    except:
+        log("Item could not be created in the backend", serv="ERROR")
+        return False
+
+    return True
+
+### UserApi Functions for Users
+
+def add_credits(auth):
+    """
+    Asks user to input the amount he put into the box and adds this amount of credits to his/her account
+
+    :auth: dict
+    :returns: bool
+    """
+
+    try:
+        credits = float(input("EUR: "))
+        if credits < 0 or credits > 100:
+            raise ValueError
+    except ValueError:
+        log("Invalid input. Valid values: 1-100",serv="ERROR")
+        return False
+
+    # calc input from eur into cents
+    cents = float(credits) * 100
+
+    try:
+        # send update request to backend
+        users_client = maas_builder.build_users_client(auth["token"])
+        users_client.users_user_id_credits_add_patch(str(auth["user"]["id"]), cents)
+
+        # TODO: Replace hack that updates local auth object to reflect changes into the banner
+        auth["user"]["credits"] = auth["user"]["credits"] + cents
+
+        #notify user
+        log("Your credit is now %.2f" % (auth["user"]["credits"] / 100), serv="SUCCESS")
+        return True
+    except:
+        log("Updating your credits in the backend was not successful. Ask people for help",serv="ERROR")
+        return False
+
+
+def consume_item(auth, itemid):
+    """
+    Sends request to the backend that user took 1 item out of the fridge
+
+    :auth: dict
+    :itemid: int
+    :returns: bool
+    """
+
+    # Lets try to be a little funny
+    cheers_msgs = [
+        "Have fun!"
+        "Well.. just hackspace things."
+        "Nice loscher stuff <3"
+        "Beer mh? How are your projects going?"
+    ]
+
+    try:
+        items_client = maas_builder.build_items_client(auth["token"])
+        items_client.items_item_id_consume_patch(itemid)
+        log(random.choice(cheers_msgs) + " Prost!", serv="SUCCESS")
+        return True
+    except swagger_client.rest.ApiException:
+        log("Not enough credits, dude.", serv="ERROR")
+        return False
+    except:
+        log("Something went wrong, contact developer!")
+        return False
 
 if __name__ == '__main__':
 
