@@ -200,7 +200,7 @@ class ItemsApi(object):
         auth_settings = ['jwtTokenAuth']  # noqa: E501
 
         return self.api_client.call_api(
-            '/items/{itemId}/consume', 'PATCH',
+            '/items/{itemId}/consume', 'PUT',
             path_params,
             query_params,
             header_params,

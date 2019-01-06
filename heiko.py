@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+import sys
 import os
+from sty import fg
 import json
 import time
 import getpass
@@ -76,6 +78,9 @@ class MaaSApiClientBuilder:
         return api_client_config
 
 def log(msg, serv="INFO"):
+    if serv is "ERROR":
+        msg = fg.red + "Error: " + msg + fg.rs
+
     print(msg)
 
 def help(auth):
@@ -129,15 +134,24 @@ def list_users(auth):
         user = user.to_dict()
         log("%s\t%s\t%s" % (user["id"], user["credits"], user["username"]))
 
-def insert_coins(auth, credits):
+def add_credits(auth):
 
-    cents = int(credits) * 100
+    try:
+        credits = float(input("EUR: "))
+        if credits < 0 or credits > 100:
+            raise ValueError
+    except ValueError:
+        log("Invalid input. Valid values: 1-100",serv="ERROR")
+        return False
+
+    cents = float(credits) * 100
     users_client = maas_builder.build_users_client(auth["token"])
     print(users_client)
     users_client.users_user_id_credits_add_patch(str(auth["user"]["id"]), cents)
 
-    log("Your credit is now %.2f" % (r["credits"]/100))
-        # print("EUR input can range from 1 to 100")
+    auth["user"]["credits"] = auth["user"]["credits"] + cents
+    log("Your credit is now %.2f" % (auth["user"]["credits"] / 100))
+    # print("EUR input can range from 1 to 100")
 
 def create_user(auth):
 
@@ -159,12 +173,6 @@ def create_user(auth):
         log("Error creating user", serv="ERROR")
         return False
 
-def show_coins(auth):
-
-    users_client = maas_builder.build_users_client(auth["token"])
-    users_client
-    return
-
 def banner(auth=None):
 
     mate_banner = """
@@ -176,11 +184,11 @@ def banner(auth=None):
 """
     log(mate_banner)
     if auth is not None:
-        log("Hi %s, current credits: %s\n" % (auth["user"]["username"], auth["user"]["credits"]))
+        log("Hi %s, current credits: %.2f\n" % (auth["user"]["username"], auth["user"]["credits"] / 100))
 
 def consume_item(auth, itemid):
     items_client = maas_builder.build_items_client(auth["token"])
-    items_client.items_item_id_consume_patch(itemid)
+    items_client.items_item_id_consume_patch(1)
 
 def create_item(auth):
 
@@ -189,10 +197,7 @@ def create_item(auth):
 
     items_client = maas_builder.build_items_client(auth["token"])
 
-    # this is a quick hack for generating the latest drink id
-    itemsid = int(items_client.items_get()[-1].to_dict()["id"]) + 1
-
-    items_client.items_item_id_patch(itemsid, name, cost)
+    items_client.items_post(name, cost)
 
     return True
 
@@ -206,7 +211,6 @@ def menu(auth):
         banner(auth)
         option = KEY_HELP
 
-    # Normal users menu
     if option == KEY_LIST_ITEMS:
         list_items(auth)
     if option == KEY_CONSUME_MATE:
@@ -214,8 +218,7 @@ def menu(auth):
     if option == KEY_CONSUME_BEER:
         consume_item(auth, 2)
     if option == KEY_INSERT_COINS:
-        coins = input("EUR: ")
-        insert_coins(auth, coins)
+        add_credits(auth)
     if option == KEY_HELP:
         help(auth)
 
