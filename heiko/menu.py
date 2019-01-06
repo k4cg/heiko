@@ -3,8 +3,8 @@ from string import ascii_letters
 from sty import fg
 
 import swagger_client
-from heiko.items import *
-from heiko.users import *
+from heiko.items import list_items, consume_item, create_item
+from heiko.users import add_credits, list_users, create_user
 
 ### User Menu Mapping
 

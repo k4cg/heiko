@@ -2,7 +2,7 @@ import json
 import time
 import getpass
 import swagger_client
-from heiko.menu import *
+from heiko.menu import log
 from string import ascii_letters
 
 def list_users(auth, client):
@@ -16,14 +16,14 @@ def list_users(auth, client):
     try:
         users = client.users_get()
     except swagger_client.rest.ApiException:
-        menu.log("Could fetch users from the database.",serv="ERROR")
+        log("Could fetch users from the database.",serv="ERROR")
         return False
 
-    menu.log("List of current users in the database:\n")
-    menu.log("ID\tCredits\tUsername")
+    log("List of current users in the database:\n")
+    log("ID\tCredits\tUsername")
     for user in users:
         user = user.to_dict()
-        menu.log("%s\t%s\t%s" % (user["id"], user["credits"], user["username"]))
+        log("%s\t%s\t%s" % (user["id"], user["credits"], user["username"]))
 
     return True
 
@@ -40,7 +40,7 @@ def create_user(auth, client):
     name = input("Username: ")
 
     if not all(c in ascii_letters+'-' for c in name):
-        menu.log("Username not valid. Please be alphanumerical.", serv="Error")
+        log("Username not valid. Please be alphanumerical.", serv="Error")
         return False
 
     admin = input("Admin? (y/n): ").lower()[0]
@@ -55,7 +55,7 @@ def create_user(auth, client):
         users = client.users_post(name, password, passwordrepeat, admin)
         return True
     except:
-        menu.log("Error creating user", serv="ERROR")
+        log("Error creating user", serv="ERROR")
         return False
 
 
@@ -74,7 +74,7 @@ def add_credits(auth, client):
         if credits < 0 or credits > 100:
             raise ValueError
     except ValueError:
-        menu.log("Invalid input. Valid values: 1-100",serv="ERROR")
+        log("Invalid input. Valid values: 1-100",serv="ERROR")
         return False
 
     # calc input from eur into cents
@@ -88,10 +88,10 @@ def add_credits(auth, client):
         auth["user"]["credits"] = auth["user"]["credits"] + cents
 
         #notify user
-        menu.log("Your credit is now %.2f" % (auth["user"]["credits"] / 100), serv="SUCCESS")
+        log("Your credit is now %.2f" % (auth["user"]["credits"] / 100), serv="SUCCESS")
         return True
     except:
-        menu.log("Updating your credits in the backend was not successful. Ask people for help",serv="ERROR")
+        log("Updating your credits in the backend was not successful. Ask people for help",serv="ERROR")
         return False
 
 
