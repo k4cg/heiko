@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import random
 import sys
 import os
 from sty import fg
@@ -80,6 +81,8 @@ class MaaSApiClientBuilder:
 def log(msg, serv="INFO"):
     if serv is "ERROR":
         msg = fg.red + "Error: " + msg + fg.rs
+    elif serv is "SUCCESS":
+        msg = fg.green + msg + fg.rs
 
     print(msg)
 
@@ -146,11 +149,10 @@ def add_credits(auth):
 
     cents = float(credits) * 100
     users_client = maas_builder.build_users_client(auth["token"])
-    print(users_client)
     users_client.users_user_id_credits_add_patch(str(auth["user"]["id"]), cents)
 
     auth["user"]["credits"] = auth["user"]["credits"] + cents
-    log("Your credit is now %.2f" % (auth["user"]["credits"] / 100))
+    log("Your credit is now %.2f" % (auth["user"]["credits"] / 100), serv="SUCCESS")
     # print("EUR input can range from 1 to 100")
 
 def create_user(auth):
@@ -187,8 +189,27 @@ def banner(auth=None):
         log("Hi %s, current credits: %.2f\n" % (auth["user"]["username"], auth["user"]["credits"] / 100))
 
 def consume_item(auth, itemid):
-    items_client = maas_builder.build_items_client(auth["token"])
-    items_client.items_item_id_consume_patch(1)
+
+    cheers_msgs = [
+        "Have fun!"
+        "Well.. just hackspace things."
+        "Nice loscher stuff <3"
+        "Beer mh? How are your projects going?"
+    ]
+
+    try:
+        items_client = maas_builder.build_items_client(auth["token"])
+        items_client.items_item_id_consume_patch(itemid)
+        log(random.choice(cheers_msgs) + " Prost!", serv="SUCCESS")
+        return True
+    except swagger_client.rest.ApiException:
+        log("Not enough credits, dude.", serv="ERROR")
+        return False
+    except:
+        log("Something went wrong, contact developer!")
+        return False
+
+
 
 def create_item(auth):
 
