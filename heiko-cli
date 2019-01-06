@@ -1,0 +1,37 @@
+#!/usr/bin/env python3
+
+import os
+
+import heiko
+from heiko.menu import *
+from heiko.items import *
+from heiko.users import *
+
+# temp for annoying error msg
+import urllib3
+urllib3.disable_warnings()
+
+
+if __name__ == '__main__':
+
+    maas_cfg = heiko.MaaSConfig("https://localhost:8443/v0", False)
+    maas_builder = heiko.MaaSApiClientBuilder(maas_cfg)
+
+    # This is the login loop.
+    is_logged_in = False
+    while is_logged_in is False:
+
+        is_logged_in, auth = login(maas_builder)
+
+        items_client = maas_builder.build_items_client(auth["token"])
+        users_client = maas_builder.build_users_client(auth["token"])
+
+        os.system('clear')
+        banner(auth)
+        help(auth)
+
+        # When autenticated go to menu
+        is_exit = False
+        while is_exit is False:
+            is_logged_in, is_exit = menu.menu(auth, items_client, users_client)
+
