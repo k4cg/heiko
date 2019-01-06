@@ -2,7 +2,7 @@ import json
 import time
 import getpass
 import swagger_client
-from heiko.menu import menu
+from heiko.menu import *
 from string import ascii_letters
 
 def list_users(auth, client):

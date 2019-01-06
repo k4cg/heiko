@@ -33,5 +33,5 @@ if __name__ == '__main__':
         # When autenticated go to menu
         is_exit = False
         while is_exit is False:
-            is_logged_in, is_exit = menu.menu(auth, items_client, users_client)
+            is_logged_in, is_exit = menu(auth, items_client, users_client)
 

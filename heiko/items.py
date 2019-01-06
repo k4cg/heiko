@@ -1,7 +1,8 @@
 import random
 import swagger_client
 from string import ascii_letters
-import heiko.menu as menu
+
+import heiko.menu.log
 
 
 ### ItemsApi Functions
@@ -15,9 +16,9 @@ def list_items(auth, client):
     """
 
     try:
-        menu.log(client.items_get())
+        log(client.items_get())
     except swagger_client.rest.ApiException:
-        menu.log("Could not show items from the database.",serv="ERROR")
+        log("Could not show items from the database.",serv="ERROR")
 
     return True
 
