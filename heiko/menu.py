@@ -5,7 +5,7 @@ from sty import fg
 
 import swagger_client
 from heiko.items import list_items, consume_item, create_item, delete_item
-from heiko.users import add_credits, list_users, create_user, reset_user_password, delete_user
+from heiko.users import add_credits, list_users, create_user, reset_user_password, delete_user, reset_credits
 from heiko.utils import log
 from heiko.migrate import migrate_user
 
