@@ -135,12 +135,22 @@ def reset_credits(auth, client):
     # initialize empty id
     id_to_reset = None
 
-    log("What user you want to reset the password for?")
+    log("What user you want to set the credits for?")
     user_to_reset = find_user_by_username(auth, client)
     if user_to_reset is False:
         log("Could not find user.", serv="ERROR")
         return False
 
+    new_credits = float(input("Set new credits (EUR): ")) * 100
+
+    try:
+        client.users_user_id_credits_withdraw_patch(user_to_reset["id"], user_to_reset["credits"])
+        client.users_user_id_credits_add_patch(user_to_reset["id"], int(new_credits))
+        log("Successfully set the credits for user %s to %.2f Euro" % (user_to_reset["username"], new_credits), serv="SUCCESS")
+        return True
+    except:
+        log("Could not set the credits for user %s to %.2f Euro. Backend error." % (user_to_reset["username"], new_credits), serv="ERROR")
+        return False
 
 def reset_user_password(auth, client):
     """
