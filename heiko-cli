@@ -14,7 +14,7 @@ urllib3.disable_warnings()
 
 if __name__ == '__main__':
 
-    maas_cfg = heiko.MaaSConfig("https://localhost:8443/v0", False)
+    maas_cfg = heiko.MaaSConfig("https://matomat.fritz.box:8443/v0", False)
     maas_builder = heiko.MaaSApiClientBuilder(maas_cfg)
 
     # This is the login loop.

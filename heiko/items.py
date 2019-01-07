@@ -33,10 +33,10 @@ def consume_item(auth, client, itemid):
 
     # Lets try to be a little funny
     cheers_msgs = [
-        "Have fun!"
-        "Well.. just hackspace things."
-        "Nice loscher stuff <3"
-        "Beer mh? How are your projects going?"
+        "Have fun!",
+        "Well.. just hackspace things.",
+        "Nice loscher stuff <3",
+        "Beer mh? How are your projects going?",
     ]
 
     try:
