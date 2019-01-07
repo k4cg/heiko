@@ -43,7 +43,7 @@ def migrate_user(auth, client):
     user_to_migrate, credits_to_migrate = rows[0]
 
 
-    if float(credits_to_migrate) < 0:
+    if int(credits_to_migrate) < 0:
         log("User has negative credits and this is currently not supported by backend. Hold on until https://github.com/k4cg/matomat-service/issues/7 is fixed")
         return False
 
@@ -76,7 +76,7 @@ def migrate_user(auth, client):
     # Adding credits
     try:
         client.users_user_id_credits_add_patch(new_user.to_dict()["id"], int(credits_to_migrate))
-        log("Set credit to %s" % credits_to_migrate, serv="SUCCESS")
+        log("Set credit to %.2f" % int(credits_to_migrate) / 100, serv="SUCCESS")
     except:
         log("Error adding credits %s" % credits_to_migrate, serv="ERROR")
         return False
