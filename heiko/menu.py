@@ -1,3 +1,5 @@
+import time
+import getpass
 import os
 from string import ascii_letters
 from sty import fg
@@ -218,15 +220,16 @@ def login(maas_builder):
     banner()
     log("Please authenticate yourself!")
 
-    # user = input('User: ')
-    # password = getpass.getpass('Password: ')
+    user = input('User: ')
+    password = getpass.getpass('Password: ')
     # user = "admin"
     # password = "admin"
-    user = "noqqe"
-    password = "flo"
+    # user = "noqqe"
+    # password = "flo"
 
     token = None
     is_logged_in = False
+    auth = None
 
     try:
         auth = auth_client.auth_login_post(user, password).to_dict()

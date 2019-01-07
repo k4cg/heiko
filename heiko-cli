@@ -23,8 +23,12 @@ if __name__ == '__main__':
 
         is_logged_in, auth = login(maas_builder)
 
-        items_client = maas_builder.build_items_client(auth["token"])
-        users_client = maas_builder.build_users_client(auth["token"])
+        if is_logged_in is False:
+            continue
+
+        if auth is not None:
+            items_client = maas_builder.build_items_client(auth["token"])
+            users_client = maas_builder.build_users_client(auth["token"])
 
         os.system('clear')
         banner(auth)
