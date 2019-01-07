@@ -61,6 +61,46 @@ def create_user(auth, client):
         log("Error creating user", serv="ERROR")
         return False
 
+def delete_user(auth, client):
+    """
+    Delete a user
+
+    :auth: dict
+    :client: users_client object
+    """
+
+    # initialize empty id
+    id_to_delete = None
+
+    log("What user you want to delete?")
+    user_to_reset = input("Username: ")
+
+    # find user id
+    users = client.users_get()
+    for user in users:
+        if user.to_dict()["username"] == user_to_reset:
+            id_to_delete = user.to_dict()["id"]
+
+    if id_to_delete is None:
+        log("Could not find user %s. Are you sure about the username?" % user_to_reset)
+        return False
+
+    user_to_delete = user.to_dict()["username"]
+
+    confirmation = input("You really want to delete %s? (y/n): " % user_to_delete).lower()[0]
+
+    if confirmation != "y":
+        return False
+
+    try:
+        client.users_user_id_delete(int(id_to_delete))
+        log("Successfully user %s" % user_to_delete, serv="SUCCESS")
+        return True
+    except:
+        log("Could not delete user %s. Error by backend" % user_to_delete, serv="ERROR")
+        return False
+
+
 def reset_user_password(auth, client):
     """
     Gives an admin the capability to reset password for a specific user.
@@ -90,7 +130,6 @@ def reset_user_password(auth, client):
     passwordnew = getpass.getpass("Password: ")
     passwordrepeat = getpass.getpass("Repeat password: ")
 
-    client.users_user_id_resetpassword_patch(id_to_reset, passwordnew, passwordrepeat)
     try:
         client.users_user_id_resetpassword_patch(id_to_reset, passwordnew, passwordrepeat)
         log("Successfully changed password for user %s with id %s." % (user_to_reset, id_to_reset), serv="SUCCESS")

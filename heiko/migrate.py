@@ -61,16 +61,16 @@ def migrate_user(auth, client):
     try:
         new_user = client.users_post(user_to_migrate, password, passwordrepeat, admin)
         log("Successfully created user %s" % user_to_migrate, serv="SUCCESS")
-        return True
     except:
         log("Error creating user", serv="ERROR")
         return False
 
     # Adding credits
     try:
-        users = client.users_user_id_credits_add_patch(new_user.to_dict()["id"], credits_to_migrate)
+        client.users_user_id_credits_add_patch(new_user.to_dict()["id"], int(credits_to_migrate))
         log("Set credit to %s" % credits_to_migrate, serv="SUCCESS")
-        return True
     except:
         log("Error adding credits %s" % credits_to_migrate, serv="ERROR")
         return False
+
+    return True
