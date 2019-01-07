@@ -20,7 +20,7 @@ def find_user_by_username(auth, client):
 
     user_to_find = input("Username: ")
 
-    if user_to_find < 3 or user_to_find is None:
+    if len(user_to_find) < 3 or user_to_find is None:
         log("Username too short (>=3).", serv="Error")
         return False
 
