@@ -3,7 +3,6 @@ import time
 import getpass
 import swagger_client
 from heiko.utils import log
-from string import ascii_letters
 
 def list_users(auth, client):
     """
@@ -42,7 +41,7 @@ def create_user(auth, client):
         log("Username too short (>=3).", serv="Error")
         return False
 
-    if not all(c in ascii_letters+'-' for c in name):
+    if name.isalnum() is False:
         log("Username not valid. Please be alphanumerical.", serv="Error")
         return False
 

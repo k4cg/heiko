@@ -1,7 +1,6 @@
 import time
 import getpass
 import os
-from string import ascii_letters
 from sty import fg
 
 import swagger_client

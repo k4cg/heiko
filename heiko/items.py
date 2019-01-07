@@ -1,6 +1,5 @@
 import random
 import swagger_client
-from string import ascii_letters
 
 from heiko.utils import log
 
@@ -102,7 +101,7 @@ def create_item(auth, client):
     """
 
     name = input("Name of Drink: ")
-    if not all(c in ascii_letters+'-' for c in name):
+    if name.isalnum() is False:
         log("Username not valid. Please be alphanumerical.", serv="ERROR")
         return False
 
