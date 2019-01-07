@@ -7,6 +7,17 @@ from heiko.utils import log
 
 ### ItemsApi Functions
 
+def show_item(auth, client, itemid):
+    """
+    Shows detail of a single item
+    :auth: dict
+    :client: item_client object
+    :returns: bool
+    """
+
+    log(client.items_item_id_get(itemid).to_dict())
+    return True
+
 def list_items(auth, client):
     """
     Lists all items in the database to an admin
@@ -41,7 +52,12 @@ def consume_item(auth, client, itemid):
 
     try:
         client.items_item_id_consume_patch(itemid)
-        log(random.choice(cheers_msgs) + " Prost!", serv="SUCCESS")
+
+        # TODO: Temp hack to display correct credits in banner
+        cost = float(client.items_item_id_get(itemid).to_dict()["cost"])
+        auth["user"]["credits"] = auth["user"]["credits"] - cost
+
+        log(random.choice(cheers_msgs) + " Cost: %.2f Euro. Prost!" % (cost / 100), serv="SUCCESS")
         return True
     except swagger_client.rest.ApiException:
         log("Not enough credits, dude.", serv="ERROR")
