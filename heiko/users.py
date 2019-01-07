@@ -39,6 +39,11 @@ def create_user(auth, client):
 
     name = input("Username: ")
 
+    if len(name) < 3:
+        log("Username too short (>=3).", serv="Error")
+        return False
+
+
     if not all(c in ascii_letters+'-' for c in name):
         log("Username not valid. Please be alphanumerical.", serv="Error")
         return False
