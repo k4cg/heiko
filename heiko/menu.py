@@ -90,7 +90,7 @@ def user_menu(auth, items_client, users_client):
     if option == USER_KEY_CONSUME_SCHORLE:
         consume_item(auth, items_client, 3)
 
-    if option == USER_KEY_CONSUME_SCHORLE:
+    if option == USER_KEY_CONSUME_COLA:
         consume_item(auth, items_client, 4)
 
     if option == USER_KEY_INSERT_COINS:
