@@ -31,7 +31,7 @@ def find_user_by_username(auth, client):
             user_object = user.to_dict()
 
     if user_object is None:
-        log("Could not find user %s. Are you sure about the username?" % user_to_reset)
+        log("Could not find user %s. Are you sure about the username?" % user_to_reset, serv="ERROR")
         return False
 
     return user_object
@@ -105,10 +105,14 @@ def delete_user(auth, client):
     log("What user you want to delete?")
 
     user_to_delete = find_user_by_username(auth, client)
+    if user_to_delete is False:
+        log("Could not find user.", serv="ERROR")
+        return False
 
     confirmation = input("You really want to delete %s? (y/n): " % user_to_delete["username"]).lower()[0]
 
     if confirmation != "y":
+        log("Aborted...")
         return False
 
     try:
@@ -133,6 +137,9 @@ def reset_credits(auth, client):
 
     log("What user you want to reset the password for?")
     user_to_reset = find_user_by_username(auth, client)
+    if user_to_reset is False:
+        log("Could not find user.", serv="ERROR")
+        return False
 
 
 def reset_user_password(auth, client):
@@ -150,6 +157,10 @@ def reset_user_password(auth, client):
 
     log("What user you want to reset the password for?")
     user_to_reset = find_user_by_username(auth, client)
+
+    if user_to_reset is False:
+        log("Could not find user.", serv="ERROR")
+        return False
 
     passwordnew = getpass.getpass("Password: ")
     passwordrepeat = getpass.getpass("Repeat password: ")
