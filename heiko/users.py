@@ -48,6 +48,7 @@ def create_user(auth, client):
 
     admin = input("Admin? (y/n): ").lower()[0]
 
+    admin = 0
     if admin is 'y':
         admin = 1
 

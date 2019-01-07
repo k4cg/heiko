@@ -6,6 +6,7 @@ import swagger_client
 from heiko.items import list_items, consume_item, create_item, delete_item
 from heiko.users import add_credits, list_users, create_user, reset_user_password
 from heiko.utils import log
+from heiko.migrate import migrate_user
 
 
 ### User Menu Mapping
@@ -37,6 +38,7 @@ ADMIN_KEY_CREATE_USER = 3
 ADMIN_KEY_CREATE_ITEM = 4
 ADMIN_KEY_DELETE_ITEM = 5
 ADMIN_KEY_RESET_USER_PASSWORD = 6
+ADMIN_KEY_MIGRATE_USER = 7
 ADMIN_KEY_EXIT = 9
 ADMIN_KEY_HELP = "?"
 
@@ -47,6 +49,7 @@ admin_actions = {
     ADMIN_KEY_CREATE_ITEM: "Create drink",
     ADMIN_KEY_DELETE_ITEM: "Delete drink",
     ADMIN_KEY_RESET_USER_PASSWORD: "Reset password for user",
+    ADMIN_KEY_MIGRATE_USER: "Migrate user from old Matomat",
     ADMIN_KEY_EXIT: "Exit",
     ADMIN_KEY_HELP: "Help",
 }
@@ -142,6 +145,9 @@ def admin_menu(auth, items_client, users_client):
 
     if option == ADMIN_KEY_RESET_USER_PASSWORD:
         reset_user_password(auth, users_client)
+
+    if option == ADMIN_KEY_MIGRATE_USER:
+        migrate_user(auth, users_client)
 
     if option == ADMIN_KEY_HELP:
         show_help(auth, admin=True)
