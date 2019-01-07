@@ -90,7 +90,7 @@ def consume_item(auth, client, itemid):
         log("Not enough credits, dude.", serv="ERROR")
         return False
     except:
-        log("Something went wrong, contact developer!")
+        log("Something went wrong, contact developer!", serv="ERROR")
         return False
 
 def create_item(auth, client):
@@ -122,6 +122,7 @@ def create_item(auth, client):
 
     try:
         client.items_post(name, cost)
+        log("Successfully added new item with name %s and cost %s" % (name, cost), serv="SUCCESS")
     except:
         log("Item could not be created in the backend", serv="ERROR")
         return False
