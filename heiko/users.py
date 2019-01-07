@@ -31,7 +31,7 @@ def find_user_by_username(auth, client):
             user_object = user.to_dict()
 
     if user_object is None:
-        log("Could not find user %s. Are you sure about the username?" % user_to_reset, serv="ERROR")
+        log("Could not find user %s. Are you sure about the username?" % user_to_find, serv="ERROR")
         return False
 
     return user_object
