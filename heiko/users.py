@@ -4,6 +4,39 @@ import getpass
 import swagger_client
 from heiko.utils import log
 
+def find_user_by_username(auth, client):
+    """
+    Helper function that returns a user object that is found
+    by searching for a username
+
+    :auth: dict
+    :client: users_client object
+    :username: str
+    :returns: user object
+    """
+
+    user_to_find = None
+    user_object = None
+
+    user_to_find = input("Username: ")
+
+    if user_to_find < 3 or user_to_find is None:
+        log("Username too short (>=3).", serv="Error")
+        return False
+
+    # find user id
+    users = client.users_get()
+    for user in users:
+        if user.to_dict()["username"] == user_to_find:
+            user_object = user.to_dict()
+
+    if user_object is None:
+        log("Could not find user %s. Are you sure about the username?" % user_to_reset)
+        return False
+
+    return user_object
+
+
 def list_users(auth, client):
     """
     Shows all users from the database to an successfully authenticated administrator
@@ -69,36 +102,37 @@ def delete_user(auth, client):
     :client: users_client object
     """
 
-    # initialize empty id
-    id_to_delete = None
-
     log("What user you want to delete?")
-    user_to_reset = input("Username: ")
 
-    # find user id
-    users = client.users_get()
-    for user in users:
-        if user.to_dict()["username"] == user_to_reset:
-            id_to_delete = user.to_dict()["id"]
+    user_to_delete = find_user_by_username(auth, client)
 
-    if id_to_delete is None:
-        log("Could not find user %s. Are you sure about the username?" % user_to_reset)
-        return False
-
-    user_to_delete = user.to_dict()["username"]
-
-    confirmation = input("You really want to delete %s? (y/n): " % user_to_delete).lower()[0]
+    confirmation = input("You really want to delete %s? (y/n): " % user_to_delete["username"]).lower()[0]
 
     if confirmation != "y":
         return False
 
     try:
-        client.users_user_id_delete(int(id_to_delete))
-        log("Successfully user %s" % user_to_delete, serv="SUCCESS")
+        client.users_user_id_delete(int(user_to_delete["id"]))
+        log("Successfully user %s" % user_to_delete["username"], serv="SUCCESS")
         return True
     except:
-        log("Could not delete user %s. Error by backend" % user_to_delete, serv="ERROR")
+        log("Could not delete user %s. Error by backend" % user_to_delete["username"], serv="ERROR")
         return False
+
+def reset_credits(auth, client):
+    """
+    Set credits to defined amount by admin
+
+    :auth: dict
+    :client: users_client object
+    :returns: bool
+    """
+
+    # initialize empty id
+    id_to_reset = None
+
+    log("What user you want to reset the password for?")
+    user_to_reset = find_user_by_username(auth, client)
 
 
 def reset_user_password(auth, client):
@@ -115,27 +149,17 @@ def reset_user_password(auth, client):
     id_to_reset = None
 
     log("What user you want to reset the password for?")
-    user_to_reset = input("Username: ")
-
-    # find user id
-    users = client.users_get()
-    for user in users:
-        if user.to_dict()["username"] == user_to_reset:
-            id_to_reset = user.to_dict()["id"]
-
-    if id_to_reset is None:
-        log("Could not find user %s. Are you sure about the username?" % user_to_reset)
-        return False
+    user_to_reset = find_user_by_username(auth, client)
 
     passwordnew = getpass.getpass("Password: ")
     passwordrepeat = getpass.getpass("Repeat password: ")
 
     try:
-        client.users_user_id_resetpassword_patch(id_to_reset, passwordnew, passwordrepeat)
-        log("Successfully changed password for user %s with id %s." % (user_to_reset, id_to_reset), serv="SUCCESS")
+        client.users_user_id_resetpassword_patch(user_to_reset["id"], passwordnew, passwordrepeat)
+        log("Successfully changed password for user %s with id %s." % (user_to_reset["username"], user_to_reset["id"]), serv="SUCCESS")
         return True
     except:
-        log("Could not reset password for user %s with id %s. Error by backend" % (user_to_reset, id_to_reset), serv="ERROR")
+        log("Could not reset password for user %s with id %s. Error by backend" % (user_to_reset["username"], user_to_reset["id"]), serv="ERROR")
         return False
 
 ### UserApi Functions for Users
