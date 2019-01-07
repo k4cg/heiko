@@ -121,7 +121,7 @@ def create_item(auth, client):
         return False
 
     try:
-        client.items_post(name, cost)
+        client.items_post(name, int(cost))
         log("Successfully added new item with name %s and cost %s" % (name, cost), serv="SUCCESS")
     except:
         log("Item could not be created in the backend", serv="ERROR")

@@ -220,8 +220,10 @@ def login(maas_builder):
 
     # user = input('User: ')
     # password = getpass.getpass('Password: ')
-    user = "admin"
-    password = "admin"
+    # user = "admin"
+    # password = "admin"
+    user = "noqqe"
+    password = "flo"
 
     token = None
     is_logged_in = False

@@ -119,14 +119,14 @@ def add_credits(auth, client):
         return False
 
     # calc input from eur into cents
-    cents = float(credits) * 100
+    cents = credits * 100
 
     try:
         # send update request to backend
-        client.users_user_id_credits_add_patch(str(auth["user"]["id"]), cents)
+        r = client.users_user_id_credits_add_patch(str(auth["user"]["id"]), int(cents))
 
         # TODO: Replace hack that updates local auth object to reflect changes into the banner
-        auth["user"]["credits"] = auth["user"]["credits"] + cents
+        auth["user"]["credits"] = r.to_dict()["credits"]
 
         #notify user
         log("Your credit is now %.2f" % (auth["user"]["credits"] / 100), serv="SUCCESS")

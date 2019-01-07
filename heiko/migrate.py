@@ -25,7 +25,7 @@ def migrate_user(auth, client):
         log("Username not valid. Please be alphanumerical.", serv="Error")
         return False
 
-    log("Looking for %s in matomat.db...")
+    log("Looking for user %s in matomat.db..." % name)
     cur = sq.cursor()
     cur.execute("SELECT username, credits from user where username = \"%s\";" % name)
     rows = cur.fetchall()
@@ -40,7 +40,7 @@ def migrate_user(auth, client):
         log("User has negative credits and this is currently not supported by backend. Hold on until https://github.com/k4cg/matomat-service/issues/7 is fixed")
         return False
 
-    log("Found user %s with credits %.2f Euro" % (user_to_migrate, float(credits_to_migrate) / 100))
+    log("Found user %s with credits %.2f Euro!" % (user_to_migrate, int(credits_to_migrate) / 100), serv="SUCCESS")
 
     confirmation = input("Wanna migrate her? (y/n): ").lower()[0]
     if confirmation != 'y':
@@ -60,7 +60,8 @@ def migrate_user(auth, client):
 
     # Creating user
     try:
-        new_user = client.users_post(name, password, passwordrepeat, admin)
+        new_user = client.users_post(user_to_migrate, password, passwordrepeat, admin)
+        log("Successfully created user %s" % user_to_migrate, serv="SUCCESS")
         return True
     except:
         log("Error creating user", serv="ERROR")
@@ -69,7 +70,8 @@ def migrate_user(auth, client):
     # Adding credits
     try:
         users = client.users_user_id_credits_add_patch(new_user.to_dict()["id"], credits_to_migrate)
+        log("Set credit to %s" % credits_to_migrate, serv="SUCCESS")
         return True
     except:
-        log("Error creating user", serv="ERROR")
+        log("Error adding credits %s" % credits_to_migrate, serv="ERROR")
         return False
