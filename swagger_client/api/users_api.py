@@ -983,7 +983,7 @@ class UsersApi(object):
         auth_settings = ['jwtTokenAuth']  # noqa: E501
 
         return self.api_client.call_api(
-            '/users/{userId}/resetpassword', 'PATCH',
+            '/users/{userId}/resetpassword', 'PUT',
             path_params,
             query_params,
             header_params,
