@@ -145,7 +145,8 @@ def reset_credits(auth, client):
 
     try:
         client.users_user_id_credits_withdraw_patch(user_to_reset["id"], user_to_reset["credits"])
-        client.users_user_id_credits_add_patch(user_to_reset["id"], int(new_credits))
+        r = client.users_user_id_credits_add_patch(user_to_reset["id"], int(new_credits))
+        auth["user"]["credits"] = r.to_dict()["credits"]
         log("Successfully set the credits for user %s to %.2f Euro" % (user_to_reset["username"], new_credits / 100), serv="SUCCESS")
         return True
     except:
