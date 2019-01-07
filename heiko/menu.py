@@ -3,7 +3,7 @@ from string import ascii_letters
 from sty import fg
 
 import swagger_client
-from heiko.items import list_items, consume_item, create_item
+from heiko.items import list_items, consume_item, create_item, delete_item
 from heiko.users import add_credits, list_users, create_user
 from heiko.utils import log
 
@@ -35,6 +35,7 @@ ADMIN_KEY_LIST_ITEMS = 1
 ADMIN_KEY_LIST_USERS = 2
 ADMIN_KEY_CREATE_USER = 3
 ADMIN_KEY_CREATE_ITEM = 4
+ADMIN_KEY_DELETE_ITEM = 5
 ADMIN_KEY_EXIT = 9
 ADMIN_KEY_HELP = "?"
 
@@ -43,6 +44,7 @@ admin_actions = {
     ADMIN_KEY_LIST_USERS: "Show users",
     ADMIN_KEY_CREATE_USER: "Create user",
     ADMIN_KEY_CREATE_ITEM: "Create drink",
+    ADMIN_KEY_DELETE_ITEM: "Delete drink",
     ADMIN_KEY_EXIT: "Exit",
     ADMIN_KEY_HELP: "Help",
 }
@@ -132,6 +134,9 @@ def admin_menu(auth, items_client, users_client):
 
     if option == ADMIN_KEY_CREATE_ITEM:
         create_item(auth, items_client)
+
+    if option == ADMIN_KEY_DELETE_ITEM:
+        delete_item(auth, items_client)
 
     if option == ADMIN_KEY_HELP:
         show_help(auth, admin=True)

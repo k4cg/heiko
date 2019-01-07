@@ -18,6 +18,33 @@ def show_item(auth, client, itemid):
     log(client.items_item_id_get(itemid).to_dict())
     return True
 
+def delete_item(auth, client):
+    """
+    Deletes an item from the backend
+    :auth: dict
+    :client: item_client object
+    :returns: bool
+    """
+
+    itemid = input("What item (ID)?: ")
+
+    item_name = client.items_item_id_get(itemid).to_dict()["name"]
+
+    really_delete = input("Do you really want to delete %s? (y/n): " % item_name).lower()[0]
+
+    if really_delete != 'y':
+        log("Aborted")
+        return False
+
+    try:
+        client.items_item_id_delete(itemid)
+        log("Item with id %s was deleted" % itemid, serv="SUCCESS")
+        return True
+    except:
+        log("Could not delete item with id %s" % itemid, serv="ERROR")
+        return False
+
+
 def list_items(auth, client):
     """
     Lists all items in the database to an admin
