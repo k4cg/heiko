@@ -11,7 +11,7 @@ def migrate_user(auth, client):
     :returns: bool
     """
 
-    sq = sqlite3.connect('/tmp/matomat.db')
+    sq = sqlite3.connect('/home/heiko/matomat.db')
 
     log("Please give username to look for in sqlite from matomat.db")
     name = input("Username: ")
@@ -25,15 +25,23 @@ def migrate_user(auth, client):
         return False
 
     log("Looking for user %s in matomat.db..." % name)
+
+    # fetch results from sqlite
     cur = sq.cursor()
     cur.execute("SELECT username, credits from user where username = \"%s\";" % name)
     rows = cur.fetchall()
+
+    # closing sqlite connection
+    sq.commit()
+    sq.close()
 
     if len(rows) > 1:
         log("Search resulted in multiple result sets... exitting", serv="ERROR")
         return False
 
+    # assign values
     user_to_migrate, credits_to_migrate = rows[0]
+
 
     if float(credits_to_migrate) < 0:
         log("User has negative credits and this is currently not supported by backend. Hold on until https://github.com/k4cg/matomat-service/issues/7 is fixed")
@@ -74,3 +82,4 @@ def migrate_user(auth, client):
     except:
         log("Error adding credits %s" % credits_to_migrate, serv="ERROR")
         return False
+
