@@ -146,7 +146,7 @@ def reset_credits(auth, client):
     try:
         client.users_user_id_credits_withdraw_patch(user_to_reset["id"], user_to_reset["credits"])
         client.users_user_id_credits_add_patch(user_to_reset["id"], int(new_credits))
-        log("Successfully set the credits for user %s to %.2f Euro" % (user_to_reset["username"], new_credits), serv="SUCCESS")
+        log("Successfully set the credits for user %s to %.2f Euro" % (user_to_reset["username"], new_credits / 100), serv="SUCCESS")
         return True
     except:
         log("Could not set the credits for user %s to %.2f Euro. Backend error." % (user_to_reset["username"], new_credits), serv="ERROR")

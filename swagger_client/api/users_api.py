@@ -446,7 +446,7 @@ class UsersApi(object):
         auth_settings = ['jwtTokenAuth']  # noqa: E501
 
         return self.api_client.call_api(
-            '/users/{userId}/credits/transfer', 'PATCH',
+            '/users/{userId}/credits/transfer', 'PUT',
             path_params,
             query_params,
             header_params,
@@ -555,7 +555,7 @@ class UsersApi(object):
         auth_settings = ['jwtTokenAuth']  # noqa: E501
 
         return self.api_client.call_api(
-            '/users/{userId}/credits/withdraw', 'PATCH',
+            '/users/{userId}/credits/withdraw', 'PUT',
             path_params,
             query_params,
             header_params,
@@ -868,7 +868,7 @@ class UsersApi(object):
         auth_settings = ['jwtTokenAuth']  # noqa: E501
 
         return self.api_client.call_api(
-            '/users/{userId}/password', 'PATCH',
+            '/users/{userId}/password', 'PUT',
             path_params,
             query_params,
             header_params,
