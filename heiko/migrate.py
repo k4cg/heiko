@@ -56,7 +56,7 @@ def migrate_user(auth, client):
 
     admin = input("Wanna make her admin? (y/n): ").lower()[0]
 
-    if admin is 'n':
+    if admin is 'y':
         admin = 1
     else:
         admin = 0
