@@ -7,6 +7,7 @@ from sty import fg
 import swagger_client
 from heiko.items import list_items, consume_item, create_item, delete_item
 from heiko.users import add_credits, list_users, create_user, reset_user_password, delete_user, reset_credits, change_password
+from heiko.service import show_service_stats
 from heiko.utils import log
 from heiko.migrate import migrate_user
 
@@ -43,10 +44,11 @@ ADMIN_KEY_CREATE_USER = 3
 ADMIN_KEY_CREATE_ITEM = 4
 ADMIN_KEY_DELETE_ITEM = 5
 ADMIN_KEY_RESET_USER_PASSWORD = 6
-ADMIN_KEY_MIGRATE_USER = 7
-ADMIN_KEY_DELETE_USER = 8
-ADMIN_KEY_RESET_CREDITS = 9
-ADMIN_KEY_EXIT = 10
+ADMIN_KEY_SHOW_SERVICE_STATS = 7
+ADMIN_KEY_RESET_CREDITS = 8
+ADMIN_KEY_EXIT = 9
+ADMIN_KEY_DELETE_USER = 10
+ADMIN_KEY_MIGRATE_USER = 11
 ADMIN_KEY_HELP = "?"
 
 admin_actions = {
@@ -56,16 +58,17 @@ admin_actions = {
     ADMIN_KEY_CREATE_ITEM: "Create drink",
     ADMIN_KEY_DELETE_ITEM: "Delete drink",
     ADMIN_KEY_RESET_USER_PASSWORD: "Reset password for user",
-    ADMIN_KEY_MIGRATE_USER: "Migrate user from old Matomat",
-    ADMIN_KEY_DELETE_USER: "Delete user",
+    ADMIN_KEY_SHOW_SERVICE_STATS: "Show service stats",
     ADMIN_KEY_RESET_CREDITS: "Reset credits from user",
     ADMIN_KEY_EXIT: "Exit",
+    ADMIN_KEY_DELETE_USER: "Delete user",
+    ADMIN_KEY_MIGRATE_USER: "Migrate user from old Matomat",
     ADMIN_KEY_HELP: "Help",
 }
 
 ### Functions
 
-def user_menu(auth, items_client, users_client):
+def user_menu(auth, items_client, users_client, service_client):
     """
     Shows the menu to the user, clears screen, draws the navigation screen
     This is kind of the main loop of heiko. If you need new options, add them here
@@ -106,7 +109,7 @@ def user_menu(auth, items_client, users_client):
     if option == USER_KEY_ADMINISTRATION:
         is_exit = False
         while is_exit is False:
-            is_exit = admin_menu(auth, items_client, users_client)
+            is_exit = admin_menu(auth, items_client, users_client, service_client)
 
     if option == USER_KEY_CHANGE_PASSWORD:
         change_password(auth, users_client)
@@ -120,7 +123,7 @@ def user_menu(auth, items_client, users_client):
     return True, False
 
 
-def admin_menu(auth, items_client, users_client):
+def admin_menu(auth, items_client, users_client, service_client):
     """
     Shows the menu to the admin, clears screen, draws the navigation screen
 
@@ -158,21 +161,24 @@ def admin_menu(auth, items_client, users_client):
     if option == ADMIN_KEY_RESET_USER_PASSWORD:
         reset_user_password(auth, users_client)
 
+    if option == ADMIN_KEY_SHOW_SERVICE_STATS:
+        show_service_stats(auth, service_client)
+
+    if option == ADMIN_KEY_RESET_CREDITS:
+        reset_credits(auth, users_client)
+
+    if option == ADMIN_KEY_EXIT:
+        log("Switching back to normal menu, sir.", serv="SUCCESS")
+        return True
+
     if option == ADMIN_KEY_MIGRATE_USER:
         migrate_user(auth, users_client)
 
     if option == ADMIN_KEY_DELETE_USER:
         delete_user(auth, users_client)
-
-    if option == ADMIN_KEY_RESET_CREDITS:
-        reset_credits(auth, users_client)
-
     if option == ADMIN_KEY_HELP:
         show_help(auth, admin=True)
 
-    if option == ADMIN_KEY_EXIT:
-        log("Switching back to normal menu, sir.", serv="SUCCESS")
-        return True
 
     return False
 

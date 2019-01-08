@@ -35,6 +35,7 @@ if __name__ == '__main__':
         if auth is not None:
             items_client = maas_builder.build_items_client(auth["token"])
             users_client = maas_builder.build_users_client(auth["token"])
+            service_client = maas_builder.build_service_client(auth["token"])
 
         os.system('clear')
         banner(auth)
@@ -43,5 +44,5 @@ if __name__ == '__main__':
         # When autenticated go to menu
         is_exit = False
         while is_exit is False:
-            is_logged_in, is_exit = user_menu(auth, items_client, users_client)
+            is_logged_in, is_exit = user_menu(auth, items_client, users_client, service_client)
 

@@ -22,6 +22,9 @@ class MaaSApiClientBuilder:
     def build_users_client(self, token):
         return swagger_client.UsersApi(swagger_client.ApiClient(self.build_config_with_token(token)))
 
+    def build_service_client(self, token):
+        return swagger_client.ServiceApi(swagger_client.ApiClient(self.build_config_with_token(token)))
+
     def build_config(self):
         # create an configuration for the general API client
         api_client_config = swagger_client.Configuration()
