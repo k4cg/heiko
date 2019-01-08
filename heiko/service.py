@@ -1,8 +1,8 @@
 import random
 import swagger_client
+from tabulate import tabulate
 
 from heiko.utils import log
-
 
 ### ServiceApi Functions
 
@@ -14,6 +14,23 @@ def show_service_stats(auth, client):
     :returns: bool
     """
 
-    log(client.service_stats_get().to_dict())
+    items = client.service_stats_get().to_dict()["items"]
+    users = client.service_stats_get().to_dict()["users"]
+
+    log("Number of Items: %s" % items["count"])
+    it = []
+    for x in items["cost"].keys():
+        it.append([x, "%.2F" % (float(items["cost"][x]) / 100) ])
+
+    log(tabulate(it, headers=["Measurement", "Cost (EUR)"], tablefmt="presto"))
+    log("")
+
+    log("Number of Users: %s" % users["count"])
+    ut = []
+    for x in users["credits"].keys():
+        ut.append([x, "%.2F" % (float(users["credits"][x]) / 100) ])
+
+    log(tabulate(ut, headers=["Measurement", "Credits (EUR)"], tablefmt="presto"))
+    log("")
     return True
 

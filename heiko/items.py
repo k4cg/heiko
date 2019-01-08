@@ -1,5 +1,6 @@
 import random
 import swagger_client
+from tabulate import tabulate
 
 from heiko.utils import log
 
@@ -53,9 +54,16 @@ def list_items(auth, client):
     """
 
     try:
-        log(client.items_get())
+        items = client.items_get()
     except swagger_client.rest.ApiException:
         log("Could not show items from the database.",serv="ERROR")
+
+    it = []
+    for i in items:
+        d = i.to_dict()
+        it.append([d["id"], float(d["cost"])/100, d["name"]])
+
+    log(tabulate(it, headers=["ID", "Cost (EUR)", "Drink"], tablefmt="presto"))
 
     return True
 

@@ -2,6 +2,9 @@ import json
 import time
 import getpass
 import swagger_client
+from tabulate import tabulate
+from decimal import Decimal
+
 from heiko.utils import log
 
 def find_user_by_username(auth, client):
@@ -51,11 +54,13 @@ def list_users(auth, client):
         log("Could fetch users from the database.",serv="ERROR")
         return False
 
+    it = []
+    for u in users:
+        d = u.to_dict()
+        it.append([d["id"], d["username"], float(d["credits"])/100, d["admin"]])
+
     log("List of current users in the database:\n")
-    log("ID\tCredits\tUsername")
-    for user in users:
-        user = user.to_dict()
-        log("%s\t%s\t%s" % (user["id"], user["credits"], user["username"]))
+    log(tabulate(it, headers=["ID", "Username", "Credits (EUR)", "Admin?"], tablefmt="presto"))
 
     return True
 
