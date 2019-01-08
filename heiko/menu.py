@@ -300,13 +300,11 @@ def login(maas_builder):
     welcome_banner()
     log("Please authenticate yourself!")
 
-    user = "noqqe"
-    password = "flo"
-    # try:
-    #     user = input('User: ')
-    #     password = getpass.getpass('Password: ')
-    # except EOFError:
-    #     return is_logged_in, auth
+    try:
+        user = input('User: ')
+        password = getpass.getpass('Password: ')
+    except EOFError:
+        return is_logged_in, auth
 
     try:
         auth = auth_client.auth_login_post(user, password).to_dict()
