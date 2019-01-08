@@ -184,6 +184,27 @@ def reset_user_password(auth, client):
         log("Could not reset password for user %s with id %s. Error by backend" % (user_to_reset["username"], user_to_reset["id"]), serv="ERROR")
         return False
 
+def change_password(auth, client):
+    """
+    Gives user the capability to reset password for himself/herself.
+
+    :auth: dict
+    :client: users_client object
+    :returns: bool
+    """
+
+    password = getpass.getpass("Current Password: ")
+    passwordnew = getpass.getpass("New Password: ")
+    passwordrepeat = getpass.getpass("Repeat password: ")
+
+    try:
+        client.users_user_id_password_patch(auth["user"]["id"], password, passwordnew, passwordrepeat)
+        log("Successfully changed your password!", serv="SUCCESS")
+        return True
+    except:
+        log("Could not set your password. Error by backend", serv="ERROR")
+        return False
+
 ### UserApi Functions for Users
 
 def add_credits(auth, client):

@@ -6,7 +6,7 @@ from sty import fg
 
 import swagger_client
 from heiko.items import list_items, consume_item, create_item, delete_item
-from heiko.users import add_credits, list_users, create_user, reset_user_password, delete_user, reset_credits
+from heiko.users import add_credits, list_users, create_user, reset_user_password, delete_user, reset_credits, change_password
 from heiko.utils import log
 from heiko.migrate import migrate_user
 
@@ -14,11 +14,12 @@ from heiko.migrate import migrate_user
 ### User Menu Mapping
 USER_KEY_CONSUME_MATE = 1
 USER_KEY_CONSUME_BEER = 2
-USER_KEY_CONSUME_SCHORLE = 3 #TODO
-USER_KEY_CONSUME_COLA = 4 #TODO
+USER_KEY_CONSUME_SCHORLE = 3
+USER_KEY_CONSUME_COLA = 4
 USER_KEY_INSERT_COINS = 5
 USER_KEY_SHOW_STATS = 6 # TODO
-USER_KEY_ADMINISTRATION = 7 #TODO
+USER_KEY_ADMINISTRATION = 7
+USER_KEY_CHANGE_PASSWORD = 8
 USER_KEY_EXIT = 9
 USER_KEY_HELP = "?"
 
@@ -28,7 +29,9 @@ user_actions = {
     USER_KEY_CONSUME_SCHORLE: "Consume Apfelschorle",
     USER_KEY_CONSUME_COLA: "Consume Mate Cola",
     USER_KEY_INSERT_COINS: "Insert coins",
+    USER_KEY_SHOW_STATS: "Show statistics",
     USER_KEY_ADMINISTRATION: "Administration",
+    USER_KEY_CHANGE_PASSWORD: "Change password",
     USER_KEY_EXIT: "Exit",
     USER_KEY_HELP: "Help",
 }
@@ -104,6 +107,9 @@ def user_menu(auth, items_client, users_client):
         is_exit = False
         while is_exit is False:
             is_exit = admin_menu(auth, items_client, users_client)
+
+    if option == USER_KEY_CHANGE_PASSWORD:
+        change_password(auth, users_client)
 
     if option == USER_KEY_HELP:
         show_help(auth, admin=False)
@@ -240,7 +246,6 @@ def banner(auth=None):
 | |\/| | / _ \ | || | | | |\/| | / _ \ | |
 | |  | |/ ___ \| || |_| | |  | |/ ___ \| |
 |_|  |_/_/   \_\_| \___/|_|  |_/_/   \_\_|
- - github.com/k4cg/heiko BETA Version -
 """
     log(mate_banner)
     if auth is not None:
