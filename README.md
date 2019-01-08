@@ -7,13 +7,13 @@ and a MVP client to be run in K4CG
 # Install
 
 ```
-pip install -r requirements
+pip install -r requirements.txt
 ```
 
 # Run
 
 ```
-./heiko
+./heiko-cli
 ```
 
 
