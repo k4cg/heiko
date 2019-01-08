@@ -1,3 +1,4 @@
+import sys
 import time
 import getpass
 import os
@@ -185,6 +186,7 @@ def banner(auth=None):
 | |\/| | / _ \ | || | | | |\/| | / _ \ | |
 | |  | |/ ___ \| || |_| | |  | |/ ___ \| |
 |_|  |_/_/   \_\_| \___/|_|  |_/_/   \_\_|
+ - github.com/k4cg/heiko BETA Version -
 """
     log(mate_banner)
     if auth is not None:
@@ -223,22 +225,21 @@ def login(maas_builder):
 
     :returns: tuple
     """
+    token = None
+    is_logged_in = False
+    auth = None
+
     auth_client = maas_builder.build_auth_api_client()
 
     os.system('clear')
     banner()
     log("Please authenticate yourself!")
 
-    user = input('User: ')
-    password = getpass.getpass('Password: ')
-    # user = "admin"
-    # password = "admin"
-    # user = "noqqe"
-    # password = "flo"
-
-    token = None
-    is_logged_in = False
-    auth = None
+    try:
+        user = input('User: ')
+        password = getpass.getpass('Password: ')
+    except EOFError:
+        return is_logged_in, auth
 
     try:
         auth = auth_client.auth_login_post(user, password).to_dict()
