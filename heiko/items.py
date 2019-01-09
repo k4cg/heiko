@@ -54,16 +54,17 @@ def list_items(auth, client):
     """
 
     try:
-        items = client.items_get()
+        items = client.items_stats_get()
     except swagger_client.rest.ApiException:
         log("Could not show items from the database.",serv="ERROR")
 
     it = []
     for i in items:
         d = i.to_dict()
-        it.append([d["id"], float(d["cost"])/100, d["name"]])
+        it.append([d["id"], float(d["cost"])/100, d["name"], d["consumed"]])
 
-    log(tabulate(it, headers=["ID", "Cost (EUR)", "Drink"], tablefmt="presto"))
+    log(tabulate(it, headers=["ID", "Cost (EUR)", "Drink", "Consumptions"], tablefmt="presto"))
+
 
     return True
 
