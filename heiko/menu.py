@@ -3,6 +3,7 @@ import time
 import getpass
 import os
 from sty import fg
+import urllib3
 
 import swagger_client
 from heiko.items import list_items, consume_item, create_item, delete_item
@@ -312,6 +313,10 @@ def login(maas_builder):
     except swagger_client.rest.ApiException:
         log("Wrong username and/or password!",serv="ERROR")
         time.sleep(1)
+    except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError) as e:
+        log("Connection to backend was refused!",serv="ERROR")
+        time.sleep(5)
+
 
     return is_logged_in, auth
 
