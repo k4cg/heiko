@@ -43,10 +43,6 @@ def migrate_user(auth, client):
     user_to_migrate, credits_to_migrate = rows[0]
 
 
-    if int(credits_to_migrate) < 0:
-        log("User has negative credits and this is currently not supported by backend. Hold on until https://github.com/k4cg/matomat-service/issues/7 is fixed")
-        return False
-
     log("Found user %s with credits %.2f Euro!" % (user_to_migrate, int(credits_to_migrate) / 100), serv="SUCCESS")
 
     confirmation = input("Wanna migrate her? (y/n): ").lower()[0]
@@ -74,11 +70,22 @@ def migrate_user(auth, client):
         return False
 
     # Adding credits
-    try:
-        client.users_user_id_credits_add_patch(new_user.to_dict()["id"], int(credits_to_migrate))
-        log("Set credit to %.2f" % int(credits_to_migrate) / 100, serv="SUCCESS")
-    except:
-        log("Error adding credits %s" % credits_to_migrate, serv="ERROR")
-        return False
+
+    if float(credits_to_migrate) < 0:
+        wi = str(int(credits_to_migrate)).replace('-','')
+        try:
+            r = client.users_user_id_credits_withdraw_patch(new_user.to_dict()["id"], int(wi))
+            log("Set credit to %.2f" % int(credits_to_migrate) / 100, serv="SUCCESS")
+        except:
+            log("Error setting credits to %.2f" % int(credits_to_migrate) / 100, serv="ERROR")
+            return False
+
+    else:
+        try:
+            client.users_user_id_credits_add_patch(new_user.to_dict()["id"], int(credits_to_migrate))
+            log("Set credit to %.2f" % int(credits_to_migrate) / 100, serv="SUCCESS")
+        except:
+            log("Error setting credits to %.2f" % int(credits_to_migrate) / 100, serv="ERROR")
+            return False
 
     return True
