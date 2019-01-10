@@ -7,7 +7,7 @@ import urllib3
 
 import swagger_client
 from heiko.items import list_items, consume_item, create_item, delete_item
-from heiko.users import add_credits, list_users, create_user, reset_user_password, delete_user, reset_credits, change_password
+from heiko.users import add_credits, list_users, create_user, reset_user_password, delete_user, reset_credits, change_password, show_user_stats
 from heiko.service import show_service_stats
 from heiko.utils import log
 from heiko.migrate import migrate_user
@@ -105,7 +105,7 @@ def user_menu(auth, items_client, users_client, service_client):
         add_credits(auth, users_client)
 
     if option == USER_KEY_SHOW_STATS:
-        log("Not implemented yet", serv="ERROR")
+        show_user_stats(auth, users_client)
 
     if option == USER_KEY_ADMINISTRATION:
         is_exit = False

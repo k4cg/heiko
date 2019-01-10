@@ -62,7 +62,34 @@ def list_users(auth, client):
     log("List of current users in the database:\n")
     log(tabulate(it, headers=["ID", "Username", "Credits (EUR)", "Admin?"], tablefmt="presto"))
 
+
     return True
+
+def show_user_stats(auth, client):
+    """
+    Presents consumption statistics to user
+
+    :auth: dict
+    :client: users_client object
+    :returns: bool
+    """
+
+    try:
+        stats = client.users_user_id_stats_get(auth["user"]["id"])
+    except swagger_client.rest.ApiException:
+        log("Could fetch stats from the database.",serv="ERROR")
+        return False
+
+    it = []
+    for u in stats:
+        d = u
+        it.append([d["name"], d["consumed"], "%.2f" % (float(d["consumed"]) * float(d["cost"]) / 100)])
+
+    log("Your consumption statistics:\n")
+    log(tabulate(it, headers=["Name", "Consumptions", "Money spent (EUR)"], tablefmt="presto"))
+
+    return True
+
 
 def create_user(auth, client):
     """
