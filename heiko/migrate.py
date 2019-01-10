@@ -74,18 +74,18 @@ def migrate_user(auth, client):
     if float(credits_to_migrate) < 0:
         wi = str(int(credits_to_migrate)).replace('-','')
         try:
-            r = client.users_user_id_credits_withdraw_patch(new_user.to_dict()["id"], int(wi))
-            log("Set credit to %.2f" % int(credits_to_migrate) / 100, serv="SUCCESS")
+            client.users_user_id_credits_withdraw_patch(new_user.to_dict()["id"], int(wi))
+            log("Set credit to %.2f" % float(credits_to_migrate) / 100, serv="SUCCESS")
         except:
-            log("Error setting credits to %.2f" % int(credits_to_migrate) / 100, serv="ERROR")
+            log("Error setting credits to %.2f" % float(credits_to_migrate) / 100, serv="ERROR")
             return False
 
     else:
         try:
             client.users_user_id_credits_add_patch(new_user.to_dict()["id"], int(credits_to_migrate))
-            log("Set credit to %.2f" % int(credits_to_migrate) / 100, serv="SUCCESS")
+            log("Set credit to %.2f" % float(credits_to_migrate) / 100, serv="SUCCESS")
         except:
-            log("Error setting credits to %.2f" % int(credits_to_migrate) / 100, serv="ERROR")
+            log("Error setting credits to %.2f" % float(credits_to_migrate) / 100, serv="ERROR")
             return False
 
     return True
