@@ -7,6 +7,7 @@ import heiko
 from heiko.menu import *
 from heiko.items import *
 from heiko.users import *
+from heiko.maassimpleconfig import MaasSimpleConfig
 
 # temp for annoying error msg
 import urllib3
@@ -20,7 +21,9 @@ signal.signal(signal.SIGINT, sigint_handler)
 
 if __name__ == '__main__':
 
-    maas_cfg = heiko.MaaSConfig("https://matomat.fritz.box:8443/v0", False)
+    cfg = MaasSimpleConfig().load('config.yml')
+    conn_str = 'https://' + cfg.get_maas_host() + ':' + str(cfg.get_maas_server_port()) + cfg.get_maas_api_url_base_path()
+    maas_cfg = heiko.MaaSConfig(conn_str, cfg.get_maas_verify_ssl_certificates())
     maas_builder = heiko.MaaSApiClientBuilder(maas_cfg)
 
     # This is the login loop.

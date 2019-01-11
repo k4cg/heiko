@@ -65,3 +65,6 @@ target/
 
 # JetBrains IDE family
 .idea
+
+# heiko - actual application configuration
+config.yml

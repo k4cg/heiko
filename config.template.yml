@@ -1,0 +1,5 @@
+maas:
+  host: <hostname or IP addr>
+  port: <numeric port number>
+  api_url_base_path: /v0
+  verify_ssl_certificates: <true/false>
