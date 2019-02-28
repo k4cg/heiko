@@ -232,7 +232,7 @@ def welcome_banner():
                                   7777I+                   ?7777+
                                           ++?IIII7III??+=
 
-                                        Neuer Matomat BETA
+                    When your login does not work - you need to be migrated :)
                      github.com/k4cg/heiko / github.com/k4cg/matomat-service
 """
     log(logo_banner)
