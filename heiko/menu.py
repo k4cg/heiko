@@ -11,6 +11,7 @@ from heiko.items import list_items, consume_item, create_item, delete_item
 from heiko.users import add_credits, list_users, create_user, reset_user_password, delete_user, reset_credits, change_password, show_user_stats
 from heiko.service import show_service_stats
 from heiko.utils import log
+from heiko.voice import say
 from heiko.migrate import migrate_user
 
 
@@ -92,18 +93,23 @@ def user_menu(auth, items_client, users_client, service_client):
 
     if option == USER_KEY_CONSUME_MATE:
         consume_item(auth, items_client, 1)
+        say("cheers")
 
     if option == USER_KEY_CONSUME_BEER:
         consume_item(auth, items_client, 2)
+        say("cheers")
 
     if option == USER_KEY_CONSUME_SCHORLE:
         consume_item(auth, items_client, 3)
+        say("cheers")
 
     if option == USER_KEY_CONSUME_COLA:
         consume_item(auth, items_client, 4)
+        say("cheers")
 
     if option == USER_KEY_INSERT_COINS:
         add_credits(auth, users_client)
+        say("transaction_success")
 
     if option == USER_KEY_SHOW_STATS:
         show_user_stats(auth, users_client)
@@ -121,6 +127,7 @@ def user_menu(auth, items_client, users_client, service_client):
 
     if option == USER_KEY_EXIT:
         return False, True
+        say("quit")
 
     return True, False
 
@@ -311,11 +318,14 @@ def login(maas_builder):
     try:
         auth = auth_client.auth_login_post(user, password).to_dict()
         is_logged_in = True
+        say("welcome")
     except swagger_client.rest.ApiException:
         log("Wrong username and/or password!",serv="ERROR")
+        say("error")
         time.sleep(1)
     except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError) as e:
         log("Connection to backend was refused!",serv="ERROR")
+        say("error")
         time.sleep(5)
 
 

@@ -6,3 +6,4 @@ urllib3 >= 1.15.1
 sty
 tabulate
 pyyaml
+pygame
