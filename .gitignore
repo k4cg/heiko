@@ -68,3 +68,6 @@ target/
 
 # heiko - actual application configuration
 config.yml
+
+# macOS
+.DS_Store
