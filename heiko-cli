@@ -26,6 +26,8 @@ if __name__ == '__main__':
     maas_cfg = heiko.MaaSConfig(conn_str, cfg.get_maas_verify_ssl_certificates())
     maas_builder = heiko.MaaSApiClientBuilder(maas_cfg)
 
+
+
     # This is the login loop.
     is_logged_in = False
     while is_logged_in is False:

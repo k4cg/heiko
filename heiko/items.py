@@ -78,11 +78,30 @@ def consume_item(auth, client, itemid):
     """
 
     # Lets try to be a little funny
-    cheers_msgs = [
-        "Have fun!",
+    beer_msgs = [
+        "Beer mh? How are your projects going?",
+        "Don't drink and drive!",
+        "Well, ",
+        "Gesondheid (Cheers in Afrikaans)",
+        "干杯 / gān bēi (Cheers in Mandarin)",
+        "Na zdravi (Cheers in Czech)",
+        "Proost (Cheers in Dutch)",
+        "À votre santé! (Cheers in French)",
+        "Zum Wohl! (Cheers in German)",
+        "ΥΓΕΙΑ! (Cheers in Greek)",
+        "Sláinte (Cheers in Irish Gaelic)",
+        "Salute (Cheers in Italian)",
+        "乾杯/ Kanpai (Cheers in Japanese)",
+        "건배 (Cheers in Korean)",
+        "Na zdrowie (Cheers in Polish)",
+    ]
+
+    mate_cheers = [
+        "Happy hacking!",
         "Well.. just hackspace things.",
         "Nice loscher stuff <3",
-        "Beer mh? How are your projects going?",
+        "Caffeine! <3",
+        "\"Man gewöhnt sich dran\"",
     ]
 
     try:
@@ -92,8 +111,17 @@ def consume_item(auth, client, itemid):
         cost = float(client.items_item_id_get(itemid).to_dict()["cost"])
         auth["user"]["credits"] = auth["user"]["credits"] - cost
 
-        log(random.choice(cheers_msgs) + " Cost: %.2f Euro. Prost!" % (cost / 100), serv="SUCCESS")
+        if itemid == 1:
+            log(random.choice(beer_msgs), serv="SUCCESS")
+        elif itemid == 2:
+            log(random.choice(mate_msgs), serv="SUCCESS")
+        else:
+            log("Prost!", serv="SUCCESS")
+
+        log("Cost: %.2f Euro" % (cost / 100), serv="SUCCESS")
+
         return True
+
     except swagger_client.rest.ApiException:
         log("Not enough credits, dude.", serv="ERROR")
         return False
