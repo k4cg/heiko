@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import random
 import swagger_client
 from tabulate import tabulate
