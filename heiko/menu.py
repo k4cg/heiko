@@ -126,8 +126,8 @@ def user_menu(auth, items_client, users_client, service_client):
         show_help(auth, admin=False)
 
     if option == USER_KEY_EXIT:
-        return False, True
         say("quit")
+        return False, True
 
     return True, False
 
@@ -141,6 +141,7 @@ def admin_menu(auth, items_client, users_client, service_client):
     """
 
     if auth["user"]["admin"] is False:
+        say("error")
         log("Meeeep. Not an administrator, but nice try.", serv="ERROR")
         log("Computer says no.", serv="ERROR")
         return True # is_exit
@@ -177,6 +178,7 @@ def admin_menu(auth, items_client, users_client, service_client):
         reset_credits(auth, users_client)
 
     if option == ADMIN_KEY_EXIT:
+        say("quit")
         log("Switching back to normal menu, sir.", serv="SUCCESS")
         return True
 
@@ -313,6 +315,7 @@ def login(maas_builder):
         user = input('User: ')
         password = getpass.getpass('Password: ')
     except EOFError:
+        say("error")
         return is_logged_in, auth
 
     try:
@@ -320,12 +323,12 @@ def login(maas_builder):
         is_logged_in = True
         say("welcome")
     except swagger_client.rest.ApiException:
-        log("Wrong username and/or password!",serv="ERROR")
         say("error")
+        log("Wrong username and/or password!",serv="ERROR")
         time.sleep(1)
     except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError) as e:
-        log("Connection to backend was refused!",serv="ERROR")
         say("error")
+        log("Connection to backend was refused!",serv="ERROR")
         time.sleep(5)
 
 
