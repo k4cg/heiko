@@ -98,7 +98,7 @@ def consume_item(auth, client, itemid):
         "Na zdrowie (Cheers in Polish)",
     ]
 
-    mate_cheers = [
+    mate_msgs = [
         "Happy hacking!",
         "Well.. just hackspace things.",
         "Nice loscher stuff <3",
@@ -113,9 +113,9 @@ def consume_item(auth, client, itemid):
         cost = float(client.items_item_id_get(itemid).to_dict()["cost"])
         auth["user"]["credits"] = auth["user"]["credits"] - cost
 
-        if itemid == 1:
+        if itemid == 2:
             log(random.choice(beer_msgs), serv="SUCCESS")
-        elif itemid == 2:
+        elif itemid == 1:
             log(random.choice(mate_msgs), serv="SUCCESS")
         else:
             log("Prost!", serv="SUCCESS")
