@@ -83,18 +83,18 @@ def consume_item(auth, client, itemid):
     beer_msgs = [
         "Beer mh? How are your projects going?",
         "Don't drink and drive!",
-        "Well, ",
+        "Well, drink responsible",
         "Gesondheid (Cheers in Afrikaans)",
-        "干杯 / gān bēi (Cheers in Mandarin)",
+        "Gan bay (Cheers in Mandarin)",
         "Na zdravi (Cheers in Czech)",
         "Proost (Cheers in Dutch)",
-        "À votre santé! (Cheers in French)",
+        "Ah la vo-tre sahn-tay (Cheers in French)",
         "Zum Wohl! (Cheers in German)",
-        "ΥΓΕΙΑ! (Cheers in Greek)",
-        "Sláinte (Cheers in Irish Gaelic)",
+        "Yamas (Cheers in Greek)",
+        "Slawn-cha (Cheers in Irish Gaelic)",
         "Salute (Cheers in Italian)",
-        "乾杯/ Kanpai (Cheers in Japanese)",
-        "건배 (Cheers in Korean)",
+        "Kanpai (Cheers in Japanese)",
+        "Gun bae (Cheers in Korean)",
         "Na zdrowie (Cheers in Polish)",
     ]
 
@@ -103,7 +103,7 @@ def consume_item(auth, client, itemid):
         "Well.. just hackspace things.",
         "Nice loscher stuff <3",
         "Caffeine! <3",
-        "\"Man gewöhnt sich dran\"",
+        "\"Man gewöhnt sich dran\" -- Wie man jemandem Mate schmackhaft macht.",
     ]
 
     try:
