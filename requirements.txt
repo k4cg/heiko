@@ -7,3 +7,4 @@ sty
 tabulate
 pyyaml
 pygame
+watson_developer_cloud
