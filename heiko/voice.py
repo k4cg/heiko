@@ -57,7 +57,6 @@ def greet_user(cfgobj, user):
     # generate sound if not existed
     p = os.path.expanduser("%s/%s.ogg" % (cfgobj["voice"]["path_user_greetings"], user))
     if not os.path.isfile(p):
-        log("Generating user greeting for %s" % user)
         generate_mp3(cfgobj, "Hello %s!" % user, p)
 
     # play sound
