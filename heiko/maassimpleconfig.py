@@ -26,3 +26,6 @@ class MaasSimpleConfig:
 
     def get_maas_verify_ssl_certificates(self) -> bool:
         return self.__config['maas']['verify_ssl_certificates']
+
+    def get_all(self) -> dict:
+        return self.__config

@@ -11,7 +11,7 @@ from heiko.items import list_items, consume_item, create_item, delete_item
 from heiko.users import add_credits, list_users, create_user, reset_user_password, delete_user, reset_credits, change_password, show_user_stats
 from heiko.service import show_service_stats
 from heiko.utils import log
-from heiko.voice import say
+from heiko.voice import say, greet_user
 from heiko.migrate import migrate_user
 
 
@@ -294,7 +294,7 @@ def show_help(auth, admin=False):
     return True
 
 
-def login(maas_builder):
+def login(maas_builder, cfgobj):
     """
     Shows banner, asks user to authenticate via username/password
     and creates auth token that we reuse after auth was successful once.
@@ -321,7 +321,7 @@ def login(maas_builder):
     try:
         auth = auth_client.auth_login_post(user, password).to_dict()
         is_logged_in = True
-        say("welcome")
+        greet_user(cfgobj, auth["user"]["username"], "foo")
     except swagger_client.rest.ApiException:
         say("error")
         log("Wrong username and/or password!",serv="ERROR")
