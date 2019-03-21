@@ -94,8 +94,6 @@ def user_menu(auth, items_client, users_client, service_client, cfgobj):
         banner(auth)
         option = USER_KEY_HELP
 
-    log(cfgobj)
-
     if option == USER_KEY_CONSUME_MATE:
         consume_item(auth, items_client, 1)
         say(cfgobj, "cheers")

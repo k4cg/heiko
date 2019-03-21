@@ -50,7 +50,6 @@ def greet_user(cfgobj, user):
     if it does not exist.
     """
 
-    log(cfgobj)
     # if sound is disabled, do nothing
     if cfgobj["voice"]["enable"] is False:
         return
