@@ -3,23 +3,23 @@ from heiko.utils import log
 from watson_developer_cloud import TextToSpeechV1
 import pygame
 
-def say(what, user=None):
+def say(cfgobj, what, user=None):
 
     try:
         pygame.mixer.init()
 
         if what == "welcome":
-            pygame.mixer.music.load("./heiko/sound/welcome.wav")
+            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/welcome.wav")
         elif what == "error":
-            pygame.mixer.music.load("./heiko/sound/error.wav")
+            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/error.wav")
         elif what == "cheers":
-            pygame.mixer.music.load("./heiko/sound/cheers.wav")
+            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/cheers.wav")
         elif what == "quit":
-            pygame.mixer.music.load("./heiko/sound/quit.wav")
+            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/quit.wav")
         elif what == "transaction_successful":
-            pygame.mixer.music.load("./heiko/sound/transaction_successful.wav")
+            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/transaction_successful.wav")
         elif what == "user":
-            pygame.mixer.music.load("/Users/noqqe/user_greetings/%s.ogg" % user )
+            pygame.mixer.music.load(cfgobj["voice"]["path_user_greetings"] + "/%s.ogg" % user )
 
         pygame.mixer.music.play()
 
@@ -40,17 +40,17 @@ def generate_mp3(cfgobj, text, outfile):
         audio_file.write(
             text_to_speech.synthesize(
                 text,
-                #'audio/wav',
                 'audio/ogg;codecs=vorbis',
                 'en-US_MichaelVoice'
             ).get_result().content)
 
-def greet_user(cfgobj, user, out):
+def greet_user(cfgobj, user):
     """
     Play individual greeting for user and generate
     if it does not exist.
     """
 
+    log(cfgobj)
     # if sound is disabled, do nothing
     if cfgobj["voice"]["enable"] is False:
         return
@@ -62,5 +62,5 @@ def greet_user(cfgobj, user, out):
         generate_mp3(cfgobj, "Hello %s!" % user, p)
 
     # play sound
-    say("user", user)
+    say(cfgobj, "user", user)
 

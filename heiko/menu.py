@@ -71,7 +71,7 @@ admin_actions = {
 
 ### Functions
 
-def user_menu(auth, items_client, users_client, service_client):
+def user_menu(auth, items_client, users_client, service_client, cfgobj):
     """
     Shows the menu to the user, clears screen, draws the navigation screen
     This is kind of the main loop of heiko. If you need new options, add them here
@@ -80,6 +80,9 @@ def user_menu(auth, items_client, users_client, service_client):
     :auth: dict
     :items_client: object
     :users_client: object
+    :service_client: object
+    :cfgobj: dict
+
     :returns: is_logged_in, is_exit (both bool)
     """
 
@@ -91,25 +94,27 @@ def user_menu(auth, items_client, users_client, service_client):
         banner(auth)
         option = USER_KEY_HELP
 
+    log(cfgobj)
+
     if option == USER_KEY_CONSUME_MATE:
         consume_item(auth, items_client, 1)
-        say("cheers")
+        say(cfgobj, "cheers")
 
     if option == USER_KEY_CONSUME_BEER:
         consume_item(auth, items_client, 2)
-        say("cheers")
+        say(cfgobj, "cheers")
 
     if option == USER_KEY_CONSUME_SCHORLE:
         consume_item(auth, items_client, 3)
-        say("cheers")
+        say(cfgobj, "cheers")
 
     if option == USER_KEY_CONSUME_COLA:
         consume_item(auth, items_client, 4)
-        say("cheers")
+        say(cfgobj, "cheers")
 
     if option == USER_KEY_INSERT_COINS:
         add_credits(auth, users_client)
-        say("transaction_success")
+        say(cfgobj, "transaction_success")
 
     if option == USER_KEY_SHOW_STATS:
         show_user_stats(auth, users_client)
@@ -126,7 +131,7 @@ def user_menu(auth, items_client, users_client, service_client):
         show_help(auth, admin=False)
 
     if option == USER_KEY_EXIT:
-        say("quit")
+        say(cfgobj, "quit")
         return False, True
 
     return True, False
@@ -141,7 +146,7 @@ def admin_menu(auth, items_client, users_client, service_client):
     """
 
     if auth["user"]["admin"] is False:
-        say("error")
+        say(cfgobj, "error")
         log("Meeeep. Not an administrator, but nice try.", serv="ERROR")
         log("Computer says no.", serv="ERROR")
         return True # is_exit
@@ -178,7 +183,7 @@ def admin_menu(auth, items_client, users_client, service_client):
         reset_credits(auth, users_client)
 
     if option == ADMIN_KEY_EXIT:
-        say("quit")
+        say(cfgobj, "quit")
         log("Switching back to normal menu, sir.", serv="SUCCESS")
         return True
 
@@ -315,19 +320,19 @@ def login(maas_builder, cfgobj):
         user = input('User: ')
         password = getpass.getpass('Password: ')
     except EOFError:
-        say("error")
+        say(cfgobj, "error")
         return is_logged_in, auth
 
     try:
         auth = auth_client.auth_login_post(user, password).to_dict()
         is_logged_in = True
-        greet_user(cfgobj, auth["user"]["username"], "foo")
+        greet_user(cfgobj, auth["user"]["username"])
     except swagger_client.rest.ApiException:
-        say("error")
+        say(cfgobj, "error")
         log("Wrong username and/or password!",serv="ERROR")
         time.sleep(1)
     except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError) as e:
-        say("error")
+        say(cfgobj, "error")
         log("Connection to backend was refused!",serv="ERROR")
         time.sleep(5)
 

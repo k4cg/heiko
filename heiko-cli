@@ -7,7 +7,6 @@ import heiko
 from heiko.menu import *
 from heiko.items import *
 from heiko.users import *
-from heiko.voice import greet_user
 from heiko.maassimpleconfig import MaasSimpleConfig
 
 # temp for annoying error msg
@@ -35,7 +34,6 @@ if __name__ == '__main__':
 
         is_logged_in, auth = login(maas_builder, cfgobj)
 
-
         if is_logged_in is False:
             continue
 
@@ -51,5 +49,5 @@ if __name__ == '__main__':
         # When autenticated go to menu
         is_exit = False
         while is_exit is False:
-            is_logged_in, is_exit = user_menu(auth, items_client, users_client, service_client)
+            is_logged_in, is_exit = user_menu(auth, items_client, users_client, service_client, cfgobj)
 
