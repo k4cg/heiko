@@ -103,7 +103,6 @@ def consume_item(auth, client, itemid):
         "Well.. just hackspace things.",
         "Nice loscher stuff <3",
         "Caffeine! <3",
-        "\"Man gewöhnt sich dran\" -- Wie man jemandem Mate schmackhaft macht.",
     ]
 
     try:
