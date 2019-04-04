@@ -120,7 +120,7 @@ def user_menu(auth, items_client, users_client, service_client, cfgobj):
     if option == USER_KEY_ADMINISTRATION:
         is_exit = False
         while is_exit is False:
-            is_exit = admin_menu(auth, items_client, users_client, service_client)
+            is_exit = admin_menu(auth, items_client, users_client, service_client, cfgobj)
 
     if option == USER_KEY_CHANGE_PASSWORD:
         change_password(auth, users_client)
@@ -135,7 +135,7 @@ def user_menu(auth, items_client, users_client, service_client, cfgobj):
     return True, False
 
 
-def admin_menu(auth, items_client, users_client, service_client):
+def admin_menu(auth, items_client, users_client, service_client, cfgobj):
     """
     Shows the menu to the admin, clears screen, draws the navigation screen
 
