@@ -38,7 +38,7 @@ user_actions = {
     USER_KEY_ADMINISTRATION: "Administration",
     USER_KEY_CHANGE_PASSWORD: "Change password",
     USER_KEY_EXIT: "Exit",
-    USER_KEY_CONSUME_FLORA = "[NEW] Consume Flora Mate"
+    USER_KEY_CONSUME_FLORA: "[NEU!] Consume Flora Mate",
     USER_KEY_HELP: "Help",
 }
 
