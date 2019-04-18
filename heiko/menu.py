@@ -128,7 +128,7 @@ def user_menu(auth, items_client, users_client, service_client, cfgobj):
         change_password(auth, users_client)
 
     if option == USER_KEY_CONSUME_FLORA:
-        consume_item(auth, items_client, 5)
+        consume_item(auth, items_client, 7)
         say(cfgobj, "cheers")
 
     if option == USER_KEY_HELP:
