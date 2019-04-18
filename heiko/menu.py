@@ -25,6 +25,7 @@ USER_KEY_SHOW_STATS = 6
 USER_KEY_ADMINISTRATION = 7
 USER_KEY_CHANGE_PASSWORD = 8
 USER_KEY_EXIT = 9
+USER_KEY_CONSUME_FLORA = 10
 USER_KEY_HELP = "?"
 
 user_actions = {
@@ -37,6 +38,7 @@ user_actions = {
     USER_KEY_ADMINISTRATION: "Administration",
     USER_KEY_CHANGE_PASSWORD: "Change password",
     USER_KEY_EXIT: "Exit",
+    USER_KEY_CONSUME_FLORA = "[NEW] Consume Flora Mate"
     USER_KEY_HELP: "Help",
 }
 
@@ -124,6 +126,10 @@ def user_menu(auth, items_client, users_client, service_client, cfgobj):
 
     if option == USER_KEY_CHANGE_PASSWORD:
         change_password(auth, users_client)
+
+    if option == USER_KEY_CONSUME_FLORA:
+        consume_item(auth, items_client, 5)
+        say(cfgobj, "cheers")
 
     if option == USER_KEY_HELP:
         show_help(auth, admin=False)
