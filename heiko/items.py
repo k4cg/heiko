@@ -151,7 +151,7 @@ def create_item(auth, client):
         log("Name of item is too short (min: 3)", serv="ERROR")
         return False
 
-    cost = float(input("Price in EUR: ")) * 100
+    cost = float(input("Price in EUR (i.e. 1 or 1.20): ")) * 100
 
     if cost < 0:
         log("Negative price is not allowed ;)", serv="ERROR")
@@ -159,7 +159,7 @@ def create_item(auth, client):
 
     try:
         client.items_post(name, int(cost))
-        log("Successfully added new item with name %s and cost %s" % (name, cost), serv="SUCCESS")
+        log("Successfully added new item with name %s and cost %s" % (name, float(cost) / 100 ), serv="SUCCESS")
     except:
         log("Item could not be created in the backend", serv="ERROR")
         return False
