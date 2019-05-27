@@ -121,8 +121,17 @@ def user_menu(auth, items_client, users_client, service_client, cfgobj):
 
     if option == USER_KEY_ADMINISTRATION:
         is_exit = False
+        say(cfgobj, "admin")
+
+        draw_help = True
         while is_exit is False:
-            is_exit = admin_menu(auth, items_client, users_client, service_client, cfgobj)
+            is_exit, draw_help = admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_help=draw_help)
+
+        # when exit was executed, draw normal user help again
+        os.system('clear')
+        banner(auth)
+        option = USER_KEY_HELP
+
 
     if option == USER_KEY_CHANGE_PASSWORD:
         change_password(auth, users_client)
@@ -141,7 +150,7 @@ def user_menu(auth, items_client, users_client, service_client, cfgobj):
     return True, False
 
 
-def admin_menu(auth, items_client, users_client, service_client, cfgobj):
+def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_help):
     """
     Shows the menu to the admin, clears screen, draws the navigation screen
 
@@ -156,6 +165,13 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj):
         return True # is_exit
 
     try:
+
+        # when logged in the first time, show new menue
+        if draw_help is True:
+            os.system('clear')
+            banner(auth)
+            show_help(auth, admin=True)
+
         option = int(input(">>> "))
     except ValueError:
         os.system('clear')
@@ -189,7 +205,7 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj):
     if option == ADMIN_KEY_EXIT:
         say(cfgobj, "quit")
         log("Switching back to normal menu, sir.", serv="SUCCESS")
-        return True
+        return True, False
 
     if option == ADMIN_KEY_MIGRATE_USER:
         migrate_user(auth, users_client)
@@ -199,8 +215,7 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj):
     if option == ADMIN_KEY_HELP:
         show_help(auth, admin=True)
 
-
-    return False
+    return False, False
 
 def welcome_banner():
     """

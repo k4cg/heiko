@@ -15,6 +15,8 @@ def say(cfgobj, what, user=None):
             pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/error.wav")
         elif what == "cheers":
             pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/cheers.wav")
+        elif what == "admin":
+            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/admin.wav")
         elif what == "quit":
             pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/quit.wav")
         elif what == "transaction_success":
