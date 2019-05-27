@@ -1,3 +1,4 @@
+import random
 import os
 from heiko.utils import log
 from watson_developer_cloud import TextToSpeechV1
@@ -16,8 +17,13 @@ def say(cfgobj, what, user=None):
             pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/cheers.wav")
         elif what == "quit":
             pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/quit.wav")
-        elif what == "transaction_successful":
-            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/transaction_successful.wav")
+        elif what == "transaction_success":
+            cash_sounds = [
+                "/cash1.wav",
+                "/cash2.wav",
+                "/cash3.wav",
+            ]
+            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + random.choice(cash_sounds))
         elif what == "user":
             pygame.mixer.music.load(cfgobj["voice"]["path_user_greetings"] + "/%s.ogg" % user )
 
