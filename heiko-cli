@@ -4,9 +4,7 @@ import sys
 import os
 import signal
 import heiko
-from heiko.menu import *
-from heiko.items import *
-from heiko.users import *
+from heiko.menu import user_menu, banner, login, show_help
 from heiko.maassimpleconfig import MaasSimpleConfig
 
 # temp for annoying error msg
