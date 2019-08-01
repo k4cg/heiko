@@ -322,7 +322,6 @@ def login(maas_builder, cfgobj):
 
     :returns: tuple
     """
-    token = None
     is_logged_in = False
     auth = None
 
@@ -347,7 +346,7 @@ def login(maas_builder, cfgobj):
         say(cfgobj, "error")
         log("Wrong username and/or password!",serv="ERROR")
         time.sleep(1)
-    except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError) as e:
+    except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError):
         say(cfgobj, "error")
         log("Connection to backend was refused!",serv="ERROR")
         time.sleep(5)

@@ -117,7 +117,7 @@ def create_user(auth, client):
     passwordrepeat = getpass.getpass("Repeat password: ")
 
     try:
-        users = client.users_post(name, password, passwordrepeat, admin)
+        client.users_post(name, password, passwordrepeat, admin)
         return True
     except:
         log("Error creating user", serv="ERROR")
@@ -160,10 +160,6 @@ def reset_credits(auth, client):
     :client: users_client object
     :returns: bool
     """
-
-    # initialize empty id
-    id_to_reset = None
-
     log("What user you want to set the credits for?")
     user_to_reset = find_user_by_username(auth, client)
     if user_to_reset is False:
@@ -191,10 +187,6 @@ def reset_user_password(auth, client):
     :client: users_client object
     :returns: bool
     """
-
-    # initialize empty id
-    id_to_reset = None
-
     log("What user you want to reset the password for?")
     user_to_reset = find_user_by_username(auth, client)
 
