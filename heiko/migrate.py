@@ -1,6 +1,5 @@
 import sqlite3
 import getpass
-import swagger_client
 from heiko.utils import log
 
 def migrate_user(auth, client):
