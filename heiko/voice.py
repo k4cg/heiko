@@ -31,7 +31,7 @@ def say(cfgobj, what, user=None):
 
         pygame.mixer.music.play()
 
-    except Exception as e:
+    except Exception:
         pass
 
 def generate_mp3(cfgobj, text, outfile):
