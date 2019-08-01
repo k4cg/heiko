@@ -1,9 +1,6 @@
-import json
-import time
 import getpass
 import swagger_client
 from tabulate import tabulate
-from decimal import Decimal
 
 from heiko.utils import log
 

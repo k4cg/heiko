@@ -1,9 +1,6 @@
-import sys
 import time
 import getpass
 import os
-import readline
-from sty import fg
 import urllib3
 
 import swagger_client

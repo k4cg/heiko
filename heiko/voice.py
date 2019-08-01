@@ -1,6 +1,5 @@
 import random
 import os
-from heiko.utils import log
 from watson_developer_cloud import TextToSpeechV1
 import pygame
 

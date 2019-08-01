@@ -1,5 +1,3 @@
-import random
-import swagger_client
 from tabulate import tabulate
 
 from heiko.utils import log
