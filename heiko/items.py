@@ -86,9 +86,7 @@ def consume_item(auth, client, itemid):
     """
 
     # Lets try to be a little funny
-    beer_msgs = [
-        "Beer mh? How are your projects going?",
-        "Don't drink and drive!",
+    prost_msgs = [
         "Well, drink responsible",
         "Gesondheid (Cheers in Afrikaans)",
         "Gan bay (Cheers in Mandarin)",
@@ -102,13 +100,8 @@ def consume_item(auth, client, itemid):
         "Kanpai (Cheers in Japanese)",
         "Gun bae (Cheers in Korean)",
         "Na zdrowie (Cheers in Polish)",
-    ]
-
-    mate_msgs = [
         "Happy hacking!",
         "Well.. just hackspace things.",
-        "Nice loscher stuff <3",
-        "Caffeine! <3",
     ]
 
     try:
@@ -118,13 +111,7 @@ def consume_item(auth, client, itemid):
         cost = float(client.items_item_id_get(itemid).to_dict()["cost"])
         auth["user"]["credits"] = auth["user"]["credits"] - cost
 
-        if itemid == 2:
-            log(random.choice(beer_msgs), serv="SUCCESS")
-        elif itemid == 1:
-            log(random.choice(mate_msgs), serv="SUCCESS")
-        else:
-            log("Prost!", serv="SUCCESS")
-
+        log(random.choice(prost_msgs), serv="SUCCESS")
         log("Cost: %.2f Euro" % (cost / 100), serv="SUCCESS")
 
         return True

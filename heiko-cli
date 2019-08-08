@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
         os.system('clear')
         banner(auth)
-        show_help(auth)
+        show_help(items_client)
 
         # When autenticated go to menu
         is_exit = False
