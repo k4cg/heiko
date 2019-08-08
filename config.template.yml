@@ -3,3 +3,9 @@ maas:
   port: <numeric port number>
   api_url_base_path: /v0
   verify_ssl_certificates: <true/false>
+voice:
+  enable: <true/false>
+  path_sounds: ./sound
+  path_user_greetings: <user greetings path>
+  watson_api_key: <key>
+  watson_endpoint: <endpoint>
