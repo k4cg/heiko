@@ -15,33 +15,26 @@ from heiko.nfc import nfc_read, nfc_write
 from datetime import datetime, timedelta
 
 ### User Menu Mapping
-USER_KEY_CONSUME_MATE = 1
-USER_KEY_CONSUME_BEER = 2
-USER_KEY_CONSUME_SCHORLE = 3
-USER_KEY_CONSUME_COLA = 4
-USER_KEY_INSERT_COINS = 5
-USER_KEY_SHOW_STATS = 6
-USER_KEY_ADMINISTRATION = 7
-USER_KEY_CHANGE_PASSWORD = 8
-USER_KEY_EXIT = 9
-USER_KEY_CONSUME_FLORA = 10
+USER_KEY_INSERT_COINS = 1
+USER_KEY_SHOW_STATS = 2
+USER_KEY_ADMINISTRATION = 3
+USER_KEY_CHANGE_PASSWORD = 4
+USER_KEY_EXIT = 5
 USER_KEY_NFC = "N"
 USER_KEY_HELP = "?"
 
 user_actions = {
-    USER_KEY_CONSUME_MATE: "Consume Club Mate",
-    USER_KEY_CONSUME_BEER: "Consume Bier",
-    USER_KEY_CONSUME_SCHORLE: "Consume Apfelschorle",
-    USER_KEY_CONSUME_COLA: "Consume Mate Cola",
     USER_KEY_INSERT_COINS: "Insert coins",
     USER_KEY_SHOW_STATS: "Show statistics",
     USER_KEY_ADMINISTRATION: "Administration",
     USER_KEY_CHANGE_PASSWORD: "Change password",
     USER_KEY_EXIT: "Exit",
-    USER_KEY_CONSUME_FLORA: "[NEU!] Consume Flora Mate",
     USER_KEY_NFC: "Setup NFC Card",
     USER_KEY_HELP: "Help",
 }
+
+consumables = {}
+
 
 ### Admin Menu Mapping
 ADMIN_KEY_LIST_ITEMS_STATS = 1
@@ -102,20 +95,8 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
     except EOFError:
         return user_exit(cfgobj)
 
-    if option == USER_KEY_CONSUME_MATE:
-        consume_item(auth, items_client, 1)
-        say(cfgobj, "cheers")
-
-    if option == USER_KEY_CONSUME_BEER:
-        consume_item(auth, items_client, 2)
-        say(cfgobj, "cheers")
-
-    if option == USER_KEY_CONSUME_SCHORLE:
-        consume_item(auth, items_client, 3)
-        say(cfgobj, "cheers")
-
-    if option == USER_KEY_CONSUME_COLA:
-        consume_item(auth, items_client, 4)
+    if option in consumables.keys():
+        consume_item(auth, items_client, consumables[option]['id'])
         say(cfgobj, "cheers")
 
     if option == USER_KEY_INSERT_COINS:
@@ -138,14 +119,9 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         banner(auth)
         option = USER_KEY_HELP
 
-
     if option == USER_KEY_CHANGE_PASSWORD:
         change_password(auth, users_client)
 
-    if option == USER_KEY_CONSUME_FLORA:
-        consume_item(auth, items_client, 7)
-        say(cfgobj, "cheers")
-        
     if option == USER_KEY_NFC:
         if not cfgobj["nfc"]["enable"]:
             log("NFC is disabled")
@@ -178,7 +154,7 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
             nfc_write(uid, token)
 
     if option == USER_KEY_HELP:
-        show_help(auth, admin=False)
+        show_help(items_client, admin=False)
 
     if option == USER_KEY_EXIT:
         return user_exit(cfgobj)
@@ -212,7 +188,7 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_he
         if draw_help is True:
             os.system('clear')
             banner(auth)
-            show_help(auth, admin=True)
+            show_help(items_client, admin=True)
 
         option = int(input(">>> "))
     except ValueError:
@@ -255,7 +231,7 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_he
     if option == ADMIN_KEY_DELETE_USER:
         delete_user(auth, users_client)
     if option == ADMIN_KEY_HELP:
-        show_help(auth, admin=True)
+        show_help(items_client, admin=True)
 
     return False, False
 
@@ -347,18 +323,36 @@ def banner(auth=None):
     return True
 
 
-def show_help(auth, admin=False):
+def show_help(items_client, admin=False):
     """
     Shows the basic navigation to the user.
 
-    :auth: dict
+    :items_client: object
+    :admin: bool
     :returns: bool
     """
 
     if admin is True:
         actions = admin_actions
     else:
-        actions = user_actions
+        actions = user_actions.copy()
+
+        # Reset consumables, to avoid stale entries:
+        consumables.clear()
+
+        # Assume that actions start with 1
+        # and use the next free number for the consumables
+        # FIXME: Use characters for non-cosume actions?
+        action_key = len(actions)
+
+        try:
+            for item in items_client.items_get():
+                item_dict = item.to_dict()
+                consumables.update({action_key: item_dict})
+                actions.update({action_key: "Consume " + item_dict['name']})
+                action_key += 1
+        except swagger_client.rest.ApiException:
+            log("Could not get items from the database.",serv="ERROR")
 
     log("Available actions:")
     for key in actions.keys():
