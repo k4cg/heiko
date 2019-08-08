@@ -66,6 +66,9 @@ target/
 # JetBrains IDE family
 .idea
 
+# VS Code
+.vscode
+
 # heiko - actual application configuration
 config.yml
 
