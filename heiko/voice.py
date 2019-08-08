@@ -5,6 +5,10 @@ import pygame
 
 def say(cfgobj, what, user=None):
 
+    # if sound is disabled, do nothing
+    if cfgobj["voice"]["enable"] is False:
+        return
+
     try:
         pygame.mixer.init()
 
