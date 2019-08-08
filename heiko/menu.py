@@ -4,7 +4,7 @@ import os
 import urllib3
 
 import swagger_client
-from heiko.items import list_items, consume_item, create_item, delete_item
+from heiko.items import list_items_stats, consume_item, create_item, delete_item
 from heiko.users import add_credits, list_users, create_user, reset_user_password, delete_user, reset_credits, change_password, show_user_stats
 from heiko.service import show_service_stats
 from heiko.utils import log
@@ -44,7 +44,7 @@ user_actions = {
 }
 
 ### Admin Menu Mapping
-ADMIN_KEY_LIST_ITEMS = 1
+ADMIN_KEY_LIST_ITEMS_STATS = 1
 ADMIN_KEY_LIST_USERS = 2
 ADMIN_KEY_CREATE_USER = 3
 ADMIN_KEY_CREATE_ITEM = 4
@@ -58,7 +58,7 @@ ADMIN_KEY_MIGRATE_USER = 11
 ADMIN_KEY_HELP = "?"
 
 admin_actions = {
-    ADMIN_KEY_LIST_ITEMS: "Show drinks",
+    ADMIN_KEY_LIST_ITEMS_STATS: "Show drinks stats",
     ADMIN_KEY_LIST_USERS: "Show users",
     ADMIN_KEY_CREATE_USER: "Create user",
     ADMIN_KEY_CREATE_ITEM: "Create drink",
@@ -222,8 +222,8 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_he
     except EOFError:
         return admin_exit(cfgobj)
 
-    if option == ADMIN_KEY_LIST_ITEMS:
-        list_items(auth, items_client)
+    if option == ADMIN_KEY_LIST_ITEMS_STATS:
+        list_items_stats(auth, items_client)
 
     if option == ADMIN_KEY_LIST_USERS:
         list_users(auth, users_client)

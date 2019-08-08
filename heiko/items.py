@@ -52,9 +52,9 @@ def delete_item(auth, client):
         return False
 
 
-def list_items(auth, client):
+def list_items_stats(auth, client):
     """
-    Lists all items in the database to an admin
+    Lists stats for all items in the database
 
     :auth: dict
     :returns: bool
@@ -74,6 +74,7 @@ def list_items(auth, client):
 
 
     return True
+
 
 def consume_item(auth, client, itemid):
     """
