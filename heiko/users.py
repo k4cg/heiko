@@ -146,7 +146,7 @@ def delete_user(auth, client):
 
     try:
         client.users_user_id_delete(int(user_to_delete["id"]))
-        log("Successfully user %s" % user_to_delete["username"], serv="SUCCESS")
+        log("Successfully deleted user %s" % user_to_delete["username"], serv="SUCCESS")
         return True
     except:
         log("Could not delete user %s. Error by backend" % user_to_delete["username"], serv="ERROR")
