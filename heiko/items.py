@@ -140,7 +140,7 @@ def create_item(auth, client):
 
     name = input("Name of Drink: ")
     if name.isalnum() is False:
-        log("Username not valid. Please be alphanumerical.", serv="ERROR")
+        log("Item name not valid. Please be alphanumerical.", serv="ERROR")
         return False
 
     if len(name) > 32:
