@@ -89,18 +89,19 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
     :returns: is_logged_in, is_exit (both bool)
     """
 
+    try:
+        optionInput = input(">>> ")
+        if len(optionInput) == 0:
+            os.system('clear')
+            banner(auth)
+            option = USER_KEY_HELP
+        elif optionInput.isnumeric():
+            option = int(optionInput)
+        else:
+            option = optionInput
+    except EOFError:
+        return user_exit(cfgobj)
 
-    optionInput = input(">>> ")
-    if len(optionInput) == 0:
-        os.system('clear')
-        banner(auth)
-        option = USER_KEY_HELP
-    elif optionInput.isnumeric():
-        option = int(optionInput)
-    else:
-        option = optionInput
-    
-    
     if option == USER_KEY_CONSUME_MATE:
         consume_item(auth, items_client, 1)
         say(cfgobj, "cheers")
@@ -180,10 +181,14 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         show_help(auth, admin=False)
 
     if option == USER_KEY_EXIT:
-        say(cfgobj, "quit")
-        return False, True
+        return user_exit(cfgobj)
 
     return True, False
+
+
+def user_exit(cfgobj):
+    say(cfgobj, "quit")
+    return False, True
 
 
 def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_help):
@@ -213,6 +218,8 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_he
         os.system('clear')
         banner(auth)
         option = ADMIN_KEY_HELP
+    except EOFError:
+        return admin_exit(cfgobj)
 
     if option == ADMIN_KEY_LIST_ITEMS:
         list_items(auth, items_client)
@@ -239,9 +246,7 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_he
         reset_credits(auth, users_client)
 
     if option == ADMIN_KEY_EXIT:
-        say(cfgobj, "quit")
-        log("Switching back to normal menu, sir.", serv="SUCCESS")
-        return True, False
+        return admin_exit(cfgobj)
 
     if option == ADMIN_KEY_MIGRATE_USER:
         migrate_user(auth, users_client)
@@ -252,6 +257,13 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_he
         show_help(auth, admin=True)
 
     return False, False
+
+
+def admin_exit(cfgobj):
+    say(cfgobj, "quit")
+    log("Switching back to normal menu, sir.", serv="SUCCESS")
+    return True, False
+
 
 def welcome_banner():
     """
