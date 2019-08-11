@@ -138,7 +138,7 @@ def user_menu(auth, items_client, users_client, service_client, cfgobj):
         say(cfgobj, "cheers")
 
     if option == USER_KEY_HELP:
-        show_help(auth, admin=False)
+        show_help(auth)
 
     if option == USER_KEY_EXIT:
         say(cfgobj, "quit")
@@ -167,7 +167,7 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_he
         if draw_help is True:
             os.system('clear')
             banner(auth)
-            show_help(auth, admin=True)
+            show_help(auth)
 
         option = int(input(">>> "))
     except ValueError:
@@ -210,7 +210,7 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_he
     if option == ADMIN_KEY_DELETE_USER:
         delete_user(auth, users_client)
     if option == ADMIN_KEY_HELP:
-        show_help(auth, admin=True)
+        show_help(auth)
 
     return False, False
 
@@ -295,7 +295,7 @@ def banner(auth=None):
     return True
 
 
-def show_help(auth, admin=False):
+def show_help(auth):
     """
     Shows the basic navigation to the user.
 
@@ -303,7 +303,7 @@ def show_help(auth, admin=False):
     :returns: bool
     """
 
-    if admin is True:
+    if auth["user"]["admin"] is True:
         actions = admin_actions
     else:
         actions = user_actions
