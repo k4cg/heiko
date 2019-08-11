@@ -6,6 +6,7 @@ import signal
 import heiko
 from heiko.menu import user_menu, banner, login, show_help
 from heiko.maassimpleconfig import MaasSimpleConfig
+from heiko.nfc import nfc_init
 
 # temp for annoying error msg
 import urllib3
@@ -26,11 +27,15 @@ if __name__ == '__main__':
 
     cfgobj = cfg.get_all()
 
+    if cfgobj["nfc"]["enable"]:
+        nfc_init()
+
     # This is the login loop.
     is_logged_in = False
     while is_logged_in is False:
 
-        is_logged_in, auth = login(maas_builder, cfgobj)
+        auth_client = maas_builder.build_auth_api_client()
+        is_logged_in, auth = login(auth_client, cfgobj)
 
         if is_logged_in is False:
             continue
@@ -47,5 +52,5 @@ if __name__ == '__main__':
         # When autenticated go to menu
         is_exit = False
         while is_exit is False:
-            is_logged_in, is_exit = user_menu(auth, items_client, users_client, service_client, cfgobj)
+            is_logged_in, is_exit = user_menu(auth, auth_client, items_client, users_client, service_client, cfgobj)
 

@@ -9,3 +9,5 @@ voice:
   path_user_greetings: <user greetings path>
   watson_api_key: <key>
   watson_endpoint: <endpoint>
+nfc:
+  enable: <true/false>

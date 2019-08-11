@@ -10,7 +10,9 @@ from heiko.service import show_service_stats
 from heiko.utils import log
 from heiko.voice import say, greet_user
 from heiko.migrate import migrate_user
+from heiko.nfc import nfc_read, nfc_write
 
+from datetime import datetime, timedelta
 
 ### User Menu Mapping
 USER_KEY_CONSUME_MATE = 1
@@ -23,6 +25,7 @@ USER_KEY_ADMINISTRATION = 7
 USER_KEY_CHANGE_PASSWORD = 8
 USER_KEY_EXIT = 9
 USER_KEY_CONSUME_FLORA = 10
+USER_KEY_NFC = "N"
 USER_KEY_HELP = "?"
 
 user_actions = {
@@ -36,6 +39,7 @@ user_actions = {
     USER_KEY_CHANGE_PASSWORD: "Change password",
     USER_KEY_EXIT: "Exit",
     USER_KEY_CONSUME_FLORA: "[NEU!] Consume Flora Mate",
+    USER_KEY_NFC: "Setup NFC Card",
     USER_KEY_HELP: "Help",
 }
 
@@ -70,7 +74,7 @@ admin_actions = {
 
 ### Functions
 
-def user_menu(auth, items_client, users_client, service_client, cfgobj):
+def user_menu(auth, auth_client, items_client, users_client, service_client, cfgobj):
     """
     Shows the menu to the user, clears screen, draws the navigation screen
     This is kind of the main loop of heiko. If you need new options, add them here
@@ -86,13 +90,17 @@ def user_menu(auth, items_client, users_client, service_client, cfgobj):
     """
 
 
-    try:
-        option = int(input(">>> "))
-    except ValueError:
+    optionInput = input(">>> ")
+    if len(optionInput) == 0:
         os.system('clear')
         banner(auth)
         option = USER_KEY_HELP
-
+    elif optionInput.isnumeric():
+        option = int(optionInput)
+    else:
+        option = optionInput
+    
+    
     if option == USER_KEY_CONSUME_MATE:
         consume_item(auth, items_client, 1)
         say(cfgobj, "cheers")
@@ -136,6 +144,37 @@ def user_menu(auth, items_client, users_client, service_client, cfgobj):
     if option == USER_KEY_CONSUME_FLORA:
         consume_item(auth, items_client, 7)
         say(cfgobj, "cheers")
+        
+    if option == USER_KEY_NFC:
+        if not cfgobj["nfc"]["enable"]:
+            log("NFC is disabled")
+            return True, False
+        uid = nfc_read()
+        if uid is not None:
+            ans = input("overwrite card? [yN] ")
+            if ans != "y":
+                return True, False
+            ans = input("token lifetime in days? ")
+            if not ans.isnumeric():
+                log("invalid lifetime")
+                return True, False
+            days = int(ans)
+            log("re-Login required:")
+            password = getpass.getpass('Password: ')
+            token = ""
+            try:
+                auth2 = auth_client.auth_login_post(
+                    auth["user"]["username"], password,
+                    validityseconds=days*3600*24).to_dict()
+                token = auth2["token"]
+            except swagger_client.rest.ApiException:
+                log("Wrong password!",serv="ERROR")
+                return True, False
+            except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError):
+                log("Connection to backend was refused!",serv="ERROR")
+                return True, False
+            validstamp = (datetime.now()+timedelta(days=days)).timestamp()
+            nfc_write(uid, token)
 
     if option == USER_KEY_HELP:
         show_help(auth, admin=False)
@@ -315,7 +354,7 @@ def show_help(auth, admin=False):
     return True
 
 
-def login(maas_builder, cfgobj):
+def login(auth_client, cfgobj):
     """
     Shows banner, asks user to authenticate via username/password
     and creates auth token that we reuse after auth was successful once.
@@ -324,8 +363,6 @@ def login(maas_builder, cfgobj):
     """
     is_logged_in = False
     auth = None
-
-    auth_client = maas_builder.build_auth_api_client()
 
     os.system('clear')
     welcome_banner()
