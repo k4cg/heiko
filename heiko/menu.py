@@ -159,7 +159,8 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_he
         say(cfgobj, "error")
         log("Meeeep. Not an administrator, but nice try.", serv="ERROR")
         log("Computer says no.", serv="ERROR")
-        return True # is_exit
+        time.sleep(5)
+        return True, True
 
     try:
 
