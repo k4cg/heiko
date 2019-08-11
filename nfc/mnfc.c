@@ -246,8 +246,8 @@ Py_BEGIN_ALLOW_THREADS
 
 				for(int k = 0; k < 3; k++)
 				{
-					int n = mifare_classic_write(tags[0], b+k, block[k]);
-					if(n < 0)
+					int r = mifare_classic_write(tags[0], b+k, block[n*3+k]);
+					if(r < 0)
 					{
 						printf("NFC: write error\n");
 						ret = 5;
