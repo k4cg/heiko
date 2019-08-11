@@ -87,10 +87,15 @@ static PyObject* mnfc_deinit(PyObject* self, PyObject* args)
 static PyObject* mnfc_read(PyObject* self, PyObject* args)
 {
 	int ret = 0;
-	MifareClassicBlock* block = malloc(sizeof(MifareClassicBlock)*4);
+	#define MAX_SECS 16
+	#define MAX_BLOCKS MAX_SECS*3
+	MifareClassicBlock* block = malloc(sizeof(MifareClassicBlock)*MAX_BLOCKS);
 	
-	int blockNum;
-	PyArg_ParseTuple(args, "i", &blockNum);
+	int secStart;
+	int secNum;
+	PyArg_ParseTuple(args, "ii", &secStart, &secNum);
+	if(secNum > MAX_SECS)
+		secNum = MAX_SECS;
 	
 	#define MAX_UID_LEN 16
 	char firstTagUid[MAX_UID_LEN+1] = {0};
@@ -132,22 +137,29 @@ Py_BEGIN_ALLOW_THREADS
 			goto error;
 		}
 
-		MifareClassicBlockNumber b = blockNum*4;
-		if(mifare_classic_authenticate(tags[0], b, default_keys[0], MFC_KEY_A))
-		{
-			printf("NFC: auth failed\n");
-			ret = 3;
-			goto error;
-		}
 
-		for(int k = 0; k < 4; k++)
+		int bcount = 0;
+		for(int n = 0; n < secNum; n++)
 		{
-			int n = mifare_classic_read(tags[0], b+k, &block[k]);
-			if(n < 0)
+			MifareClassicBlockNumber b = (secStart+n)*4;
+		
+			if(mifare_classic_authenticate(tags[0], b, default_keys[0], MFC_KEY_A))
 			{
-				printf("NFC: read error\n");
-				ret = 4;
+				printf("NFC: auth failed\n");
+				ret = 3;
 				goto error;
+			}
+
+			for(int k = 0; k < 3; k++)
+			{
+				int n = mifare_classic_read(tags[0], b + k, &block[bcount]);
+				bcount++;
+				if(n < 0)
+				{
+					printf("NFC: read error\n");
+					ret = 4;
+					goto error;
+				}
 			}
 		}
 	}
@@ -165,7 +177,7 @@ Py_END_ALLOW_THREADS
 	{
 		PyObject* o = Py_BuildValue("issy#",
 			ret, firstTagUid, firstTagType,
-			(const char*)block, sizeof(MifareClassicBlock)*4);
+			(const char*)block, sizeof(MifareClassicBlock)*3*secNum);
 		free(block);
 		return o;
 	}
@@ -178,13 +190,14 @@ static PyObject* mnfc_write(PyObject* self, PyObject* args)
 {
 	int ret = 0;
 	
-	int blockNum;
+	int secStart;
+	int secNum;
 	const char* uid;
 	const char* data;
 	Py_ssize_t data_len;
-	PyArg_ParseTuple(args, "isy#", &blockNum, &uid, &data, &data_len);
+	PyArg_ParseTuple(args, "iisy#", &secStart, &secNum, &uid, &data, &data_len);
 	
-	if(data_len < sizeof(MifareClassicBlock)*3)
+	if(data_len < sizeof(MifareClassicBlock)*3*secNum)
 	{
 		printf("NFC: invalid write block len\n");
 		return Py_BuildValue("i", -1);
@@ -221,22 +234,25 @@ Py_BEGIN_ALLOW_THREADS
 				goto error;
 			}
 
-			MifareClassicBlockNumber b = blockNum*4;
-			if(mifare_classic_authenticate(tags[0], b, default_keys[0], MFC_KEY_B))
+			for(int n = 0; n < secNum; n++)
 			{
-				printf("NFC: auth failed\n");
-				ret = 4;
-				goto error;
-			}
-
-			for(int k = 0; k < 3; k++)
-			{
-				int n = mifare_classic_write(tags[0], b+k, block[k]);
-				if(n < 0)
+				MifareClassicBlockNumber b = (secStart+n)*4;
+				if(mifare_classic_authenticate(tags[0], b, default_keys[0], MFC_KEY_B))
 				{
-					printf("NFC: write error\n");
-					ret = 5;
+					printf("NFC: auth failed\n");
+					ret = 4;
 					goto error;
+				}
+
+				for(int k = 0; k < 3; k++)
+				{
+					int n = mifare_classic_write(tags[0], b+k, block[k]);
+					if(n < 0)
+					{
+						printf("NFC: write error\n");
+						ret = 5;
+						goto error;
+					}
 				}
 			}
 		}
