@@ -2,6 +2,7 @@ import time
 import getpass
 import os
 import urllib3
+import pprint
 
 import swagger_client
 from heiko.items import list_items_stats, consume_item, create_item, delete_item
@@ -379,7 +380,10 @@ def login(auth_client, cfgobj):
         return is_logged_in, auth
 
     try:
-        auth = auth_client.auth_login_post(user, password).to_dict()
+        # FIXME This does not work
+        auth = auth_client.auth_login_post(user, password, validityseconds=42)
+        pprint.pprint(auth)
+        exit(1)
         is_logged_in = True
         greet_user(cfgobj, auth["user"]["username"])
     except swagger_client.rest.ApiException:

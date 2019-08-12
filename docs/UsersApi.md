@@ -1,20 +1,21 @@
 # swagger_client.UsersApi
 
-All URIs are relative to *https://localhost:8443/v0*
+All URIs are relative to *https://maas.intern.k4cg.org/v0*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**users_get**](UsersApi.md#users_get) | **GET** /users | List all users
 [**users_post**](UsersApi.md#users_post) | **POST** /users | Add a new user
-[**users_user_id_credits_add_patch**](UsersApi.md#users_user_id_credits_add_patch) | **PATCH** /users/{userId}/credits/add | Add users credits
-[**users_user_id_credits_transfer_patch**](UsersApi.md#users_user_id_credits_transfer_patch) | **PATCH** /users/{userId}/credits/transfer | Transfer credits
-[**users_user_id_credits_withdraw_patch**](UsersApi.md#users_user_id_credits_withdraw_patch) | **PATCH** /users/{userId}/credits/withdraw | Widthdraw users credits
+[**users_user_id_admin_set_put**](UsersApi.md#users_user_id_admin_set_put) | **PUT** /users/{userId}/admin/set | Promote a user to admin
+[**users_user_id_admin_unset_put**](UsersApi.md#users_user_id_admin_unset_put) | **PUT** /users/{userId}/admin/unset | Remove admin capabilities from an user
+[**users_user_id_credits_add_put**](UsersApi.md#users_user_id_credits_add_put) | **PUT** /users/{userId}/credits/add | Add users credits
+[**users_user_id_credits_transfer_put**](UsersApi.md#users_user_id_credits_transfer_put) | **PUT** /users/{userId}/credits/transfer | Transfer credits
+[**users_user_id_credits_withdraw_put**](UsersApi.md#users_user_id_credits_withdraw_put) | **PUT** /users/{userId}/credits/withdraw | Widthdraw users credits
 [**users_user_id_delete**](UsersApi.md#users_user_id_delete) | **DELETE** /users/{userId} | Delete user
 [**users_user_id_get**](UsersApi.md#users_user_id_get) | **GET** /users/{userId} | Get user by user ID
-[**users_user_id_password_patch**](UsersApi.md#users_user_id_password_patch) | **PATCH** /users/{userId}/password | Change password for currently logged in user.
-[**users_user_id_resetpassword_patch**](UsersApi.md#users_user_id_resetpassword_patch) | **PATCH** /users/{userId}/resetpassword | Set password for user ID
+[**users_user_id_password_put**](UsersApi.md#users_user_id_password_put) | **PUT** /users/{userId}/password | Change password for currently logged in user.
+[**users_user_id_resetpassword_put**](UsersApi.md#users_user_id_resetpassword_put) | **PUT** /users/{userId}/resetpassword | Set password for user ID
 [**users_user_id_stats_get**](UsersApi.md#users_user_id_stats_get) | **GET** /users/{userId}/stats | Get matomat stats for user
-
 
 # **users_get**
 > list[User] users_get()
@@ -126,12 +127,12 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **users_user_id_credits_add_patch**
-> User users_user_id_credits_add_patch(user_id, credits)
+# **users_user_id_admin_set_put**
+> User users_user_id_admin_set_put(user_id)
 
-Add users credits
+Promote a user to admin
 
-Add users credits. This can only be done by the logged in user
+Promote a user to admin. This can only be done by other admin users.
 
 ### Example
 ```python
@@ -149,23 +150,131 @@ configuration.api_key['Authorization'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.UsersApi(swagger_client.ApiClient(configuration))
-user_id = 56 # int | The ID of the user for which the credits should be changed
-credits = 56 # int | 
+user_id = 56 # int | The ID of the user to promote to admin
 
 try:
-    # Add users credits
-    api_response = api_instance.users_user_id_credits_add_patch(user_id, credits)
+    # Promote a user to admin
+    api_response = api_instance.users_user_id_admin_set_put(user_id)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling UsersApi->users_user_id_credits_add_patch: %s\n" % e)
+    print("Exception when calling UsersApi->users_user_id_admin_set_put: %s\n" % e)
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **user_id** | **int**| The ID of the user for which the credits should be changed | 
+ **user_id** | **int**| The ID of the user to promote to admin | 
+
+### Return type
+
+[**User**](User.md)
+
+### Authorization
+
+[jwtTokenAuth](../README.md#jwtTokenAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **users_user_id_admin_unset_put**
+> User users_user_id_admin_unset_put(user_id)
+
+Remove admin capabilities from an user
+
+Remove admin capabilities from an user. This can only be done by other admin users.
+
+### Example
+```python
+from __future__ import print_function
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure API key authorization: jwtTokenAuth
+configuration = swagger_client.Configuration()
+configuration.api_key['Authorization'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['Authorization'] = 'Bearer'
+
+# create an instance of the API class
+api_instance = swagger_client.UsersApi(swagger_client.ApiClient(configuration))
+user_id = 56 # int | The ID of the user to remove admin capabilities from
+
+try:
+    # Remove admin capabilities from an user
+    api_response = api_instance.users_user_id_admin_unset_put(user_id)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling UsersApi->users_user_id_admin_unset_put: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **user_id** | **int**| The ID of the user to remove admin capabilities from | 
+
+### Return type
+
+[**User**](User.md)
+
+### Authorization
+
+[jwtTokenAuth](../README.md#jwtTokenAuth)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **users_user_id_credits_add_put**
+> User users_user_id_credits_add_put(credits, user_id)
+
+Add users credits
+
+Add users credits. This can only be done by the logged in user or a admin.
+
+### Example
+```python
+from __future__ import print_function
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure API key authorization: jwtTokenAuth
+configuration = swagger_client.Configuration()
+configuration.api_key['Authorization'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# configuration.api_key_prefix['Authorization'] = 'Bearer'
+
+# create an instance of the API class
+api_instance = swagger_client.UsersApi(swagger_client.ApiClient(configuration))
+credits = 56 # int | 
+user_id = 56 # int | The ID of the user for which the credits should be changed
+
+try:
+    # Add users credits
+    api_response = api_instance.users_user_id_credits_add_put(credits, user_id)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling UsersApi->users_user_id_credits_add_put: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
  **credits** | **int**|  | 
+ **user_id** | **int**| The ID of the user for which the credits should be changed | 
 
 ### Return type
 
@@ -182,8 +291,8 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **users_user_id_credits_transfer_patch**
-> TransferredCredits users_user_id_credits_transfer_patch(user_id, credits)
+# **users_user_id_credits_transfer_put**
+> TransferredCredits users_user_id_credits_transfer_put(credits, user_id)
 
 Transfer credits
 
@@ -205,23 +314,23 @@ configuration.api_key['Authorization'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.UsersApi(swagger_client.ApiClient(configuration))
-user_id = 56 # int | The ID of the user to transfer credits to
 credits = 56 # int | 
+user_id = 56 # int | The ID of the user to transfer credits to
 
 try:
     # Transfer credits
-    api_response = api_instance.users_user_id_credits_transfer_patch(user_id, credits)
+    api_response = api_instance.users_user_id_credits_transfer_put(credits, user_id)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling UsersApi->users_user_id_credits_transfer_patch: %s\n" % e)
+    print("Exception when calling UsersApi->users_user_id_credits_transfer_put: %s\n" % e)
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **user_id** | **int**| The ID of the user to transfer credits to | 
  **credits** | **int**|  | 
+ **user_id** | **int**| The ID of the user to transfer credits to | 
 
 ### Return type
 
@@ -238,12 +347,12 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **users_user_id_credits_withdraw_patch**
-> User users_user_id_credits_withdraw_patch(user_id, credits)
+# **users_user_id_credits_withdraw_put**
+> User users_user_id_credits_withdraw_put(credits, user_id)
 
 Widthdraw users credits
 
-Widthdraw users credits. A user can only withdraw as many credits as she currently has, if more than available are attempted to withdraw, an error is returned and no withdrawl performed. This can only be done by the logged in user
+Widthdraw users credits. A user can only withdraw as many credits as she currently has, if more than available are attempted to withdraw, an error is returned and no withdrawl performed. This can only be done by the logged in user or a admin.
 
 ### Example
 ```python
@@ -261,23 +370,23 @@ configuration.api_key['Authorization'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.UsersApi(swagger_client.ApiClient(configuration))
-user_id = 56 # int | The ID of the user for which the credits should be changed
 credits = 56 # int | 
+user_id = 56 # int | The ID of the user for which the credits should be changed
 
 try:
     # Widthdraw users credits
-    api_response = api_instance.users_user_id_credits_withdraw_patch(user_id, credits)
+    api_response = api_instance.users_user_id_credits_withdraw_put(credits, user_id)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling UsersApi->users_user_id_credits_withdraw_patch: %s\n" % e)
+    print("Exception when calling UsersApi->users_user_id_credits_withdraw_put: %s\n" % e)
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **user_id** | **int**| The ID of the user for which the credits should be changed | 
  **credits** | **int**|  | 
+ **user_id** | **int**| The ID of the user for which the credits should be changed | 
 
 ### Return type
 
@@ -317,7 +426,7 @@ configuration.api_key['Authorization'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.UsersApi(swagger_client.ApiClient(configuration))
-user_id = 56 # int | The user ID that to perform the operation on
+user_id = 56 # int | The ID of the user to be deleted
 
 try:
     # Delete user
@@ -331,7 +440,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **user_id** | **int**| The user ID that to perform the operation on | 
+ **user_id** | **int**| The ID of the user to be deleted | 
 
 ### Return type
 
@@ -371,7 +480,7 @@ configuration.api_key['Authorization'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.UsersApi(swagger_client.ApiClient(configuration))
-user_id = 56 # int | The user ID that to perform the operation on
+user_id = 56 # int | The user ID that needs to be fetched
 
 try:
     # Get user by user ID
@@ -385,7 +494,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **user_id** | **int**| The user ID that to perform the operation on | 
+ **user_id** | **int**| The user ID that needs to be fetched | 
 
 ### Return type
 
@@ -402,8 +511,8 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **users_user_id_password_patch**
-> User users_user_id_password_patch(user_id, password, passwordnew, passwordrepeat)
+# **users_user_id_password_put**
+> User users_user_id_password_put(password, passwordnew, passwordrepeat, user_id)
 
 Change password for currently logged in user.
 
@@ -425,27 +534,27 @@ configuration.api_key['Authorization'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.UsersApi(swagger_client.ApiClient(configuration))
-user_id = 56 # int | The ID of the user for which the password should be changed
 password = 'password_example' # str | 
 passwordnew = 'passwordnew_example' # str | 
 passwordrepeat = 'passwordrepeat_example' # str | 
+user_id = 56 # int | The ID of the user for which the password should be changed
 
 try:
     # Change password for currently logged in user.
-    api_response = api_instance.users_user_id_password_patch(user_id, password, passwordnew, passwordrepeat)
+    api_response = api_instance.users_user_id_password_put(password, passwordnew, passwordrepeat, user_id)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling UsersApi->users_user_id_password_patch: %s\n" % e)
+    print("Exception when calling UsersApi->users_user_id_password_put: %s\n" % e)
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **user_id** | **int**| The ID of the user for which the password should be changed | 
  **password** | **str**|  | 
  **passwordnew** | **str**|  | 
  **passwordrepeat** | **str**|  | 
+ **user_id** | **int**| The ID of the user for which the password should be changed | 
 
 ### Return type
 
@@ -462,8 +571,8 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **users_user_id_resetpassword_patch**
-> User users_user_id_resetpassword_patch(user_id, passwordnew, passwordrepeat)
+# **users_user_id_resetpassword_put**
+> User users_user_id_resetpassword_put(passwordnew, passwordrepeat, user_id)
 
 Set password for user ID
 
@@ -485,25 +594,25 @@ configuration.api_key['Authorization'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.UsersApi(swagger_client.ApiClient(configuration))
-user_id = 56 # int | The ID of the user for which the password should be changed
 passwordnew = 'passwordnew_example' # str | 
 passwordrepeat = 'passwordrepeat_example' # str | 
+user_id = 56 # int | The ID of the user for which the password should be changed
 
 try:
     # Set password for user ID
-    api_response = api_instance.users_user_id_resetpassword_patch(user_id, passwordnew, passwordrepeat)
+    api_response = api_instance.users_user_id_resetpassword_put(passwordnew, passwordrepeat, user_id)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling UsersApi->users_user_id_resetpassword_patch: %s\n" % e)
+    print("Exception when calling UsersApi->users_user_id_resetpassword_put: %s\n" % e)
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **user_id** | **int**| The ID of the user for which the password should be changed | 
  **passwordnew** | **str**|  | 
  **passwordrepeat** | **str**|  | 
+ **user_id** | **int**| The ID of the user for which the password should be changed | 
 
 ### Return type
 

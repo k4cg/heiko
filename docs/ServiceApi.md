@@ -1,11 +1,10 @@
 # swagger_client.ServiceApi
 
-All URIs are relative to *https://localhost:8443/v0*
+All URIs are relative to *https://maas.intern.k4cg.org/v0*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**service_stats_get**](ServiceApi.md#service_stats_get) | **GET** /service/stats | Total service stats
-
 
 # **service_stats_get**
 > ServiceStats service_stats_get()
