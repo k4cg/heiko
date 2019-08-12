@@ -1,9 +1,10 @@
 
 import getpass
 from heiko.utils import log
-from nfc import mnfc
 
 def nfc_init():
+    global mnfc
+    from nfc import mnfc
     mnfc.init()
 
 def nfc_read():
