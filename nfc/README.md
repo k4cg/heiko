@@ -1,7 +1,7 @@
 Requirements
 ============
 
-sudo apt-get install libnfc-dev libfreefare-dev
+sudo apt-get install  python3-dev python3-distutils build-essential libnfc-dev libfreefare-dev
 
 Build
 =====
