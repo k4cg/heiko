@@ -32,7 +32,12 @@ def delete_item(auth, client):
 
     item_name = client.items_item_id_get(itemid).to_dict()["name"]
 
-    really_delete = input("Do you really want to delete %s? (y/n): " % item_name).lower()[0]
+    try:
+        really_delete = input("Do you really want to delete %s? (y/n): " % item_name).lower()[0]
+    except IndexError:
+        really_delete = 'n'
+
+
 
     if really_delete != 'y':
         log("Aborted")
