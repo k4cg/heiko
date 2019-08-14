@@ -1,5 +1,3 @@
-
-import getpass
 from heiko.utils import log
 
 def nfc_init():
