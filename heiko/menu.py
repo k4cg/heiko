@@ -15,12 +15,12 @@ from heiko.nfc import nfc_read, nfc_write
 from datetime import datetime, timedelta
 
 ### User Menu Mapping
-USER_KEY_INSERT_COINS = 1
-USER_KEY_SHOW_STATS = 2
-USER_KEY_ADMINISTRATION = 3
-USER_KEY_CHANGE_PASSWORD = 4
-USER_KEY_EXIT = 5
-USER_KEY_NFC = "N"
+USER_KEY_INSERT_COINS = "i"
+USER_KEY_SHOW_STATS = "s"
+USER_KEY_ADMINISTRATION = "a"
+USER_KEY_CHANGE_PASSWORD = "p"
+USER_KEY_EXIT = "x"
+USER_KEY_NFC = "n"
 USER_KEY_HELP = "?"
 
 user_actions = {
@@ -35,19 +35,18 @@ user_actions = {
 
 consumables = {}
 
-
 ### Admin Menu Mapping
-ADMIN_KEY_LIST_ITEMS_STATS = 1
-ADMIN_KEY_LIST_USERS = 2
-ADMIN_KEY_CREATE_USER = 3
-ADMIN_KEY_CREATE_ITEM = 4
-ADMIN_KEY_DELETE_ITEM = 5
-ADMIN_KEY_RESET_USER_PASSWORD = 6
-ADMIN_KEY_SHOW_SERVICE_STATS = 7
-ADMIN_KEY_RESET_CREDITS = 8
-ADMIN_KEY_EXIT = 9
-ADMIN_KEY_DELETE_USER = 10
-ADMIN_KEY_MIGRATE_USER = 11
+ADMIN_KEY_LIST_ITEMS_STATS = "l"
+ADMIN_KEY_LIST_USERS = "u"
+ADMIN_KEY_CREATE_USER = "cu"
+ADMIN_KEY_CREATE_ITEM = "ci"
+ADMIN_KEY_DELETE_ITEM = "di"
+ADMIN_KEY_RESET_USER_PASSWORD = "ru"
+ADMIN_KEY_SHOW_SERVICE_STATS = "ss"
+ADMIN_KEY_RESET_CREDITS = "r"
+ADMIN_KEY_EXIT = "x"
+ADMIN_KEY_DELETE_USER = "du"
+ADMIN_KEY_MIGRATE_USER = "m"
 ADMIN_KEY_HELP = "?"
 
 admin_actions = {
@@ -90,6 +89,10 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
             option = USER_KEY_HELP
         elif optionInput.isnumeric():
             option = int(optionInput)
+        elif not optionInput in user_actions.keys():
+            os.system('clear')
+            banner(auth)
+            option = USER_KEY_HELP
         else:
             option = optionInput
     except EOFError:
@@ -190,7 +193,7 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_he
             banner(auth)
             show_help(items_client, admin=True)
 
-        option = int(input(">>> "))
+        option = input(">>> ")
     except ValueError:
         os.system('clear')
         banner(auth)
@@ -340,17 +343,12 @@ def show_help(items_client, admin=False):
         # Reset consumables, to avoid stale entries:
         consumables.clear()
 
-        # Assume that actions start with 1
-        # and use the next free number for the consumables
-        # FIXME: Use characters for non-cosume actions?
-        action_key = len(actions)
-
         try:
             for item in items_client.items_get():
                 item_dict = item.to_dict()
+                action_key = item_dict["id"]
                 consumables.update({action_key: item_dict})
                 actions.update({action_key: "Consume " + item_dict['name']})
-                action_key += 1
         except swagger_client.rest.ApiException:
             log("Could not get items from the database.",serv="ERROR")
 
