@@ -87,9 +87,7 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
             os.system('clear')
             banner(auth)
             option = USER_KEY_HELP
-        elif optionInput.isnumeric():
-            option = int(optionInput)
-        elif not optionInput in user_actions.keys():
+        elif not optionInput in user_actions.keys() and not optionInput in consumables.keys():
             os.system('clear')
             banner(auth)
             option = USER_KEY_HELP
@@ -346,14 +344,14 @@ def show_help(items_client, admin=False):
         try:
             for item in items_client.items_get():
                 item_dict = item.to_dict()
-                action_key = item_dict["id"]
+                action_key = str(item_dict["id"])
                 consumables.update({action_key: item_dict})
                 actions.update({action_key: "Consume " + item_dict['name']})
         except swagger_client.rest.ApiException:
             log("Could not get items from the database.",serv="ERROR")
 
     log("Available actions:")
-    for key in actions.keys():
+    for key in sorted(actions.keys()):
         log("[%s] %s" % (key, actions[key]))
 
     return True
