@@ -86,6 +86,9 @@ static PyObject* mnfc_deinit(PyObject* self, PyObject* args)
 
 static PyObject* mnfc_read(PyObject* self, PyObject* args)
 {
+	if(!device)
+		return Py_BuildValue("issy", 10, "", "", 0);
+	
 	int ret = 0;
 	#define MAX_SECS 16
 	#define MAX_BLOCKS MAX_SECS*3
@@ -188,8 +191,10 @@ Py_END_ALLOW_THREADS
 
 static PyObject* mnfc_write(PyObject* self, PyObject* args)
 {
+	if(!device)
+		return Py_BuildValue("i", 10);
+
 	int ret = 0;
-	
 	int secStart;
 	int secNum;
 	const char* uid;
