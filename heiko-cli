@@ -35,7 +35,7 @@ if __name__ == '__main__':
     while is_logged_in is False:
 
         auth_client = maas_builder.build_auth_api_client()
-        is_logged_in, auth = login(auth_client, cfgobj)
+        is_logged_in, auth = login(maas_builder, auth_client, cfgobj)
 
         if is_logged_in is False:
             continue

@@ -2,6 +2,11 @@ import time
 import getpass
 import os
 import urllib3
+import select
+import sys
+import base64
+import json
+import binascii
 
 import swagger_client
 from heiko.items import list_items_stats, consume_item, create_item, delete_item
@@ -10,7 +15,7 @@ from heiko.service import show_service_stats
 from heiko.utils import log
 from heiko.voice import say, greet_user
 from heiko.migrate import migrate_user
-from heiko.nfc import nfc_read, nfc_write
+from heiko.nfc import nfc_detect, nfc_read, nfc_write
 
 from datetime import datetime, timedelta
 
@@ -127,7 +132,7 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         if not cfgobj["nfc"]["enable"]:
             log("NFC is disabled")
             return True, False
-        uid = nfc_read()
+        uid = nfc_detect()
         if uid is not None:
             ans = input("overwrite card? [yN] ")
             if ans != "y":
@@ -357,7 +362,7 @@ def show_help(items_client, admin=False):
     return True
 
 
-def login(auth_client, cfgobj):
+def login(maas_builder, auth_client, cfgobj):
     """
     Shows banner, asks user to authenticate via username/password
     and creates auth token that we reuse after auth was successful once.
@@ -371,26 +376,70 @@ def login(auth_client, cfgobj):
     welcome_banner()
     log("Please authenticate yourself!")
 
+    token = ""
+    user = ""
+    password = ""
     try:
-        user = input('User: ')
-        password = getpass.getpass('Password: ')
+        print("User: ", end="", flush=True)
+        uid = ""
+        while sys.stdin not in select.select([sys.stdin], [], [], 0)[0]:
+            uid = nfc_detect()
+            if uid:
+                break
+            time.sleep(0.2)
+        if uid:
+            token = nfc_read(uid)
+        else:
+            user = sys.stdin.readline().strip()
+            password = getpass.getpass('Password: ')
     except EOFError:
         say(cfgobj, "error")
         return is_logged_in, auth
 
-    try:
-        auth = auth_client.auth_login_post(user, password).to_dict()
-        is_logged_in = True
-        greet_user(cfgobj, auth["user"]["username"])
-    except swagger_client.rest.ApiException:
-        say(cfgobj, "error")
-        log("Wrong username and/or password!",serv="ERROR")
-        time.sleep(1)
-    except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError):
-        say(cfgobj, "error")
-        log("Connection to backend was refused!",serv="ERROR")
-        time.sleep(5)
+    if token:
+        t = token.split(".")[1]
+        try:
+            userdict = json.loads(base64.b64decode(t + "="*(4-len(t)%4)))
+        except json.JSONDecodeError:
+            say(cfgobj, "error")
+            log("Token json error!",serv="ERROR")
+            time.sleep(1)
+        except binascii.Error:
+            say(cfgobj, "error")
+            log("Token base64 error!",serv="ERROR")
+            time.sleep(1)        
+            
+        auth = {"token": token, "user": userdict}
 
+        try:
+            users_client = maas_builder.build_users_client(auth["token"])
+            tmp = users_client.users_user_id_get(userdict["id"]).to_dict()
+            for key in tmp:
+                auth["user"][key] = tmp[key]
+            is_logged_in = True
+            greet_user(cfgobj, auth["user"]["username"])
+        except swagger_client.rest.ApiException:
+            say(cfgobj, "error")
+            log("Invalid token!",serv="ERROR")
+            time.sleep(1)
+        except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError):
+            say(cfgobj, "error")
+            log("Connection to backend was refused!",serv="ERROR")
+            time.sleep(5)
+    else:
+        try:
+            auth = auth_client.auth_login_post(user, password).to_dict()
+            print(auth)
+            is_logged_in = True
+            greet_user(cfgobj, auth["user"]["username"])
+        except swagger_client.rest.ApiException:
+            say(cfgobj, "error")
+            log("Wrong username and/or password!",serv="ERROR")
+            time.sleep(1)
+        except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError):
+            say(cfgobj, "error")
+            log("Connection to backend was refused!",serv="ERROR")
+            time.sleep(5)
 
     return is_logged_in, auth
 

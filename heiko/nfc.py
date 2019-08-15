@@ -5,11 +5,16 @@ def nfc_init():
     from nfc import mnfc
     mnfc.init()
 
-def nfc_read():
+def nfc_detect():
     v,uid,ttype,dat = mnfc.read(1,1)
     if v == 0:
         log("found " + ttype + " with uid " + uid)
         return uid
+
+def nfc_read(uid):
+    v,ruid,ttype,dat = mnfc.read(1,15)
+    if ruid == uid:
+        return dat.decode().strip("\x00")
 
 def nfc_write(uid, token):
     datLen = 15*3*16
