@@ -145,16 +145,10 @@ def create_item(auth, client):
     """
 
     name = input("Name of Drink: ")
+
+    # TODO: Remove this? MaaS does not seem to mind non-alphanumerical charaters...
     if name.isalnum() is False:
         log("Item name not valid. Please be alphanumerical.", serv="ERROR")
-        return False
-
-    if len(name) > 32:
-        log("Name of item is too long (max: 32)", serv="ERROR")
-        return False
-
-    if len(name) < 3:
-        log("Name of item is too short (min: 3)", serv="ERROR")
         return False
 
     cost = float(input("Price in EUR (i.e. 1 or 1.20): ")) * 100
@@ -166,8 +160,8 @@ def create_item(auth, client):
     try:
         client.items_post(name, int(cost))
         log("Successfully added new item with name %s and cost %s" % (name, float(cost) / 100 ), serv="SUCCESS")
-    except:
-        log("Item could not be created in the backend", serv="ERROR")
+    except swagger_client.rest.ApiException as api_expception:
+        log("Item could not be created in the backend: " + api_expception.body, serv="ERROR")
         return False
 
     return True
