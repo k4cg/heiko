@@ -28,10 +28,10 @@ mode = sys.argv[1]
 
 mnfc.init()
 
-if mode == "s":
+if mode == "s": # scan for cards and read data
 	try:
 		while True:
-			v,uid,ttype,dat = mnfc.read(1,15)
+			v,uid,ttype,dat = mnfc.read(1,15,bytes([0xff,0xff,0xff,0xff,0xff,0xff]),False)
 			if v == 0:
 				print("uid:", uid)
 				print("type:", ttype)
@@ -50,8 +50,16 @@ if mode == "s":
 		print("\nexiting ...")
 		mnfc.deinit()
 
-elif mode == "w":
+elif mode == "w": # test write
 	dat = bytes(range(0,16*3))*15
-	mnfc.write(1, 15, "7b3a6f1f", dat)
+	mnfc.write(1, 15, "7b3a6f1f", dat, bytes([0xff,0xff,0xff,0xff,0xff,0xff]), False)
 
+elif mode == "g": # get sector 0
+	v,uid,ttype,dat = mnfc.read(0,1, bytes([0xff,0xff,0xff,0xff,0xff,0xff]), True)
+	print("uid:", uid)
+	for i in range(0,len(dat)):
+		if i % 16 == 0:
+			print()
+		print("%02x " % dat[i], end='')
+	print()
 
