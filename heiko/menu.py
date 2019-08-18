@@ -110,8 +110,13 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         say(cfgobj, "cheers")
 
     if option == USER_KEY_INSERT_COINS:
-        add_credits(auth, users_client)
-        say(cfgobj, "transaction_success")
+        if ("accounting" not in cfgobj) or \
+                ("userCanAddCredits" not in cfgobj["accounting"]) or \
+                (cfgobj["accounting"]["userCanAddCredits"]):
+            add_credits(auth, users_client)
+            say(cfgobj, "transaction_success")
+        else:
+            log("not allowed", serv="ERROR")
 
     if option == USER_KEY_SHOW_STATS:
         show_user_stats(auth, users_client)
@@ -133,13 +138,13 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         change_password(auth, users_client)
 
     if option == USER_KEY_NFC:
-    	username = auth["user"]["username"]
-    	log("re-Login required:")
-    	password = getpass.getpass('Password: ')
-    	nfc_format_card(auth_client, username, password)
+        username = auth["user"]["username"]
+        log("re-Login required:")
+        password = getpass.getpass('Password: ')
+        nfc_format_card(auth_client, username, password)
 
     if option == USER_KEY_HELP:
-        show_help(items_client, admin=False)
+        show_help(items_client, admin=False, cfgobj=cfgobj)
 
     if option == USER_KEY_EXIT:
         return user_exit(cfgobj)
@@ -173,7 +178,7 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
         if draw_help is True:
             os.system('clear')
             banner(auth)
-            show_help(items_client, admin=True)
+            show_help(items_client, admin=True, cfgobj=cfgobj)
 
         option = input(">>> ")
     except ValueError:
@@ -225,7 +230,7 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
     if option == ADMIN_KEY_DELETE_USER:
         delete_user(auth, users_client)
     if option == ADMIN_KEY_HELP:
-        show_help(items_client, admin=True)
+        show_help(items_client, admin=True, cfgobj=cfgobj)
 
     return False, False
 
@@ -317,7 +322,7 @@ def banner(auth=None):
     return True
 
 
-def show_help(items_client, admin=False):
+def show_help(items_client, admin=False, cfgobj=None):
     """
     Shows the basic navigation to the user.
 
@@ -330,6 +335,11 @@ def show_help(items_client, admin=False):
         actions = admin_actions
     else:
         actions = user_actions.copy()
+        if cfgobj is not None:
+            if ("accounting" in cfgobj) and \
+                    ("userCanAddCredits" in cfgobj["accounting"]) and \
+                    (not cfgobj["accounting"]["userCanAddCredits"]):
+                del actions[USER_KEY_INSERT_COINS]
 
         # Reset consumables, to avoid stale entries:
         consumables.clear()

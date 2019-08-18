@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
         os.system('clear')
         banner(auth)
-        show_help(items_client)
+        show_help(items_client, False, cfgobj)
 
         # When autenticated go to menu
         is_exit = False
