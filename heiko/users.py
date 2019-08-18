@@ -218,6 +218,30 @@ def reset_credits(auth, client):
         log("Could not set the credits for user %s to %.2f Euro. Backend error." % (user_to_reset["username"], new_credits), serv="ERROR")
         return False
 
+def add_credits_admin(auth, client):
+    """
+    Add credits by admin
+
+    :auth: dict
+    :client: users_client object
+    :returns: bool
+    """
+    log("What user you want to add the credits for?")
+    user = find_user_by_username(auth, client)
+    if user is False:
+        log("Could not find user.", serv="ERROR")
+        return False
+
+    add_credits = float(input("Paid amount (EUR): ")) * 100
+
+    try:
+        r = client.users_user_id_credits_add_patch(user["id"], int(add_credits))
+        auth["user"]["credits"] = r.to_dict()["credits"]
+        log("Successfully set the credits for user %s to %.2f Euro" % (user["username"], auth["user"]["credits"] / 100), serv="SUCCESS")
+        return True
+    except:
+        log("Could not set the credits for user %s to %.2f Euro. Backend error." % (user_to_reset["username"], new_credits), serv="ERROR")
+        return False
         
 def reset_user_password(auth, client):
     """

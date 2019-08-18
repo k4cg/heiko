@@ -10,7 +10,7 @@ import binascii
 
 import swagger_client
 from heiko.items import list_items_stats, consume_item, create_item, delete_item
-from heiko.users import add_credits, list_users, create_user, create_user_nfc, reset_user_password, reset_user_nfc, delete_user, reset_credits, change_password, show_user_stats
+from heiko.users import add_credits, add_credits_admin, list_users, create_user, create_user_nfc, reset_user_password, reset_user_nfc, delete_user, reset_credits, change_password, show_user_stats
 from heiko.service import show_service_stats
 from heiko.utils import log
 from heiko.voice import say, greet_user
@@ -49,6 +49,7 @@ ADMIN_KEY_RESET_USER_PASSWORD = "ru"
 ADMIN_KEY_RESET_USER_NFC = "run"
 ADMIN_KEY_SHOW_SERVICE_STATS = "ss"
 ADMIN_KEY_RESET_CREDITS = "r"
+ADMIN_KEY_ADD_CREDITS = "a"
 ADMIN_KEY_EXIT = "x"
 ADMIN_KEY_DELETE_USER = "du"
 ADMIN_KEY_MIGRATE_USER = "m"
@@ -65,6 +66,7 @@ admin_actions = {
     ADMIN_KEY_RESET_USER_NFC: "Reset password + setup NFC card for user",
     ADMIN_KEY_SHOW_SERVICE_STATS: "Show service stats",
     ADMIN_KEY_RESET_CREDITS: "Reset credits from user",
+    ADMIN_KEY_ADD_CREDITS: "Add credits for user",
     ADMIN_KEY_EXIT: "Exit",
     ADMIN_KEY_DELETE_USER: "Delete user",
     ADMIN_KEY_MIGRATE_USER: "Migrate user from old Matomat",
@@ -210,6 +212,9 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
 
     if option == ADMIN_KEY_RESET_CREDITS:
         reset_credits(auth, users_client)
+
+    if option == ADMIN_KEY_ADD_CREDITS:
+        add_credits_admin(auth, users_client)
 
     if option == ADMIN_KEY_EXIT:
         return admin_exit(cfgobj)
