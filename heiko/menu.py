@@ -90,7 +90,7 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
             os.system('clear')
             banner(auth)
             option = USER_KEY_HELP
-        elif not optionInput in user_actions.keys() and not optionInput in consumables.keys():
+        elif optionInput not in user_actions.keys() and optionInput not in consumables.keys():
             os.system('clear')
             banner(auth)
             option = USER_KEY_HELP
