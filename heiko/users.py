@@ -1,8 +1,11 @@
 import getpass
+import random
+import string
 import swagger_client
 from tabulate import tabulate
 
 from heiko.utils import log
+from heiko.nfc import nfc_detect, nfc_read, nfc_write, nfc_format_card
 
 def find_user_by_username(auth, client):
     """
@@ -122,6 +125,43 @@ def create_user(auth, client):
     except:
         log("Error creating user", serv="ERROR")
         return False
+
+def create_user_nfc(auth_client, user_client):
+    """
+    Asks administrator for details and
+    creates a new NFC user in the database
+    (= user with random dummy password and NFC token).
+
+    :auth: dict
+    :returns: bool
+    """
+
+    name = input("Username: ")
+
+    if len(name) < 3:
+        log("Username too short (>=3).", serv="Error")
+        return False
+
+    if name.isalnum() is False:
+        log("Username not valid. Please be alphanumerical.", serv="Error")
+        return False
+
+    admin = input("Admin? (y/n): ").lower()[0]
+
+    admin = 0
+    if admin is 'y':
+        admin = 1
+
+    password = "".join(random.choice(string.ascii_letters + "0123456789") for i in range(23))
+
+    try:
+        user_client.users_post(name, password, password, admin)
+    except:
+        log("Error creating user", serv="ERROR")
+        return False
+
+    return nfc_format_card(auth_client, name, password)
+    
 
 def delete_user(auth, client):
     """

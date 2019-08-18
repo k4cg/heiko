@@ -10,7 +10,7 @@ import binascii
 
 import swagger_client
 from heiko.items import list_items_stats, consume_item, create_item, delete_item
-from heiko.users import add_credits, list_users, create_user, reset_user_password, delete_user, reset_credits, change_password, show_user_stats
+from heiko.users import add_credits, list_users, create_user, create_user_nfc, reset_user_password, delete_user, reset_credits, change_password, show_user_stats
 from heiko.service import show_service_stats
 from heiko.utils import log
 from heiko.voice import say, greet_user
@@ -42,6 +42,7 @@ consumables = {}
 ADMIN_KEY_LIST_ITEMS_STATS = "l"
 ADMIN_KEY_LIST_USERS = "u"
 ADMIN_KEY_CREATE_USER = "cu"
+ADMIN_KEY_CREATE_USER_NFC = "cun"
 ADMIN_KEY_CREATE_ITEM = "ci"
 ADMIN_KEY_DELETE_ITEM = "di"
 ADMIN_KEY_RESET_USER_PASSWORD = "ru"
@@ -56,6 +57,7 @@ admin_actions = {
     ADMIN_KEY_LIST_ITEMS_STATS: "Show drinks stats",
     ADMIN_KEY_LIST_USERS: "Show users",
     ADMIN_KEY_CREATE_USER: "Create user",
+    ADMIN_KEY_CREATE_USER_NFC: "Create user with NFC card and dummy random password",
     ADMIN_KEY_CREATE_ITEM: "Create drink",
     ADMIN_KEY_DELETE_ITEM: "Delete drink",
     ADMIN_KEY_RESET_USER_PASSWORD: "Reset password for user",
@@ -116,7 +118,7 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
 
         draw_help = True
         while is_exit is False:
-            is_exit, draw_help = admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_help=draw_help)
+            is_exit, draw_help = admin_menu(auth, auth_client, items_client, users_client, service_client, cfgobj, draw_help=draw_help)
 
         # when exit was executed, draw normal user help again
         os.system('clear')
@@ -146,7 +148,7 @@ def user_exit(cfgobj):
     return False, True
 
 
-def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_help):
+def admin_menu(auth, auth_client, items_client, users_client, service_client, cfgobj, draw_help):
     """
     Shows the menu to the admin, clears screen, draws the navigation screen
 
@@ -185,6 +187,9 @@ def admin_menu(auth, items_client, users_client, service_client, cfgobj, draw_he
 
     if option == ADMIN_KEY_CREATE_USER:
         create_user(auth, users_client)
+
+    if option == ADMIN_KEY_CREATE_USER_NFC:
+        create_user_nfc(auth_client, users_client)
 
     if option == ADMIN_KEY_CREATE_ITEM:
         create_item(auth, items_client)

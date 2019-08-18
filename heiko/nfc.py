@@ -34,11 +34,11 @@ def nfc_format_card(auth_client, username, password):
     if uid is not None:
         ans = input("overwrite card? [yN] ")
         if ans != "y":
-            return True, False
+            return False
         ans = input("token lifetime in days? ")
         if not ans.isnumeric():
             log("invalid lifetime")
-            return True, False
+            return False
         days = int(ans)
         token = ""
         try:
@@ -48,11 +48,13 @@ def nfc_format_card(auth_client, username, password):
             token = auth2["token"]
         except swagger_client.rest.ApiException:
             log("Wrong password!",serv="ERROR")
-            return True, False
+            return False
         except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError):
             log("Connection to backend was refused!",serv="ERROR")
-            return True, False
+            return False
         validstamp = (datetime.now()+timedelta(days=days)).timestamp()
         nfc_write(uid, token)
+        return True
+    return False
 
 
