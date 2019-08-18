@@ -66,12 +66,14 @@ def list_items_stats(auth, client):
         log("Could not show items from the database.",serv="ERROR")
 
     it = []
+    revenue = 0.0
     for i in items:
         d = i.to_dict()
         it.append([d["id"], float(d["cost"])/100, d["name"], d["consumed"]])
+        revenue += float(d["cost"])/100 * float(d["consumed"])
 
     log(tabulate(it, headers=["ID", "Cost (EUR)", "Drink", "Consumptions"], tablefmt="presto"))
-
+    log("total revenue (EUR): %.2f" % revenue)
 
     return True
 
