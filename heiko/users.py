@@ -218,6 +218,7 @@ def reset_credits(auth, client):
         log("Could not set the credits for user %s to %.2f Euro. Backend error." % (user_to_reset["username"], new_credits), serv="ERROR")
         return False
 
+        
 def reset_user_password(auth, client):
     """
     Gives an admin the capability to reset password for a specific user.
@@ -244,6 +245,33 @@ def reset_user_password(auth, client):
     except:
         log("Could not reset password for user %s with id %s. Error by backend" % (user_to_reset["username"], user_to_reset["id"]), serv="ERROR")
         return False
+
+def reset_user_nfc(auth, auth_client, user_client):
+    """
+    Gives an admin the capability to reset password for a specific user and write new nfc token.
+    It asks for username, trys to find userid by name and then asks for new password.
+
+    :auth: dict
+    :client: users_client object
+    :returns: bool
+    """
+    log("What user you want to reset the password for?")
+    user_to_reset = find_user_by_username(auth, user_client)
+
+    if user_to_reset is False:
+        log("Could not find user.", serv="ERROR")
+        return False
+
+    password = "".join(random.choice(string.ascii_letters + "0123456789") for i in range(23))
+
+    try:
+        user_client.users_user_id_resetpassword_patch(user_to_reset["id"], password, password)
+        log("Successfully reset password for user %s with id %s." % (user_to_reset["username"], user_to_reset["id"]), serv="SUCCESS")
+    except:
+        log("Could not reset password for user %s with id %s. Error by backend" % (user_to_reset["username"], user_to_reset["id"]), serv="ERROR")
+        return False
+
+    return nfc_format_card(auth_client, user_to_reset["username"], password)
 
 def change_password(auth, client):
     """

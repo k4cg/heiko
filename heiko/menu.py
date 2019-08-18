@@ -10,7 +10,7 @@ import binascii
 
 import swagger_client
 from heiko.items import list_items_stats, consume_item, create_item, delete_item
-from heiko.users import add_credits, list_users, create_user, create_user_nfc, reset_user_password, delete_user, reset_credits, change_password, show_user_stats
+from heiko.users import add_credits, list_users, create_user, create_user_nfc, reset_user_password, reset_user_nfc, delete_user, reset_credits, change_password, show_user_stats
 from heiko.service import show_service_stats
 from heiko.utils import log
 from heiko.voice import say, greet_user
@@ -46,6 +46,7 @@ ADMIN_KEY_CREATE_USER_NFC = "cun"
 ADMIN_KEY_CREATE_ITEM = "ci"
 ADMIN_KEY_DELETE_ITEM = "di"
 ADMIN_KEY_RESET_USER_PASSWORD = "ru"
+ADMIN_KEY_RESET_USER_NFC = "run"
 ADMIN_KEY_SHOW_SERVICE_STATS = "ss"
 ADMIN_KEY_RESET_CREDITS = "r"
 ADMIN_KEY_EXIT = "x"
@@ -61,6 +62,7 @@ admin_actions = {
     ADMIN_KEY_CREATE_ITEM: "Create drink",
     ADMIN_KEY_DELETE_ITEM: "Delete drink",
     ADMIN_KEY_RESET_USER_PASSWORD: "Reset password for user",
+    ADMIN_KEY_RESET_USER_NFC: "Reset password + setup NFC card for user",
     ADMIN_KEY_SHOW_SERVICE_STATS: "Show service stats",
     ADMIN_KEY_RESET_CREDITS: "Reset credits from user",
     ADMIN_KEY_EXIT: "Exit",
@@ -199,6 +201,9 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
 
     if option == ADMIN_KEY_RESET_USER_PASSWORD:
         reset_user_password(auth, users_client)
+
+    if option == ADMIN_KEY_RESET_USER_NFC:
+        reset_user_nfc(auth, auth_client, users_client)
 
     if option == ADMIN_KEY_SHOW_SERVICE_STATS:
         show_service_stats(auth, service_client)
@@ -361,7 +366,7 @@ def login(maas_builder, auth_client, cfgobj):
         print("User: ", end="", flush=True)
         uid = ""
         while sys.stdin not in select.select([sys.stdin], [], [], 0)[0]:
-            uid = nfc_detect()
+            uid, header = nfc_detect()
             if uid:
                 break
             time.sleep(0.2)

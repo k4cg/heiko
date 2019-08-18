@@ -10,27 +10,41 @@ def nfc_init():
 def nfc_detect():
     key = bytes([0xff,0xff,0xff,0xff,0xff,0xff])
     v,uid,ttype,dat = mnfc.read(1,1,key,False)
+    header = ""
+    try:
+        header = dat.decode()
+    except:
+        pass
     if v == 0:
         log("found " + ttype + " with uid " + uid)
-        return uid
+        return uid, header
+    return None, None
 
-def nfc_read(uid):
-    key = bytes([0xff,0xff,0xff,0xff,0xff,0xff])
-    v,ruid,ttype,dat = mnfc.read(1,15,key,False)
+def nfc_read(uid, key=None):
+    if key is None:
+        key = bytes([0xff,0xff,0xff,0xff,0xff,0xff])
+    v,ruid,ttype,dat = mnfc.read(2,14,key,False)
     if ruid == uid:
         return dat.decode().strip("\x00")
 
-def nfc_write(uid, token):
-    key = bytes([0xff,0xff,0xff,0xff,0xff,0xff])
-    datLen = 15*3*16
+def nfc_write(uid, header, token, key=None):
+    if key is None:
+        key = bytes([0xff,0xff,0xff,0xff,0xff,0xff])
+    
+    secLen = 3*16
+    hb = header.encode()
+    hb += b"\x00"*(secLen-len(hb))
+    
+    datLen = 14*secLen
     b = token.encode()
     b += b"\x00"*(datLen-len(b))
-    v = mnfc.write(1,15,uid,b,key,False)
+    
+    v = mnfc.write(1,15,uid,hb+b,key,False)
     if v == 0:
         log("write successful")
         
 def nfc_format_card(auth_client, username, password):
-    uid = nfc_detect()
+    uid, header = nfc_detect()
     if uid is not None:
         ans = input("overwrite card? [yN] ")
         if ans != "y":
@@ -53,8 +67,7 @@ def nfc_format_card(auth_client, username, password):
             log("Connection to backend was refused!",serv="ERROR")
             return False
         validstamp = (datetime.now()+timedelta(days=days)).timestamp()
-        nfc_write(uid, token)
+        nfc_write(uid, "matomat1:" + username + ":", token)
         return True
     return False
-
 
