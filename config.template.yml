@@ -13,4 +13,5 @@ voice:
   watson_endpoint: <endpoint>
 nfc:
   enable: <true/false>
-
+receipt:
+  enable: <true/false>

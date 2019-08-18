@@ -3,9 +3,10 @@
 import random
 import swagger_client
 from tabulate import tabulate
+from datetime import datetime
 
 from heiko.utils import log
-
+from heiko.receipt import receipt_journal
 
 ### ItemsApi Functions
 
@@ -78,7 +79,7 @@ def list_items_stats(auth, client):
     return True
 
 
-def consume_item(auth, client, itemid):
+def consume_item(auth, client, itemid, receipt=False):
     """
     Sends request to the backend that user took 1 item out of the fridge
 
@@ -110,13 +111,12 @@ def consume_item(auth, client, itemid):
         client.items_item_id_consume_patch(itemid)
 
         # TODO: Temp hack to display correct credits in banner
-        cost = float(client.items_item_id_get(itemid).to_dict()["cost"])
+        item = client.items_item_id_get(itemid).to_dict()
+        cost = float(item["cost"])
         auth["user"]["credits"] = auth["user"]["credits"] - cost
 
         log(random.choice(prost_msgs), serv="SUCCESS")
         log("Cost: %.2f Euro" % (cost / 100), serv="SUCCESS")
-
-        return True
 
     except swagger_client.rest.ApiException:
         log("Not enough credits, dude.", serv="ERROR")
@@ -124,6 +124,15 @@ def consume_item(auth, client, itemid):
     except:
         log("Something went wrong, contact developer!", serv="ERROR")
         return False
+
+    if receipt:
+        print(item)
+        receipt_journal(str(datetime.now()) + "\n " + 
+            auth["user"]["username"] + "(" + str(auth["user"]["id"]) + ") " +
+            item["name"] + "(" + str(itemid) + ")\n EUR %.2f, Bal. EUR %.2f\n" % 
+                (cost/100, auth["user"]["credits"]/100))
+
+    return True
 
 def create_item(auth, client):
     """

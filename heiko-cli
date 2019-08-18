@@ -7,6 +7,7 @@ import heiko
 from heiko.menu import user_menu, banner, login, show_help
 from heiko.maassimpleconfig import MaasSimpleConfig
 from heiko.nfc import nfc_init
+from heiko.receipt import receipt_init
 
 # temp for annoying error msg
 import urllib3
@@ -29,6 +30,8 @@ if __name__ == '__main__':
 
     if cfgobj["nfc"]["enable"]:
         nfc_init()
+    if cfgobj["receipt"]["enable"]:
+        receipt_init()
 
     # This is the login loop.
     is_logged_in = False

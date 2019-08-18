@@ -106,7 +106,7 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         return user_exit(cfgobj)
 
     if option in consumables.keys():
-        consume_item(auth, items_client, consumables[option]['id'])
+        consume_item(auth, items_client, consumables[option]['id'], receipt=cfgobj["receipt"]["enable"])
         say(cfgobj, "cheers")
 
     if option == USER_KEY_INSERT_COINS:
