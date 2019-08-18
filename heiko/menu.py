@@ -15,9 +15,7 @@ from heiko.service import show_service_stats
 from heiko.utils import log
 from heiko.voice import say, greet_user
 from heiko.migrate import migrate_user
-from heiko.nfc import nfc_detect, nfc_read, nfc_write
-
-from datetime import datetime, timedelta
+from heiko.nfc import nfc_detect, nfc_read, nfc_format_card
 
 ### User Menu Mapping
 USER_KEY_INSERT_COINS = "i"
@@ -129,35 +127,10 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         change_password(auth, users_client)
 
     if option == USER_KEY_NFC:
-        if not cfgobj["nfc"]["enable"]:
-            log("NFC is disabled")
-            return True, False
-        uid = nfc_detect()
-        if uid is not None:
-            ans = input("overwrite card? [yN] ")
-            if ans != "y":
-                return True, False
-            ans = input("token lifetime in days? ")
-            if not ans.isnumeric():
-                log("invalid lifetime")
-                return True, False
-            days = int(ans)
-            log("re-Login required:")
-            password = getpass.getpass('Password: ')
-            token = ""
-            try:
-                auth2 = auth_client.auth_login_post(
-                    auth["user"]["username"], password,
-                    validityseconds=days*3600*24).to_dict()
-                token = auth2["token"]
-            except swagger_client.rest.ApiException:
-                log("Wrong password!",serv="ERROR")
-                return True, False
-            except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError):
-                log("Connection to backend was refused!",serv="ERROR")
-                return True, False
-            validstamp = (datetime.now()+timedelta(days=days)).timestamp()
-            nfc_write(uid, token)
+    	username = auth["user"]["username"]
+    	log("re-Login required:")
+    	password = getpass.getpass('Password: ')
+    	nfc_format_card(auth_client, username, password)
 
     if option == USER_KEY_HELP:
         show_help(items_client, admin=False)

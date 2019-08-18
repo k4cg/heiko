@@ -1,4 +1,6 @@
 from heiko.utils import log
+from datetime import datetime, timedelta
+
 
 def nfc_init():
     global mnfc
@@ -26,3 +28,31 @@ def nfc_write(uid, token):
     v = mnfc.write(1,15,uid,b,key,False)
     if v == 0:
         log("write successful")
+        
+def nfc_format_card(auth_client, username, password):
+    uid = nfc_detect()
+    if uid is not None:
+        ans = input("overwrite card? [yN] ")
+        if ans != "y":
+            return True, False
+        ans = input("token lifetime in days? ")
+        if not ans.isnumeric():
+            log("invalid lifetime")
+            return True, False
+        days = int(ans)
+        token = ""
+        try:
+            auth2 = auth_client.auth_login_post(
+                username, password,
+                validityseconds=days*3600*24).to_dict()
+            token = auth2["token"]
+        except swagger_client.rest.ApiException:
+            log("Wrong password!",serv="ERROR")
+            return True, False
+        except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError):
+            log("Connection to backend was refused!",serv="ERROR")
+            return True, False
+        validstamp = (datetime.now()+timedelta(days=days)).timestamp()
+        nfc_write(uid, token)
+
+
