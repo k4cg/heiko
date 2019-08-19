@@ -45,7 +45,6 @@ if __name__ == '__main__':
             users_client = maas_builder.build_users_client(auth["token"])
             service_client = maas_builder.build_service_client(auth["token"])
 
-        os.system('clear')
         banner(auth)
         show_help(items_client, False, cfgobj)
 
