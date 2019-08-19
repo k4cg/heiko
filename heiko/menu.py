@@ -92,11 +92,7 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
 
     try:
         optionInput = input(">>> ")
-        if len(optionInput) == 0:
-            banner(auth)
-            option = USER_KEY_HELP
-        elif optionInput not in user_actions.keys() and optionInput not in consumables.keys():
-            banner(auth)
+        if optionInput not in user_actions.keys() and optionInput not in consumables.keys():
             option = USER_KEY_HELP
         else:
             option = optionInput
@@ -128,7 +124,6 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
             is_exit, draw_help = admin_menu(auth, auth_client, items_client, users_client, service_client, cfgobj, draw_help=draw_help)
 
         # when exit was executed, draw normal user help again
-        banner(auth)
         option = USER_KEY_HELP
 
     if option == USER_KEY_CHANGE_PASSWORD:
@@ -141,6 +136,7 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         nfc_format_card(auth_client, username, password)
 
     if option == USER_KEY_HELP:
+        banner(auth)
         show_help(items_client, admin=False, cfgobj=cfgobj)
 
     if option == USER_KEY_EXIT:
@@ -170,16 +166,16 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
         return True, True
 
     try:
-
         # when logged in the first time, show new menue
         if draw_help is True:
             banner(auth)
             show_help(items_client, admin=True, cfgobj=cfgobj)
 
-        option = input(">>> ")
-    except ValueError:
-        banner(auth)
-        option = ADMIN_KEY_HELP
+        optionInput = input(">>> ")
+        if optionInput not in admin_actions.keys():
+            option = ADMIN_KEY_HELP
+        else:
+            option = optionInput
     except EOFError:
         return admin_exit(cfgobj)
 
@@ -224,7 +220,9 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
 
     if option == ADMIN_KEY_DELETE_USER:
         delete_user(auth, users_client)
+
     if option == ADMIN_KEY_HELP:
+        banner(auth)
         show_help(items_client, admin=True, cfgobj=cfgobj)
 
     return False, False
