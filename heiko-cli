@@ -7,16 +7,25 @@ import heiko
 from heiko.menu import user_menu, banner, login, show_help
 from heiko.maassimpleconfig import MaasSimpleConfig
 from heiko.nfc import nfc_init
+from heiko.utils import log
 
 # temp for annoying error msg
 import urllib3
 urllib3.disable_warnings()
 
+
 def sigint_handler(signal, frame):
     print("\n")
     sys.exit(0)
 
+
+def sigalrm_handler(signal, frame):
+    log("\nAuto-logout timer triggered!")
+    sys.exit(1)
+
+
 signal.signal(signal.SIGINT, sigint_handler)
+signal.signal(signal.SIGALRM, sigalrm_handler)
 
 if __name__ == '__main__':
 
@@ -56,4 +65,6 @@ if __name__ == '__main__':
         is_exit = False
         while is_exit is False:
             is_logged_in, is_exit = user_menu(auth, auth_client, items_client, users_client, service_client, cfgobj)
+            # Cancel autologout timer:
+            signal.alarm(0)
 
