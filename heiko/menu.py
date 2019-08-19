@@ -93,11 +93,9 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
     try:
         optionInput = input(">>> ")
         if len(optionInput) == 0:
-            os.system('clear')
             banner(auth)
             option = USER_KEY_HELP
         elif optionInput not in user_actions.keys() and optionInput not in consumables.keys():
-            os.system('clear')
             banner(auth)
             option = USER_KEY_HELP
         else:
@@ -130,7 +128,6 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
             is_exit, draw_help = admin_menu(auth, auth_client, items_client, users_client, service_client, cfgobj, draw_help=draw_help)
 
         # when exit was executed, draw normal user help again
-        os.system('clear')
         banner(auth)
         option = USER_KEY_HELP
 
@@ -176,13 +173,11 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
 
         # when logged in the first time, show new menue
         if draw_help is True:
-            os.system('clear')
             banner(auth)
             show_help(items_client, admin=True, cfgobj=cfgobj)
 
         option = input(">>> ")
     except ValueError:
-        os.system('clear')
         banner(auth)
         option = ADMIN_KEY_HELP
     except EOFError:
@@ -293,6 +288,7 @@ def welcome_banner():
                     When your login does not work - you need to be migrated :)
                      github.com/k4cg/heiko / github.com/k4cg/matomat-service
 """
+    os.system('clear')
     log(logo_banner)
     return True
 
@@ -312,6 +308,7 @@ def banner(auth=None):
 | |  | |/ ___ \| || |_| | |  | |/ ___ \| |
 |_|  |_/_/   \_\_| \___/|_|  |_/_/   \_\_|
 """
+    os.system('clear')
     log(mate_banner)
     if auth is not None:
         if auth["user"]["admin"] is True:
@@ -370,7 +367,6 @@ def login(maas_builder, auth_client, cfgobj):
     is_logged_in = False
     auth = None
 
-    os.system('clear')
     welcome_banner()
     log("Please authenticate yourself!")
 
