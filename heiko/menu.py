@@ -363,8 +363,16 @@ def show_help(items_client, admin=False, cfgobj=None):
             log("Could not get items from the database.",serv="ERROR")
 
     log("Available actions:")
-    for key in sorted(actions.keys()):
-        log("[%s] %s" % (key, actions[key]))
+    tmpKeys = list(actions.keys())
+    keys = {}
+    for key in tmpKeys:
+        if key.isnumeric():
+            k = "%02d" % int(key)
+            keys[k] = key
+        else:
+            keys[key] = key
+    for key in sorted(keys.keys()):
+        log("[%s] %s" % (keys[key], actions[keys[key]]))
 
     return True
 
