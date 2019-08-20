@@ -1,6 +1,7 @@
 
 import escpos.printer
 from escpos.image import EscposImage
+from json import loads, dumps
 
 ### ND77 Printer ###
 class ND77:
@@ -79,3 +80,25 @@ def receipt_init():
 def receipt_journal(text):
     global nd77
     nd77.text(text, journal=True)
+
+def __load():
+	return loads( open("tickets.json", "r").read() )
+def __save(j):
+	f = open("tickets.json", "wt")
+	f.write(dumps(j))
+
+def receipt_ticket_available(name):
+	j = __load()
+	if name in j:
+		if j[name]["cur"] < j[name]["max"]:
+			return True
+
+def receipt_ticket(name):
+	global nd77
+	j = __load()
+	if name in j:
+		if j[name]["cur"] < j[name]["max"]:
+			j[name]["cur"] += 1
+			nd77.ticket(name, j[name]["cur"])
+			return True
+	return False
