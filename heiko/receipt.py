@@ -2,6 +2,7 @@
 import escpos.printer
 from escpos.image import EscposImage
 from json import loads, dumps
+from datetime import datetime
 
 ### ND77 Printer ###
 class ND77:
@@ -58,6 +59,8 @@ class ND77:
     def ticket(self, name, nr):
         self.logo("logo.png")
         self.feed(2)
+        self.size(False,False)
+        self.text(str(datetime.now())+"\n")
         self.size(True,True)
         self.emph(True)
         self.text(name + "\n\n")
