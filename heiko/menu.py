@@ -107,7 +107,6 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         return user_exit(cfgobj)
 
     if option in consumables.keys():
-        print(option)
         ret = consume_item(auth, items_client, consumables[option]['id'], receipt=cfgobj["receipt"]["enable"])
         if ret:
             if consumables[option]["name"].startswith("Essen"):
@@ -353,12 +352,15 @@ def show_help(items_client, admin=False, cfgobj=None):
             for item in items_client.items_get():
                 item_dict = item.to_dict()
                 name = item_dict["name"].replace("Extern","")
+                tail = ""
                 if name.startswith("Essen"):
-                    if not receipt_ticket_available(name):
+                    av = receipt_ticket_available(name)
+                    if not (av > 0):
                         continue
+                    tail += "(noch %d)" % av
                 action_key = str(item_dict["id"])
                 consumables.update({action_key: item_dict})
-                actions.update({action_key: "Consume " + item_dict['name'] + " (EUR %.2f)" % (int(item_dict['cost'])/100)})
+                actions.update({action_key: "Consume " + item_dict['name'] + " (EUR %.2f)" % (int(item_dict['cost'])/100) + " " + tail})
         except swagger_client.rest.ApiException:
             log("Could not get items from the database.",serv="ERROR")
 
@@ -444,7 +446,6 @@ def login(maas_builder, auth_client, cfgobj):
     else:
         try:
             auth = auth_client.auth_login_post(user, password).to_dict()
-            print(auth)
             is_logged_in = True
             greet_user(cfgobj, auth["user"]["username"])
         except swagger_client.rest.ApiException:
@@ -457,4 +458,3 @@ def login(maas_builder, auth_client, cfgobj):
             time.sleep(5)
 
     return is_logged_in, auth
-

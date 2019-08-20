@@ -76,11 +76,16 @@ class ND77:
         self.feed(0x18)
         self.cut()
 
+__initDone = False
+
 def receipt_init():
     global nd77
     nd77 = ND77()
+    __initDone = True
 
 def receipt_journal(text):
+    if not __initDone:
+        return
     global nd77
     nd77.text(text, journal=True)
 
@@ -93,17 +98,17 @@ def __save(j):
 def receipt_ticket_available(name):
     j = __load()
     if name in j:
-        if j[name]["cur"] < j[name]["max"]:
-            return True
+        return j[name]["max"] - j[name]["cur"]
+    return 0
 
 def receipt_ticket(name):
-    print("receipt", name)
     global nd77
     j = __load()
     if name in j:
         if j[name]["cur"] < j[name]["max"]:
             j[name]["cur"] += 1
-            nd77.ticket(name, j[name]["cur"])
+            if __initDone:
+                nd77.ticket(name, j[name]["cur"])
             __save(j)
             return True
     return False
