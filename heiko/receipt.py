@@ -97,6 +97,7 @@ def receipt_ticket_available(name):
             return True
 
 def receipt_ticket(name):
+    print("receipt", name)
     global nd77
     j = __load()
     if name in j:

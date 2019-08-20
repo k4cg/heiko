@@ -111,7 +111,7 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         ret = consume_item(auth, items_client, consumables[option]['id'], receipt=cfgobj["receipt"]["enable"])
         if ret:
             if consumables[option]["name"].startswith("Essen"):
-                receipt_ticket(consumables[option]["name"])
+                receipt_ticket(consumables[option]["name"].replace("Extern",""))
         say(cfgobj, "cheers")
 
     if option == USER_KEY_INSERT_COINS:
@@ -352,8 +352,9 @@ def show_help(items_client, admin=False, cfgobj=None):
         try:
             for item in items_client.items_get():
                 item_dict = item.to_dict()
-                if item_dict["name"].startswith("Essen"):
-                    if not receipt_ticket_available(item_dict["name"]):
+                name = item_dict["name"].replace("Extern","")
+                if name.startswith("Essen"):
+                    if not receipt_ticket_available(name):
                         continue
                 action_key = str(item_dict["id"])
                 consumables.update({action_key: item_dict})
