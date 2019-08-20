@@ -3,9 +3,11 @@ import random
 import string
 import swagger_client
 from tabulate import tabulate
+from datetime import datetime
 
 from heiko.utils import log
 from heiko.nfc import nfc_detect, nfc_read, nfc_write, nfc_format_card
+from heiko.receipt import receipt_journal
 
 def find_user_by_username(auth, client):
     """
@@ -238,11 +240,13 @@ def add_credits_admin(auth, client):
         r = client.users_user_id_credits_add_patch(user["id"], int(add_credits))
         auth["user"]["credits"] = r.to_dict()["credits"]
         log("Successfully set the credits for user %s to %.2f Euro" % (user["username"], auth["user"]["credits"] / 100), serv="SUCCESS")
-        return True
     except:
         log("Could not set the credits for user %s to %.2f Euro. Backend error." % (user_to_reset["username"], new_credits), serv="ERROR")
         return False
-        
+    
+    receipt_journal(str(datetime.now()) + "\n" + auth["user"]["username"] + "(" + str(auth["user"]["id"]) + ") EUR+" + ("%.2f" % (add_credits/100)) + ("\nBal. EUR %.2f\n" % (int(auth["user"]["credits"])/100)) )
+    return True
+
 def reset_user_password(auth, client):
     """
     Gives an admin the capability to reset password for a specific user.
