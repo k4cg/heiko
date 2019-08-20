@@ -82,23 +82,25 @@ def receipt_journal(text):
     nd77.text(text, journal=True)
 
 def __load():
-	return loads( open("tickets.json", "r").read() )
+    return loads( open("tickets.json", "r").read() )
 def __save(j):
-	f = open("tickets.json", "wt")
-	f.write(dumps(j))
+    f = open("tickets.json", "wt")
+    f.write(dumps(j))
 
 def receipt_ticket_available(name):
-	j = __load()
-	if name in j:
-		if j[name]["cur"] < j[name]["max"]:
-			return True
+    j = __load()
+    if name in j:
+        if j[name]["cur"] < j[name]["max"]:
+            return True
 
 def receipt_ticket(name):
-	global nd77
-	j = __load()
-	if name in j:
-		if j[name]["cur"] < j[name]["max"]:
-			j[name]["cur"] += 1
-			nd77.ticket(name, j[name]["cur"])
-			return True
-	return False
+    global nd77
+    j = __load()
+    if name in j:
+        if j[name]["cur"] < j[name]["max"]:
+            j[name]["cur"] += 1
+            nd77.ticket(name, j[name]["cur"])
+            __save(j)
+            return True
+    return False
+
