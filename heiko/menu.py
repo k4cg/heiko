@@ -110,7 +110,7 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         ret = consume_item(auth, items_client, consumables[option]['id'], receipt=cfgobj["receipt"]["enable"])
         if ret:
             if consumables[option]["name"].startswith("Essen"):
-                receipt_ticket(consumables[option]["name"].replace("Extern",""))
+                receipt_ticket(consumables[option]["name"].replace("Extern",""), auth["user"]["username"])
         say(cfgobj, "cheers")
 
     if option == USER_KEY_INSERT_COINS:

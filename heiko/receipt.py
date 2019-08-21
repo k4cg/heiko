@@ -56,11 +56,12 @@ class ND77:
         if journal:
             self.p._raw(self.ESC + b'c0' + bytes([0x02]))
 
-    def ticket(self, name, nr):
+    def ticket(self, name, nr, owner):
         self.logo("logo.png")
         self.feed(2)
         self.size(False,False)
         self.text(str(datetime.now())+"\n")
+        self.text("user: " + owner + "\n")
         self.size(True,True)
         self.emph(True)
         self.text(name + "\n\n")
@@ -101,14 +102,14 @@ def receipt_ticket_available(name):
         return j[name]["max"] - j[name]["cur"]
     return 0
 
-def receipt_ticket(name):
+def receipt_ticket(name, username):
     global nd77
     j = __load()
     if name in j:
         if j[name]["cur"] < j[name]["max"]:
             j[name]["cur"] += 1
             if __initDone:
-                nd77.ticket(name, j[name]["cur"])
+                nd77.ticket(name, j[name]["cur"], username)
             __save(j)
             return True
     return False
