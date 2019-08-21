@@ -16,7 +16,7 @@ from heiko.utils import log
 from heiko.voice import say, greet_user
 from heiko.migrate import migrate_user
 from heiko.nfc import nfc_detect, nfc_read, nfc_format_card
-from heiko.receipt import receipt_ticket, receipt_ticket_available
+from heiko.receipt import receipt_ticket, receipt_ticket_available, receipt_list_quotas, receipt_edit_quota, receipt_add_quota
 
 ### User Menu Mapping
 USER_KEY_INSERT_COINS = "i"
@@ -54,6 +54,9 @@ ADMIN_KEY_ADD_CREDITS = "a"
 ADMIN_KEY_EXIT = "x"
 ADMIN_KEY_DELETE_USER = "du"
 ADMIN_KEY_MIGRATE_USER = "m"
+ADMIN_KEY_QUOTA_LIST = "ql"
+ADMIN_KEY_QUOTA_EDIT = "qe"
+ADMIN_KEY_QUOTA_ADD = "qa"
 ADMIN_KEY_HELP = "?"
 
 admin_actions = {
@@ -71,6 +74,9 @@ admin_actions = {
     ADMIN_KEY_EXIT: "Exit",
     ADMIN_KEY_DELETE_USER: "Delete user",
     ADMIN_KEY_MIGRATE_USER: "Migrate user from old Matomat",
+    ADMIN_KEY_QUOTA_LIST: "List Quota",
+    ADMIN_KEY_QUOTA_EDIT: "Edit Quota",
+    ADMIN_KEY_QUOTA_ADD: "Add Quota",
     ADMIN_KEY_HELP: "Help",
 }
 
@@ -233,6 +239,16 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
 
     if option == ADMIN_KEY_DELETE_USER:
         delete_user(auth, users_client)
+        
+    if option == ADMIN_KEY_QUOTA_LIST:
+        receipt_list_quotas()
+    
+    if option == ADMIN_KEY_QUOTA_EDIT:
+        receipt_edit_quota()
+        
+    if option == ADMIN_KEY_QUOTA_ADD:
+        receipt_add_quota()
+    
     if option == ADMIN_KEY_HELP:
         show_help(items_client, admin=True, cfgobj=cfgobj)
 

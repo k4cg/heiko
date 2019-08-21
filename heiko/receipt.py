@@ -3,6 +3,7 @@ import escpos.printer
 from escpos.image import EscposImage
 from json import loads, dumps
 from datetime import datetime
+from heiko.utils import log
 
 ### ND77 Printer ###
 class ND77:
@@ -114,3 +115,40 @@ def receipt_ticket(name, username):
             return True
     return False
 
+def receipt_list_quotas():
+    j = __load()
+    for k in j:
+        print(k + " max %d, current %d" % (j[k]["max"], j[k]["cur"]))
+
+def receipt_edit_quota():
+    j = __load()
+    name = input("name: ")
+    if name in j:
+        quota_s = input("max: ")
+        try:
+            quota = int(quota_s)
+            j[name]["max"] = quota
+            __save(j)
+            log("ok")
+            return True
+        except:
+            pass
+    
+    log("invalid input", serv="ERROR")
+    return False
+
+def receipt_add_quota():
+    j = __load()
+    name = input("name: ")
+    quota_s = input("max: ")
+    quota = int(quota_s)
+    j[name] = {}
+    j[name]["cur"] = 0
+    j[name]["max"] = quota
+    __save(j)
+    return True
+#    except:
+#        pass
+#    
+#    log("invalid input", serv="ERROR")
+#    return False
