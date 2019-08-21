@@ -79,7 +79,7 @@ class ND77:
 __initDone = False
 
 def receipt_init():
-    global nd77
+    global nd77, __initDone
     nd77 = ND77()
     __initDone = True
 
