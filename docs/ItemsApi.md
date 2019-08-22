@@ -1,18 +1,17 @@
 # swagger_client.ItemsApi
 
-All URIs are relative to *https://localhost:8443/v0*
+All URIs are relative to *https://maas.intern.k4cg.org/v0*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**items_get**](ItemsApi.md#items_get) | **GET** /items | List all available items
-[**items_item_id_consume_patch**](ItemsApi.md#items_item_id_consume_patch) | **PATCH** /items/{itemId}/consume | Consumes a Item
+[**items_item_id_consume_put**](ItemsApi.md#items_item_id_consume_put) | **PUT** /items/{itemId}/consume | Consumes a Item
 [**items_item_id_delete**](ItemsApi.md#items_item_id_delete) | **DELETE** /items/{itemId} | Delete Item
 [**items_item_id_get**](ItemsApi.md#items_item_id_get) | **GET** /items/{itemId} | Get a certain Item
-[**items_item_id_patch**](ItemsApi.md#items_item_id_patch) | **PATCH** /items/{itemId} | Update Item
+[**items_item_id_put**](ItemsApi.md#items_item_id_put) | **PUT** /items/{itemId} | Update Item
 [**items_item_id_stats_get**](ItemsApi.md#items_item_id_stats_get) | **GET** /items/{itemId}/stats | Get consumption stats
 [**items_post**](ItemsApi.md#items_post) | **POST** /items | Add a new item
 [**items_stats_get**](ItemsApi.md#items_stats_get) | **GET** /items/stats | Get consumption stats of all items
-
 
 # **items_get**
 > list[Item] items_get()
@@ -64,12 +63,12 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **items_item_id_consume_patch**
-> ItemStats items_item_id_consume_patch(item_id)
+# **items_item_id_consume_put**
+> ItemStats items_item_id_consume_put(item_id)
 
 Consumes a Item
 
-Consumes a Item and subtracts the cost of the Item from the credit of the user. If not enough credit exists the operation will be rejected
+Consumes a Item and subtracts the cost of the Item from the credit of the user.
 
 ### Example
 ```python
@@ -91,10 +90,10 @@ item_id = 56 # int | The ID of the Item that needs to be consumed
 
 try:
     # Consumes a Item
-    api_response = api_instance.items_item_id_consume_patch(item_id)
+    api_response = api_instance.items_item_id_consume_put(item_id)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling ItemsApi->items_item_id_consume_patch: %s\n" % e)
+    print("Exception when calling ItemsApi->items_item_id_consume_put: %s\n" % e)
 ```
 
 ### Parameters
@@ -141,7 +140,7 @@ configuration.api_key['Authorization'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.ItemsApi(swagger_client.ApiClient(configuration))
-item_id = 56 # int | The ID of the Item to perform an operation on
+item_id = 56 # int | The ID of the Item that needs to be deleted
 
 try:
     # Delete Item
@@ -155,7 +154,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **item_id** | **int**| The ID of the Item to perform an operation on | 
+ **item_id** | **int**| The ID of the Item that needs to be deleted | 
 
 ### Return type
 
@@ -195,7 +194,7 @@ configuration.api_key['Authorization'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.ItemsApi(swagger_client.ApiClient(configuration))
-item_id = 56 # int | The ID of the Item to perform an operation on
+item_id = 56 # int | The ID of the Item that needs to be fetched
 
 try:
     # Get a certain Item
@@ -209,7 +208,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **item_id** | **int**| The ID of the Item to perform an operation on | 
+ **item_id** | **int**| The ID of the Item that needs to be fetched | 
 
 ### Return type
 
@@ -226,8 +225,8 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **items_item_id_patch**
-> Item items_item_id_patch(item_id, name, cost)
+# **items_item_id_put**
+> Item items_item_id_put(name, cost, item_id)
 
 Update Item
 
@@ -249,25 +248,25 @@ configuration.api_key['Authorization'] = 'YOUR_API_KEY'
 
 # create an instance of the API class
 api_instance = swagger_client.ItemsApi(swagger_client.ApiClient(configuration))
-item_id = 56 # int | The ID of the Item to perform an operation on
 name = 'name_example' # str | 
 cost = 56 # int | 
+item_id = 56 # int | The ID of the Item that needs to be updated
 
 try:
     # Update Item
-    api_response = api_instance.items_item_id_patch(item_id, name, cost)
+    api_response = api_instance.items_item_id_put(name, cost, item_id)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling ItemsApi->items_item_id_patch: %s\n" % e)
+    print("Exception when calling ItemsApi->items_item_id_put: %s\n" % e)
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **item_id** | **int**| The ID of the Item to perform an operation on | 
  **name** | **str**|  | 
  **cost** | **int**|  | 
+ **item_id** | **int**| The ID of the Item that needs to be updated | 
 
 ### Return type
 
@@ -285,7 +284,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **items_item_id_stats_get**
-> ItemStats items_item_id_stats_get(item_id)
+> items_item_id_stats_get(item_id)
 
 Get consumption stats
 
@@ -311,8 +310,7 @@ item_id = 56 # int | The ID of the Item for which to fetch the stats
 
 try:
     # Get consumption stats
-    api_response = api_instance.items_item_id_stats_get(item_id)
-    pprint(api_response)
+    api_instance.items_item_id_stats_get(item_id)
 except ApiException as e:
     print("Exception when calling ItemsApi->items_item_id_stats_get: %s\n" % e)
 ```
@@ -325,7 +323,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ItemStats**](ItemStats.md)
+void (empty response body)
 
 ### Authorization
 
