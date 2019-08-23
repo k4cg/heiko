@@ -238,13 +238,13 @@ def add_credits_admin(auth, client):
 
     try:
         r = client.users_user_id_credits_add_patch(user["id"], int(add_credits))
-        auth["user"]["credits"] = r.to_dict()["credits"]
-        log("Successfully set the credits for user %s to %.2f Euro" % (user["username"], auth["user"]["credits"] / 100), serv="SUCCESS")
+        user["credits"] = r.to_dict()["credits"]
+        log("Successfully set the credits for user %s to %.2f Euro" % (user["username"], user["credits"] / 100), serv="SUCCESS")
     except:
         log("Could not set the credits for user %s to %.2f Euro. Backend error." % (user_to_reset["username"], new_credits), serv="ERROR")
         return False
     
-    receipt_journal(str(datetime.now()) + "\n" + auth["user"]["username"] + "(" + str(auth["user"]["id"]) + ") EUR+" + ("%.2f" % (add_credits/100)) + ("\nBal. EUR %.2f\n" % (int(auth["user"]["credits"])/100)) )
+    receipt_journal(str(datetime.now()) + "\n" + user["username"] + "(" + str(user["id"]) + ") EUR+" + ("%.2f" % (add_credits/100)) + ("\nBal. EUR %.2f\n" % (int(user["credits"])/100)) )
     return True
 
 def reset_user_password(auth, client):
