@@ -72,6 +72,8 @@ class ND77:
         
     def simple(self, text):
         self.size(False,False)
+        self.emph(False)
+        self.p.set(align="left")
         self.text(text)
         self.feed(16)
         self.cut()      

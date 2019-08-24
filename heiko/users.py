@@ -63,8 +63,8 @@ def list_users(auth, client, receipt=False):
         it.append([d["id"], d["username"], float(d["credits"])/100, d["admin"]])
         u = d["username"]
         upad = ""
-        if len(u) < 20:
-            upad += " "*(20-len(u))
+        if len(u) < 12:
+            upad += " "*(12-len(u))
         rectxt += ("%03d: " % int(d["id"])) + u + upad + " : " \
             + ("%.2f" % (float(d["credits"])/100)) + "\n"
 
