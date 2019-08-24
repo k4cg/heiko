@@ -42,6 +42,7 @@ consumables = {}
 ### Admin Menu Mapping
 ADMIN_KEY_LIST_ITEMS_STATS = "l"
 ADMIN_KEY_LIST_USERS = "u"
+ADMIN_KEY_PRINT_USERS = "up"
 ADMIN_KEY_CREATE_USER = "cu"
 ADMIN_KEY_CREATE_USER_NFC = "cun"
 ADMIN_KEY_CREATE_ITEM = "ci"
@@ -62,6 +63,7 @@ ADMIN_KEY_HELP = "?"
 admin_actions = {
     ADMIN_KEY_LIST_ITEMS_STATS: "Show drinks stats",
     ADMIN_KEY_LIST_USERS: "Show users",
+    ADMIN_KEY_PRINT_USERS: "Print users",
     ADMIN_KEY_CREATE_USER: "Create user",
     ADMIN_KEY_CREATE_USER_NFC: "Create user with NFC card and dummy random password",
     ADMIN_KEY_CREATE_ITEM: "Create drink",
@@ -203,6 +205,9 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
 
     if option == ADMIN_KEY_LIST_USERS:
         list_users(auth, users_client)
+
+    if option == ADMIN_KEY_PRINT_USERS:
+        list_users(auth, users_client, receipt=True)
 
     if option == ADMIN_KEY_CREATE_USER:
         create_user(auth, users_client)

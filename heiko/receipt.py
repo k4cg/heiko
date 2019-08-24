@@ -69,6 +69,12 @@ class ND77:
         self.text("#%d\n" % nr)
         self.feed(16)
         self.cut()
+        
+    def simple(self, text):
+        self.size(False,False)
+        self.text(text)
+        self.feed(16)
+        self.cut()      
 
     def inlay(self, nr):
         self.p.set(align="center")  
@@ -114,6 +120,15 @@ def receipt_ticket(name, username):
             __save(j)
             return True
     return False
+    
+def receipt_custom(text):
+    global nd77
+    if __initDone:
+        nd77.simple(text)
+    else:
+        print("debug receipt:\n---")
+        print(text)
+        print("---")
 
 def receipt_list_quotas():
     j = __load()

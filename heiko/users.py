@@ -7,7 +7,7 @@ from datetime import datetime
 
 from heiko.utils import log
 from heiko.nfc import nfc_detect, nfc_read, nfc_write, nfc_format_card
-from heiko.receipt import receipt_journal
+from heiko.receipt import receipt_journal, receipt_custom
 
 def find_user_by_username(auth, client):
     """
@@ -42,7 +42,7 @@ def find_user_by_username(auth, client):
     return user_object
 
 
-def list_users(auth, client):
+def list_users(auth, client, receipt=False):
     """
     Shows all users from the database to an successfully authenticated administrator
 
@@ -57,13 +57,22 @@ def list_users(auth, client):
         return False
 
     it = []
+    rectxt = str(datetime.now())+"\n"
     for u in users:
         d = u.to_dict()
         it.append([d["id"], d["username"], float(d["credits"])/100, d["admin"]])
+        u = d["username"]
+        upad = ""
+        if len(u) < 20:
+            upad += " "*(20-len(u))
+        rectxt += ("%03d: " % int(d["id"])) + u + upad + " : " \
+            + ("%.2f" % (float(d["credits"])/100)) + "\n"
 
     log("List of current users in the database:\n")
     log(tabulate(it, headers=["ID", "Username", "Credits (EUR)", "Admin?"], tablefmt="presto"))
 
+    if receipt:
+        receipt_custom(rectxt)
 
     return True
 
