@@ -393,7 +393,7 @@ def login(maas_builder, auth_client, cfgobj):
     if token:
         t = token.split(".")[1]
         try:
-            userdict = json.loads(base64.b64decode(t + "="*(4-len(t)%4)))
+            userdict = json.loads(base64.b64decode(t + "="*(4-len(t)%4)).decode())
         except json.JSONDecodeError:
             say(cfgobj, "error")
             log("Token json error!",serv="ERROR")
