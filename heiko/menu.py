@@ -376,11 +376,12 @@ def login(maas_builder, auth_client, cfgobj):
     try:
         print("User: ", end="", flush=True)
         uid = ""
-        while sys.stdin not in select.select([sys.stdin], [], [], 0)[0]:
-            uid, header = nfc_detect()
-            if uid:
-                break
-            time.sleep(0.2)
+        if cfgobj['nfc']['enable']:
+            while sys.stdin not in select.select([sys.stdin], [], [], 0)[0]:
+                uid, header = nfc_detect()
+                if uid:
+                    break
+                time.sleep(0.2)
         if uid:
             token = nfc_read(uid)
         else:
