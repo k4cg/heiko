@@ -240,9 +240,9 @@ def add_credits_admin(auth, client):
         log("Successfully set the credits for user %s to %.2f Euro" % (user["username"], auth["user"]["credits"] / 100), serv="SUCCESS")
         return True
     except:
-        log("Could not set the credits for user %s to %.2f Euro. Backend error." % (user_to_reset["username"], new_credits), serv="ERROR")
+        log("Could not add %.2f Euro credits for user %s. Backend error." % (add_credits, user["username"]), serv="ERROR")
         return False
-        
+
 def reset_user_password(auth, client):
     """
     Gives an admin the capability to reset password for a specific user.
