@@ -367,6 +367,8 @@ def login(maas_builder, auth_client, cfgobj):
 
     welcome_banner()
     log("Please authenticate yourself!")
+    if cfgobj["nfc"]["enable"]:
+        log("NFC enabled")
 
     token = ""
     user = ""

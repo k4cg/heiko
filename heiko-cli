@@ -28,7 +28,11 @@ if __name__ == '__main__':
     cfgobj = cfg.get_all()
 
     if cfgobj["nfc"]["enable"]:
-        nfc_init()
+        # Only enable NFC on the real matomat TTY, to avoid locking conflicts
+        if os.ttyname(sys.stdout.fileno()) == "/dev/tty1":
+            nfc_init()
+        else:
+            cfgobj["nfc"]["enable"] = False
 
     # This is the login loop.
     is_logged_in = False
