@@ -424,7 +424,6 @@ def login(maas_builder, auth_client, cfgobj):
     else:
         try:
             auth = auth_client.auth_login_post(user, password).to_dict()
-            print(auth)
             is_logged_in = True
             greet_user(cfgobj, auth["user"]["username"])
         except swagger_client.rest.ApiException:
