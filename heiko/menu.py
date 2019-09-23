@@ -312,7 +312,7 @@ def banner(auth=None):
         if auth["user"]["admin"] is True:
             log("Hi %s, current credits: %.2f Euro. You are admin!\n" % (auth["user"]["username"], auth["user"]["credits"] / 100))
         else:
-            log("Hi %s, current credits: %.2f Euro\n." % (auth["user"]["username"], auth["user"]["credits"] / 100))
+            log("Hi %s, current credits: %.2f Euro.\n" % (auth["user"]["username"], auth["user"]["credits"] / 100))
 
     return True
 
