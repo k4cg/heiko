@@ -69,7 +69,7 @@ def list_items_stats(auth, client):
     revenue = 0.0
     for i in items:
         d = i.to_dict()
-        it.append([d["id"], float(d["cost"])/100, d["name"], d["consumed"]])
+        it.append([d["id"], "{:.2f}".format(float(d["cost"])/100), d["name"], d["consumed"]])
         revenue += float(d["cost"])/100 * float(d["consumed"])
 
     log(tabulate(it, headers=["ID", "Cost (EUR)", "Drink", "Consumptions"], tablefmt="presto"))
@@ -148,7 +148,7 @@ def create_item(auth, client):
 
     try:
         client.items_post(name, int(cost))
-        log("Successfully added new item with name %s and cost %s" % (name, float(cost) / 100 ), serv="SUCCESS")
+        log("Successfully added new item with name %.2f and cost %.2f" % (name, float(cost) / 100 ), serv="SUCCESS")
     except swagger_client.rest.ApiException as api_expception:
         log("Item could not be created in the backend: " + api_expception.body, serv="ERROR")
         return False

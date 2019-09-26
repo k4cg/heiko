@@ -349,7 +349,7 @@ def show_help(items_client, admin=False, cfgobj=None):
                 item_dict = item.to_dict()
                 action_key = str(item_dict["id"])
                 consumables.update({action_key: item_dict})
-                actions.update({action_key: "Consume " + item_dict['name']})
+                actions.update({action_key: "Consume {} ({:.2f})".format(item_dict['name'], item_dict['cost'] / 100)})
         except swagger_client.rest.ApiException:
             log("Could not get items from the database.",serv="ERROR")
 

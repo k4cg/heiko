@@ -161,7 +161,7 @@ def create_user_nfc(auth_client, user_client):
         return False
 
     return nfc_format_card(auth_client, name, password)
-    
+
 
 def delete_user(auth, client):
     """
