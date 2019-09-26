@@ -9,7 +9,7 @@ import json
 import binascii
 
 import swagger_client
-from heiko.items import list_items_stats, consume_item, create_item, delete_item
+from heiko.items import list_items_stats, consume_item, create_item, delete_item, update_item
 from heiko.users import add_credits, add_credits_admin, list_users, create_user, create_user_nfc, reset_user_password, reset_user_nfc, delete_user, reset_credits, change_password, show_user_stats
 from heiko.service import show_service_stats
 from heiko.utils import log
@@ -45,6 +45,7 @@ ADMIN_KEY_CREATE_USER = "cu"
 ADMIN_KEY_CREATE_USER_NFC = "cun"
 ADMIN_KEY_CREATE_ITEM = "ci"
 ADMIN_KEY_DELETE_ITEM = "di"
+ADMIN_KEY_UPDATE_ITEM = "ui"
 ADMIN_KEY_RESET_USER_PASSWORD = "ru"
 ADMIN_KEY_RESET_USER_NFC = "run"
 ADMIN_KEY_SHOW_SERVICE_STATS = "ss"
@@ -62,6 +63,7 @@ admin_actions = {
     ADMIN_KEY_CREATE_USER_NFC: "Create user with NFC card and dummy random password",
     ADMIN_KEY_CREATE_ITEM: "Create drink",
     ADMIN_KEY_DELETE_ITEM: "Delete drink",
+    ADMIN_KEY_UPDATE_ITEM: "Update drink",
     ADMIN_KEY_RESET_USER_PASSWORD: "Reset password for user",
     ADMIN_KEY_RESET_USER_NFC: "Reset password + setup NFC card for user",
     ADMIN_KEY_SHOW_SERVICE_STATS: "Show service stats",
@@ -196,6 +198,9 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
 
     if option == ADMIN_KEY_DELETE_ITEM:
         delete_item(auth, items_client)
+
+    if option == ADMIN_KEY_UPDATE_ITEM:
+        update_item(auth, items_client)
 
     if option == ADMIN_KEY_RESET_USER_PASSWORD:
         reset_user_password(auth, users_client)
@@ -402,8 +407,8 @@ def login(maas_builder, auth_client, cfgobj):
         except binascii.Error:
             say(cfgobj, "error")
             log("Token base64 error!",serv="ERROR")
-            time.sleep(1)        
-            
+            time.sleep(1)
+
         auth = {"token": token, "user": userdict}
 
         try:

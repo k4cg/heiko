@@ -154,3 +154,44 @@ def create_item(auth, client):
         return False
 
     return True
+
+
+def update_item(auth, client):
+    """
+    Adjust the name/price of an item
+
+    :auth: dict
+    :returns: bool
+    """
+
+    item_id = input("ID of item: ")
+
+    if item_id.isalnum() is False:
+        return False
+
+    # Ask for new Cost
+    try:
+        new_cost = float(input("New price in EUR (i.e. 1 or 1.20): ")) * 100
+    except ValueError:
+        return False
+
+    if new_cost < 0:
+        log("Negative price is not allowed ;)", serv="ERROR")
+        return False
+
+    # Ask for new Name
+    # TODO as not needed
+
+    # get current item name
+    current_item = client.items_item_id_get(item_id).to_dict()
+    current_cost = current_item["cost"]
+    current_name = current_item["name"]
+
+    try:
+        client.items_item_id_patch(item_id, name=current_name, cost=int(new_cost))
+        log("Successfully modified price of %s from %s to %s" % (current_name, float(current_cost)/100, float(new_cost)/100), serv="SUCCESS")
+    except swagger_client.rest.ApiException as api_expception:
+        log("Item could not be updated in the backend: " + api_expception.body, serv="ERROR")
+        return False
+
+    return True
