@@ -18,17 +18,17 @@ def show_service_stats(auth, client):
     log("Number of Items: %s" % items["count"])
     it = []
     for x in items["cost"].keys():
-        it.append([x, "%.2F" % (float(items["cost"][x]) / 100) ])
+        it.append([x, float(items["cost"][x])/100])
 
-    log(tabulate(it, headers=["Measurement", "Cost (EUR)"], tablefmt="presto"))
+    log(tabulate(it, headers=["Measurement", "Cost (EUR)"], tablefmt="presto", floatfmt=".2f"))
     log("")
 
     log("Number of Users: %s" % users["count"])
     ut = []
     for x in users["credits"].keys():
-        ut.append([x, "%.2F" % (float(users["credits"][x]) / 100) ])
+        ut.append([x, float(users["credits"][x])/100])
 
-    log(tabulate(ut, headers=["Measurement", "Credits (EUR)"], tablefmt="presto"))
+    log(tabulate(ut, headers=["Measurement", "Credits (EUR)"], tablefmt="presto", floatfmt=".2f"))
     log("")
     return True
 

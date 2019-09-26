@@ -60,7 +60,7 @@ def list_users(auth, client):
         it.append([d["id"], d["username"], float(d["credits"])/100, d["admin"]])
 
     log("List of current users in the database:\n")
-    log(tabulate(it, headers=["ID", "Username", "Credits (EUR)", "Admin?"], tablefmt="presto"))
+    log(tabulate(it, headers=["ID", "Username", "Credits (EUR)", "Admin?"], tablefmt="presto", floatfmt=".2f"))
 
 
     return True
@@ -83,10 +83,11 @@ def show_user_stats(auth, client):
     it = []
     for u in stats:
         d = u
-        it.append([d["name"], d["consumed"], "%.2f" % (float(d["consumed"]) * float(d["cost"]) / 100)])
+        money = float(d["consumed"]) * float(d["cost"]) / 100
+        it.append([d["name"], d["consumed"], money])
 
     log("Your consumption statistics:\n")
-    log(tabulate(it, headers=["Name", "Consumptions", "Money spent (EUR)"], tablefmt="presto"))
+    log(tabulate(it, headers=["Name", "Consumptions", "Money spent (EUR)"], tablefmt="presto", floatfmt=".2f"))
 
     return True
 
