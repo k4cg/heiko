@@ -7,6 +7,7 @@ import sys
 import base64
 import json
 import binascii
+import signal
 
 import swagger_client
 from heiko.items import list_items_stats, consume_item, create_item, delete_item, update_item
@@ -37,6 +38,9 @@ user_actions = {
 }
 
 consumables = {}
+
+# Seconds to automatic logout:
+AUTOLOGOUT_TIME_SECONDS = 120
 
 ### Admin Menu Mapping
 ADMIN_KEY_LIST_ITEMS_STATS = "l"
@@ -91,6 +95,7 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
 
     :returns: is_logged_in, is_exit (both bool)
     """
+    signal.alarm(AUTOLOGOUT_TIME_SECONDS)
 
     try:
         optionInput = input(">>> ")
@@ -159,6 +164,8 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
     :auth: dict
     :returns: is_logged_in, is_exit (both bool)
     """
+
+    signal.alarm(AUTOLOGOUT_TIME_SECONDS)
 
     if auth["user"]["admin"] is False:
         say(cfgobj, "error")
@@ -441,4 +448,3 @@ def login(maas_builder, auth_client, cfgobj):
             time.sleep(5)
 
     return is_logged_in, auth
-
