@@ -138,7 +138,8 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
 
     if option == USER_KEY_NFC:
         username = auth["user"]["username"]
-        log("re-Login required:")
+        log("Put your card on the reader now.")
+        log("Relogin required:")
         password = getpass.getpass('Password: ')
         nfc_format_card(auth_client, username, password)
 
