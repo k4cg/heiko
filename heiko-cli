@@ -37,8 +37,9 @@ if __name__ == '__main__':
     cfgobj = cfg.get_all()
 
     if cfgobj["nfc"]["enable"]:
-        # Only enable NFC on the real matomat TTY, to avoid locking conflicts
-        if os.ttyname(sys.stdout.fileno()) == "/dev/tty1":
+        # Only enable NFC on the configured TTY, to avoid locking conflicts
+        tty = cfgobj["nfc"]["tty"]
+        if tty == "" or os.ttyname(sys.stdout.fileno()) == tty:
             nfc_init()
         else:
             cfgobj["nfc"]["enable"] = False

@@ -13,4 +13,5 @@ voice:
   watson_endpoint: <endpoint>
 nfc:
   enable: <true/false>
+  tty: <e.g. /dev/tty1 or '' for any>
 
