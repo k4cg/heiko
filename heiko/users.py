@@ -145,11 +145,11 @@ def transfer_coins(auth, client):
     except ValueError:
         return False
 
-    try:
-        req = client.users_user_id_credits_transfer_put(user_id=target_user['id'], credits=credits_to_transfer)
+   try:
+        req = client.users_user_id_credits_transfer_patch(user_id=target_user['id'], credits=int(credits_to_transfer))
         log("Successfully transfered {:.2f} credits to user {}".format(credits_to_transfer/100, target_user['username']), serv="SUCCESS")
         return True
-    except:
+    except :
         log("Error transferring credits to user {}".format(target_user['username']), serv="ERROR")
         return False
 
