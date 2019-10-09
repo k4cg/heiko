@@ -127,6 +127,34 @@ def create_user(auth, client):
         log("Error creating user", serv="ERROR")
         return False
 
+def transfer_coins(auth, client):
+    """
+    Transfer credits to another user
+
+    :auth_client: dict
+    :user_client: dict
+    :returns: bool
+    """
+
+    log("What user you want to send credits to?")
+    target_user = find_user_by_username(auth, client)
+
+    # Ask for amount to transfer
+    try:
+        credits_to_transfer = float(input("How many credits you want to transfer (i.e. 1 or 1.20): ")) * 100
+    except ValueError:
+        return False
+
+   try:
+        req = client.users_user_id_credits_transfer_patch(user_id=target_user['id'], credits=int(credits_to_transfer))
+        log("Successfully transfered {:.2f} credits to user {}".format(credits_to_transfer/100, target_user['username']), serv="SUCCESS")
+        return True
+    except :
+        log("Error transferring credits to user {}".format(target_user['username']), serv="ERROR")
+        return False
+
+
+
 def create_user_nfc(auth_client, user_client):
     """
     Asks administrator for details and

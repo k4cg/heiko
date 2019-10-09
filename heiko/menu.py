@@ -11,7 +11,7 @@ import signal
 
 import swagger_client
 from heiko.items import list_items_stats, consume_item, create_item, delete_item, update_item
-from heiko.users import add_credits, add_credits_admin, list_users, create_user, create_user_nfc, reset_user_password, reset_user_nfc, delete_user, reset_credits, change_password, show_user_stats
+from heiko.users import add_credits, add_credits_admin, list_users, create_user, create_user_nfc, reset_user_password, reset_user_nfc, delete_user, reset_credits, change_password, show_user_stats, transfer_coins
 from heiko.service import show_service_stats
 from heiko.utils import log
 from heiko.voice import say, greet_user
@@ -20,6 +20,7 @@ from heiko.nfc import nfc_detect, nfc_read, nfc_format_card
 
 ### User Menu Mapping
 USER_KEY_INSERT_COINS = "i"
+USER_KEY_TRANSFER_COINS = "t"
 USER_KEY_SHOW_STATS = "s"
 USER_KEY_ADMINISTRATION = "a"
 USER_KEY_CHANGE_PASSWORD = "p"
@@ -29,6 +30,7 @@ USER_KEY_HELP = "?"
 
 user_actions = {
     USER_KEY_INSERT_COINS: "Insert coins",
+    USER_KEY_TRANSFER_COINS: "Transfer coins",
     USER_KEY_SHOW_STATS: "Show statistics",
     USER_KEY_ADMINISTRATION: "Administration",
     USER_KEY_CHANGE_PASSWORD: "Change password",
@@ -121,6 +123,9 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
 
     if option == USER_KEY_SHOW_STATS:
         show_user_stats(auth, users_client)
+
+    if option == USER_KEY_TRANSFER_COINS:
+        transfer_coins(auth, users_client)
 
     if option == USER_KEY_ADMINISTRATION:
         is_exit = False
