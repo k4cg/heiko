@@ -1,8 +1,8 @@
 import getpass
 import random
 import string
-import swagger_client
 from tabulate import tabulate
+import swagger_client
 
 from heiko.utils import log
 from heiko.nfc import nfc_format_card
@@ -81,15 +81,17 @@ def show_user_stats(auth, client):
         log("Could fetch stats from the database.", serv="ERROR")
         return False
 
-    it = []
-    for u in stats:
-        d = u
-        money = float(d["consumed"]) * float(d["cost"]) / 100
-        it.append([d["name"], d["consumed"], money])
+    drinks = []
+    sum_money = 0
+    for drink in stats:
+        money = float(drink["consumed"]) * float(drink["cost"]) / 100
+        sum_money = sum_money + money
+        drinks.append([drink["name"], drink["consumed"], money])
 
     log("Your consumption statistics:\n")
-    log(tabulate(it, headers=["Name", "Consumptions", "Money spent (EUR)"], tablefmt="presto", floatfmt=".2f"))
+    log(tabulate(drinks, headers=["Name", "Consumptions", "Coins spent (EUR)"], tablefmt="presto", floatfmt=".2f"))
 
+    log("\nCoins spent overall: {:.2f} EUR".format(sum_money))
     return True
 
 
