@@ -111,11 +111,12 @@ def create_user(auth, client):
         log("Username not valid. Please be alphanumerical.", serv="Error")
         return False
 
-    admin = input("Admin? (y/n): ").lower()[0]
+    is_admin = input("Admin? (y/n): ").lower()[0]
 
-    admin = 0
-    if admin is 'y':
+    if is_admin == 'y':
         admin = 1
+    else:
+        admin = 0
 
     password = getpass.getpass("Password: ")
     passwordrepeat = getpass.getpass("Repeat password: ")
