@@ -139,6 +139,10 @@ def transfer_coins(auth, client):
     log("What user you want to send credits to?")
     target_user = find_user_by_username(auth, client)
 
+    if target_user is False:
+        # error message already printed at this point by find_user_by_username()
+        return False
+
     # Ask for amount to transfer
     try:
         credits_to_transfer = float(input("How many credits you want to transfer (i.e. 1 or 1.20): ")) * 100
@@ -147,12 +151,12 @@ def transfer_coins(auth, client):
 
    try:
         req = client.users_user_id_credits_transfer_patch(user_id=target_user['id'], credits=int(credits_to_transfer))
-        log("Successfully transfered {:.2f} credits to user {}".format(credits_to_transfer/100, target_user['username']), serv="SUCCESS")
+        transferred_credits = float(req['credits']) / 100
+        log("Successfully transferred {:.2f} credits to user {}".format(transferred_credits, target_user['username']), serv="SUCCESS")
         return True
     except :
         log("Error transferring credits to user {}".format(target_user['username']), serv="ERROR")
         return False
-
 
 
 def create_user_nfc(auth_client, user_client):
