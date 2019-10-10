@@ -2,6 +2,7 @@ import sqlite3
 import getpass
 from heiko.utils import log
 
+
 def migrate_user(auth, client):
     """
     Migration function that reads data from old matomat sqlite and creates user in the backend
@@ -41,7 +42,6 @@ def migrate_user(auth, client):
     # assign values
     user_to_migrate, credits_to_migrate = rows[0]
 
-
     log("Found user %s with credits %.2f Euro!" % (user_to_migrate, int(credits_to_migrate) / 100), serv="SUCCESS")
 
     confirmation = input("Wanna migrate her? (y/n): ").lower()[0]
@@ -71,7 +71,7 @@ def migrate_user(auth, client):
     # Adding credits
 
     if float(credits_to_migrate) < 0:
-        wi = str(int(credits_to_migrate)).replace('-','')
+        wi = str(int(credits_to_migrate)).replace('-', '')
         try:
             client.users_user_id_credits_withdraw_patch(new_user.to_dict()["id"], int(wi))
             log("Set credit to %.2f" % (float(credits_to_migrate) / 100), serv="SUCCESS")

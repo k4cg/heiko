@@ -7,6 +7,7 @@ from tabulate import tabulate
 from heiko.utils import log
 from heiko.nfc import nfc_detect, nfc_read, nfc_write, nfc_format_card
 
+
 def find_user_by_username(auth, client):
     """
     Helper function that returns a user object that is found
@@ -51,19 +52,19 @@ def list_users(auth, client):
     try:
         users = client.users_get()
     except swagger_client.rest.ApiException:
-        log("Could fetch users from the database.",serv="ERROR")
+        log("Could fetch users from the database.", serv="ERROR")
         return False
 
     it = []
     for u in users:
         d = u.to_dict()
-        it.append([d["id"], d["username"], float(d["credits"])/100, d["admin"]])
+        it.append([d["id"], d["username"], float(d["credits"]) / 100, d["admin"]])
 
     log("List of current users in the database:\n")
     log(tabulate(it, headers=["ID", "Username", "Credits (EUR)", "Admin?"], tablefmt="presto", floatfmt=".2f"))
 
-
     return True
+
 
 def show_user_stats(auth, client):
     """
@@ -77,7 +78,7 @@ def show_user_stats(auth, client):
     try:
         stats = client.users_user_id_stats_get(auth["user"]["id"])
     except swagger_client.rest.ApiException:
-        log("Could fetch stats from the database.",serv="ERROR")
+        log("Could fetch stats from the database.", serv="ERROR")
         return False
 
     it = []
@@ -128,6 +129,7 @@ def create_user(auth, client):
         log("Error creating user", serv="ERROR")
         return False
 
+
 def transfer_coins(auth, client):
     """
     Transfer credits to another user
@@ -155,7 +157,7 @@ def transfer_coins(auth, client):
         transferred_credits = float(req['credits']) / 100
         log("Successfully transferred {:.2f} credits to user {}".format(transferred_credits, target_user['username']), serv="SUCCESS")
         return True
-    except :
+    except:
         log("Error transferring credits to user {}".format(target_user['username']), serv="ERROR")
         return False
 
@@ -226,6 +228,7 @@ def delete_user(auth, client):
         log("Could not delete user %s. Error by backend" % user_to_delete["username"], serv="ERROR")
         return False
 
+
 def reset_credits(auth, client):
     """
     Set credits to defined amount by admin
@@ -252,6 +255,7 @@ def reset_credits(auth, client):
         log("Could not set the credits for user %s to %.2f Euro. Backend error." % (user_to_reset["username"], new_credits), serv="ERROR")
         return False
 
+
 def add_credits_admin(auth, client):
     """
     Add credits by admin
@@ -276,6 +280,7 @@ def add_credits_admin(auth, client):
     except:
         log("Could not add %.2f Euro credits for user %s. Backend error." % (add_credits, user["username"]), serv="ERROR")
         return False
+
 
 def reset_user_password(auth, client):
     """
@@ -304,6 +309,7 @@ def reset_user_password(auth, client):
         log("Could not reset password for user %s with id %s. Error by backend" % (user_to_reset["username"], user_to_reset["id"]), serv="ERROR")
         return False
 
+
 def reset_user_nfc(auth, auth_client, user_client):
     """
     Gives an admin the capability to reset password for a specific user and write new nfc token.
@@ -331,6 +337,7 @@ def reset_user_nfc(auth, auth_client, user_client):
 
     return nfc_format_card(auth_client, user_to_reset["username"], password)
 
+
 def change_password(auth, client):
     """
     Gives user the capability to reset password for himself/herself.
@@ -352,7 +359,8 @@ def change_password(auth, client):
         log("Could not set your password. Error by backend", serv="ERROR")
         return False
 
-### UserApi Functions for Users
+# UserApi Functions for Users
+
 
 def add_credits(auth, client):
     """
@@ -367,7 +375,7 @@ def add_credits(auth, client):
         if credits < 0 or credits > 100:
             raise ValueError
     except ValueError:
-        log("Invalid input. Valid values: 1-100",serv="ERROR")
+        log("Invalid input. Valid values: 1-100", serv="ERROR")
         return False
 
     # calc input from eur into cents
@@ -380,11 +388,9 @@ def add_credits(auth, client):
         # TODO: Replace hack that updates local auth object to reflect changes into the banner
         auth["user"]["credits"] = r.to_dict()["credits"]
 
-        #notify user
+        # notify user
         log("Your credit is now %.2f" % (auth["user"]["credits"] / 100), serv="SUCCESS")
         return True
     except:
-        log("Updating your credits in the backend was not successful. Ask people for help",serv="ERROR")
+        log("Updating your credits in the backend was not successful. Ask people for help", serv="ERROR")
         return False
-
-

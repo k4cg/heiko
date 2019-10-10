@@ -18,7 +18,7 @@ from heiko.voice import say, greet_user
 from heiko.migrate import migrate_user
 from heiko.nfc import nfc_detect, nfc_read, nfc_format_card
 
-### User Menu Mapping
+# User Menu Mapping
 USER_KEY_INSERT_COINS = "i"
 USER_KEY_TRANSFER_COINS = "t"
 USER_KEY_SHOW_STATS = "s"
@@ -44,7 +44,7 @@ consumables = {}
 # Seconds to automatic logout:
 AUTOLOGOUT_TIME_SECONDS = 120
 
-### Admin Menu Mapping
+# Admin Menu Mapping
 ADMIN_KEY_LIST_ITEMS_STATS = "l"
 ADMIN_KEY_LIST_USERS = "u"
 ADMIN_KEY_CREATE_USER = "cu"
@@ -81,7 +81,8 @@ admin_actions = {
     ADMIN_KEY_HELP: "Help",
 }
 
-### Functions
+# Functions
+
 
 def user_menu(auth, auth_client, items_client, users_client, service_client, cfgobj):
     """
@@ -308,6 +309,7 @@ def welcome_banner():
     log(logo_banner)
     return True
 
+
 def banner(auth=None):
     """
     Prints a fancy ascii art banner to user and (if already logged in)
@@ -364,7 +366,7 @@ def show_help(items_client, admin=False, cfgobj=None):
                 consumables.update({action_key: item_dict})
                 actions.update({action_key: "Consume {} ({:.2f})".format(item_dict['name'], item_dict['cost'] / 100)})
         except swagger_client.rest.ApiException:
-            log("Could not get items from the database.",serv="ERROR")
+            log("Could not get items from the database.", serv="ERROR")
 
     log("Available actions:")
     for key in sorted(actions.keys()):
@@ -412,14 +414,14 @@ def login(maas_builder, auth_client, cfgobj):
     if token:
         t = token.split(".")[1]
         try:
-            userdict = json.loads(base64.b64decode(t + "="*(4-len(t)%4)).decode())
+            userdict = json.loads(base64.b64decode(t + "=" * (4 - len(t) % 4)).decode())
         except json.JSONDecodeError:
             say(cfgobj, "error")
-            log("Token json error!",serv="ERROR")
+            log("Token json error!", serv="ERROR")
             time.sleep(1)
         except binascii.Error:
             say(cfgobj, "error")
-            log("Token base64 error!",serv="ERROR")
+            log("Token base64 error!", serv="ERROR")
             time.sleep(1)
 
         auth = {"token": token, "user": userdict}
@@ -433,11 +435,11 @@ def login(maas_builder, auth_client, cfgobj):
             greet_user(cfgobj, auth["user"]["username"])
         except swagger_client.rest.ApiException:
             say(cfgobj, "error")
-            log("Invalid token!",serv="ERROR")
+            log("Invalid token!", serv="ERROR")
             time.sleep(1)
         except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError):
             say(cfgobj, "error")
-            log("Connection to backend was refused!",serv="ERROR")
+            log("Connection to backend was refused!", serv="ERROR")
             time.sleep(5)
     else:
         try:
@@ -446,11 +448,11 @@ def login(maas_builder, auth_client, cfgobj):
             greet_user(cfgobj, auth["user"]["username"])
         except swagger_client.rest.ApiException:
             say(cfgobj, "error")
-            log("Wrong username and/or password!",serv="ERROR")
+            log("Wrong username and/or password!", serv="ERROR")
             time.sleep(1)
         except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError):
             say(cfgobj, "error")
-            log("Connection to backend was refused!",serv="ERROR")
+            log("Connection to backend was refused!", serv="ERROR")
             time.sleep(5)
 
     return is_logged_in, auth

@@ -67,4 +67,3 @@ if __name__ == '__main__':
             is_logged_in, is_exit = user_menu(auth, auth_client, items_client, users_client, service_client, cfgobj)
             # Cancel autologout timer:
             signal.alarm(0)
-

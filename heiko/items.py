@@ -7,7 +7,7 @@ from tabulate import tabulate
 from heiko.utils import log
 
 
-### ItemsApi Functions
+# ItemsApi Functions
 
 def show_item(auth, client, itemid):
     """
@@ -19,6 +19,7 @@ def show_item(auth, client, itemid):
 
     log(client.items_item_id_get(itemid).to_dict())
     return True
+
 
 def delete_item(auth, client):
     """
@@ -36,8 +37,6 @@ def delete_item(auth, client):
         really_delete = input("Do you really want to delete %s? (y/n): " % item_name).lower()[0]
     except IndexError:
         really_delete = 'n'
-
-
 
     if really_delete != 'y':
         log("Aborted")
@@ -63,14 +62,14 @@ def list_items_stats(auth, client):
     try:
         items = client.items_stats_get()
     except swagger_client.rest.ApiException:
-        log("Could not show items from the database.",serv="ERROR")
+        log("Could not show items from the database.", serv="ERROR")
 
     it = []
     revenue = 0.0
     for i in items:
         d = i.to_dict()
-        it.append([d["id"], float(d["cost"])/100, d["name"], d["consumed"]])
-        revenue += float(d["cost"])/100 * float(d["consumed"])
+        it.append([d["id"], float(d["cost"]) / 100, d["name"], d["consumed"]])
+        revenue += float(d["cost"]) / 100 * float(d["consumed"])
 
     log(tabulate(it, headers=["ID", "Cost (EUR)", "Drink", "Consumptions"], floatfmt=".2f", tablefmt="presto"))
     log("total revenue (EUR): %.2f" % revenue)
@@ -125,6 +124,7 @@ def consume_item(auth, client, itemid):
         log("Something went wrong, contact developer!", serv="ERROR")
         return False
 
+
 def create_item(auth, client):
     """
     Asks admin for details and creates new item in the backend
@@ -148,7 +148,7 @@ def create_item(auth, client):
 
     try:
         client.items_post(name, int(cost))
-        log("Successfully added new item with name %.2f and cost %.2f" % (name, float(cost) / 100 ), serv="SUCCESS")
+        log("Successfully added new item with name %.2f and cost %.2f" % (name, float(cost) / 100), serv="SUCCESS")
     except swagger_client.rest.ApiException as api_expception:
         log("Item could not be created in the backend: " + api_expception.body, serv="ERROR")
         return False
@@ -189,7 +189,7 @@ def update_item(auth, client):
 
     try:
         client.items_item_id_patch(item_id, name=current_name, cost=int(new_cost))
-        log("Successfully modified price of %s from %s to %s" % (current_name, float(current_cost)/100, float(new_cost)/100), serv="SUCCESS")
+        log("Successfully modified price of %s from %s to %s" % (current_name, float(current_cost) / 100, float(new_cost) / 100), serv="SUCCESS")
     except swagger_client.rest.ApiException as api_expception:
         log("Item could not be updated in the backend: " + api_expception.body, serv="ERROR")
         return False
