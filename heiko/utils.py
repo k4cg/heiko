@@ -1,5 +1,6 @@
 from sty import fg
 
+
 def log(msg, serv="INFO"):
     """
     Interface to print informations to the user.

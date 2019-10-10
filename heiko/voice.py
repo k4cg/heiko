@@ -3,6 +3,7 @@ import os
 from watson_developer_cloud import TextToSpeechV1
 import pygame
 
+
 def say(cfgobj, what, user=None):
 
     # if sound is disabled, do nothing
@@ -30,12 +31,13 @@ def say(cfgobj, what, user=None):
             ]
             pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + random.choice(cash_sounds))
         elif what == "user":
-            pygame.mixer.music.load(cfgobj["voice"]["path_user_greetings"] + "/%s.ogg" % user )
+            pygame.mixer.music.load(cfgobj["voice"]["path_user_greetings"] + "/%s.ogg" % user)
 
         pygame.mixer.music.play()
 
     except Exception:
         pass
+
 
 def generate_mp3(cfgobj, text, outfile):
     """
@@ -55,6 +57,7 @@ def generate_mp3(cfgobj, text, outfile):
                 'en-US_MichaelVoice'
             ).get_result().content)
 
+
 def greet_user(cfgobj, user):
     """
     Play individual greeting for user and generate
@@ -72,4 +75,3 @@ def greet_user(cfgobj, user):
 
     # play sound
     say(cfgobj, "user", user)
-

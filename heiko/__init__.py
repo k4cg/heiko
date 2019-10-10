@@ -1,11 +1,13 @@
 import swagger_client
 
-### Bindings to swagger_client
+# Bindings to swagger_client
+
 
 class MaaSConfig:
     def __init__(self, host, verify_ssl):
         self.host = host
         self.verify_ssl = verify_ssl
+
 
 class MaaSApiClientBuilder:
     def __init__(self, config: MaaSConfig):
