@@ -5,7 +5,7 @@ import swagger_client
 from tabulate import tabulate
 
 from heiko.utils import log
-from heiko.nfc import nfc_detect, nfc_read, nfc_write, nfc_format_card
+from heiko.nfc import nfc_format_card
 
 
 def find_user_by_username(auth, client):
