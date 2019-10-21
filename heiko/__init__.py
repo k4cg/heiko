@@ -9,10 +9,6 @@ from heiko.nfc import nfc_init
 from heiko.utils import log
 
 
-
-# Bindings to swagger_client
-
-
 class MaaSConfig:
     def __init__(self, host, verify_ssl):
         self.host = host
@@ -72,13 +68,14 @@ def sigalrm_handler(signal, frame):
 signal.signal(signal.SIGINT, sigint_handler)
 signal.signal(signal.SIGALRM, sigalrm_handler)
 
+
 def main():
 
     urllib3.disable_warnings()
     cfg = MaasSimpleConfig().load('config.yml')
     conn_str = 'https://' + cfg.get_maas_host() + ':' + str(cfg.get_maas_server_port()) + cfg.get_maas_api_url_base_path()
-    maas_cfg = heiko.MaaSConfig(conn_str, cfg.get_maas_verify_ssl_certificates())
-    maas_builder = heiko.MaaSApiClientBuilder(maas_cfg)
+    maas_cfg = MaaSConfig(conn_str, cfg.get_maas_verify_ssl_certificates())
+    maas_builder = MaaSApiClientBuilder(maas_cfg)
 
     cfgobj = cfg.get_all()
 
@@ -113,6 +110,7 @@ def main():
             is_logged_in, is_exit = user_menu(auth, auth_client, items_client, users_client, service_client, cfgobj)
             # Cancel autologout timer:
             signal.alarm(0)
+
 
 if __name__ == '__main__':
     main()
