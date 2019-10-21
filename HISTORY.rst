@@ -4,6 +4,11 @@ Changelog
 
 (unreleased)
 ------------
+- Release: 4.2.0. [Florian Baumann]
+- Add setuptools as dev dep. [Simon Kuhnle]
+- Fix version bump requirement. [Simon Kuhnle]
+- Clean up login prompt, display version. [Simon Kuhnle]
+- Changelog: 4.1.0. [Florian Baumann]
 - Release: 4.1.0. [Florian Baumann]
 - Fix readme format. [Florian Baumann]
 - Fix relaease. [Florian Baumann]
