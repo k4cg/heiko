@@ -8,6 +8,7 @@ import base64
 import json
 import binascii
 import signal
+import pkg_resources
 
 import swagger_client
 from heiko.items import list_items_stats, consume_item, create_item, delete_item, update_item
@@ -302,9 +303,8 @@ def welcome_banner():
                                   7777I+                   ?7777+
                                           ++?IIII7III??+=
 
-                    When your login does not work - you need to be migrated :)
-                     github.com/k4cg/heiko / github.com/k4cg/matomat-service
-"""
+                     github.com/k4cg/heiko (v{}) / github.com/k4cg/matomat-service
+""".format(pkg_resources.require("heiko")[0].version)
     os.system('clear')
     log(logo_banner)
     return True
@@ -387,8 +387,6 @@ def login(maas_builder, auth_client, cfgobj):
 
     welcome_banner()
     log("Please authenticate yourself!")
-    if cfgobj["nfc"]["enable"]:
-        log("NFC enabled")
 
     token = ""
     user = ""
