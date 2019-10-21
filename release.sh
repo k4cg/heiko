@@ -38,4 +38,4 @@ echo pushing..
 git push --tags origin master
 
 echo release on pypi
-twine upload dist/*
+twine upload -r pypik4cg dist/*
