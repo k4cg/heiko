@@ -4,6 +4,11 @@ Changelog
 
 (unreleased)
 ------------
+- Release: 4.1.0. [Florian Baumann]
+- Fix readme format. [Florian Baumann]
+- Fix relaease. [Florian Baumann]
+- Readme fix. [Florian Baumann]
+- Changelog: 4.0.0. [Florian Baumann]
 - Release: 4.0.0. [Florian Baumann]
 - Fix bumpversion. [Florian Baumann]
 - Remove cli. [Florian Baumann]
