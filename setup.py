@@ -11,7 +11,7 @@ def read_from_file(path):
         with open(path,"rb","utf-8") as input:
             return input.read()
 
-version = "4.1.0"
+version = "4.2.0"
 
 setup(
     name='heiko',
