@@ -13,6 +13,8 @@ function get_cur_vers {
   grep '^version = "' $VERFILE | awk -F\" '{print $2}'
 }
 
+
+
 echo bump version
 bumpversion --current-version $(get_cur_vers) $1 $VERFILE
 
@@ -37,5 +39,8 @@ git commit -m "Changelog: $v"
 echo pushing..
 git push --tags origin master
 
+echo Building package
+python setup.py sdist bdist_wheel
+
 echo release on pypi
-twine upload -r pypik4cg dist/*
+twine upload dist/*
