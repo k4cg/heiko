@@ -67,7 +67,7 @@ setup(
     # extra_requires
     extras_require={
         'dev': [
-            'versionbump',
+            'bumpversion',
             'gitchangelog',
             'twine',
         ]
