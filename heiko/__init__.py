@@ -1,3 +1,4 @@
+import argparse
 import swagger_client
 import sys
 import os
@@ -71,6 +72,10 @@ signal.signal(signal.SIGALRM, sigalrm_handler)
 
 def main():
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-t', '--nfctty', type=str, default="any")
+    args = parser.parse_args()
+
     urllib3.disable_warnings()
     cfg = MaasSimpleConfig().load('config.yml')
     conn_str = 'https://' + cfg.get_maas_host() + ':' + str(cfg.get_maas_server_port()) + cfg.get_maas_api_url_base_path()
@@ -81,7 +86,7 @@ def main():
 
     if cfgobj["nfc"]["enable"]:
         # Only enable NFC on the real matomat TTY, to avoid locking conflicts
-        if os.ttyname(sys.stdout.fileno()) == "/dev/tty1":
+        if args.nfctty == "any" or os.ttyname(sys.stdout.fileno()) == args.nfctty:
             nfc_init()
         else:
             cfgobj["nfc"]["enable"] = False
