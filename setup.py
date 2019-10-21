@@ -22,7 +22,8 @@ setup(
     version=version,
 
     description='Heiko is a frontend for MaaS',
-    long_description=read_from_file('README.rst'),
+    long_description=read_from_file('README.md'),
+    long_description_content_type="text/markdown",
 
     # The project's main homepage.
     url='https://github.com/k4cg/heiko',
