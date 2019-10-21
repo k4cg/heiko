@@ -70,6 +70,7 @@ setup(
             'bumpversion',
             'gitchangelog',
             'twine',
+            'setuptools',
         ]
     },
 
