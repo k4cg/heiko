@@ -1,5 +1,7 @@
 from heiko.utils import log
 from datetime import datetime, timedelta
+import swagger_client
+import urllib3
 
 
 def nfc_init():
