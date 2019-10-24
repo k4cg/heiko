@@ -2,25 +2,51 @@ Changelog
 =========
 
 
-(unreleased)
-------------
+v4.4.0 (2019-10-24)
+-------------------
+- Release: 4.4.0. [Florian Baumann]
+- Other: Readme Update. [Florian Baumann]
+- Other: Documentation and Meta Changes. [Florian Baumann]
+- Changelog: 4.3.0. [Florian Baumann]
+
+
+v4.3.0 (2019-10-24)
+-------------------
+
+Feature
+~~~~~~~
+- Feature: Rework sounds #64. [Florian Baumann]
+
+Other
+~~~~~
 - Release: 4.3.0. [Florian Baumann]
 - Merge pull request #65 from k4cg/configurable-sounds. [Florian
   Baumann]
-- Feature: Rework sounds #64. [Florian Baumann]
 - Merge pull request #59 from k4cg/add-imports-nfc. [ChrisC]
 - NFC: Add missing imports. [Simon Kuhnle]
 - Changelog: 4.2.0. [Florian Baumann]
+
+
+v4.2.0 (2019-10-21)
+-------------------
 - Release: 4.2.0. [Florian Baumann]
 - Add setuptools as dev dep. [Simon Kuhnle]
 - Fix version bump requirement. [Simon Kuhnle]
 - Clean up login prompt, display version. [Simon Kuhnle]
 - Changelog: 4.1.0. [Florian Baumann]
+
+
+v4.1.0 (2019-10-21)
+-------------------
 - Release: 4.1.0. [Florian Baumann]
 - Fix readme format. [Florian Baumann]
 - Fix relaease. [Florian Baumann]
 - Readme fix. [Florian Baumann]
 - Changelog: 4.0.0. [Florian Baumann]
+
+
+v4.0.0 (2019-10-21)
+-------------------
 - Release: 4.0.0. [Florian Baumann]
 - Fix bumpversion. [Florian Baumann]
 - Remove cli. [Florian Baumann]
