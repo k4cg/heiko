@@ -7,10 +7,16 @@ maas:
   verify_ssl_certificates: <true/false>
 voice:
   enable: <true/false>
-  path_sounds: ./sound
-  path_user_greetings: <user greetings path>
+  path_user_greetings: ./user_greetings
   watson_api_key: <key>
   watson_endpoint: <endpoint>
+  sounds:
+    welcome: ./sound/welcome.wav
+    error: ./sound/error.wav
+    cheers: ./sound/cheers.wav
+    admin: ./sound/admin.wav
+    quit: ./sound/quit.wav
+    transaction_success: ./sound/coin.wav
 nfc:
   enable: <true/false>
 
