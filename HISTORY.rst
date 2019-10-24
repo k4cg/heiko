@@ -4,6 +4,13 @@ Changelog
 
 (unreleased)
 ------------
+- Release: 4.3.0. [Florian Baumann]
+- Merge pull request #65 from k4cg/configurable-sounds. [Florian
+  Baumann]
+- Feature: Rework sounds #64. [Florian Baumann]
+- Merge pull request #59 from k4cg/add-imports-nfc. [ChrisC]
+- NFC: Add missing imports. [Simon Kuhnle]
+- Changelog: 4.2.0. [Florian Baumann]
 - Release: 4.2.0. [Florian Baumann]
 - Add setuptools as dev dep. [Simon Kuhnle]
 - Fix version bump requirement. [Simon Kuhnle]
