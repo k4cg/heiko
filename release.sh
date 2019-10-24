@@ -43,4 +43,4 @@ echo Building package
 python setup.py sdist bdist_wheel
 
 echo release on pypi
-twine upload dist/*
+twine upload --skip-existing dist/*

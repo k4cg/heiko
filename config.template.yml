@@ -19,4 +19,3 @@ voice:
     transaction_success: ./sound/coin.wav
 nfc:
   enable: <true/false>
-
