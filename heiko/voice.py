@@ -14,24 +14,19 @@ def say(cfgobj, what, user=None):
         pygame.mixer.init()
 
         if what == "welcome":
-            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/welcome.wav")
+            pygame.mixer.music.load(cfgobj["voice"]["sounds"]["welcome"])
         elif what == "error":
-            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/error.wav")
+            pygame.mixer.music.load(cfgobj["voice"]["sounds"]["error"])
         elif what == "cheers":
-            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/cheers.wav")
+            pygame.mixer.music.load(cfgobj["voice"]["sounds"]["cheers"])
         elif what == "admin":
-            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/admin.wav")
+            pygame.mixer.music.load(cfgobj["voice"]["sounds"]["admin"])
         elif what == "quit":
-            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + "/quit.wav")
+            pygame.mixer.music.load(cfgobj["voice"]["sounds"]["quit"])
         elif what == "transaction_success":
-            cash_sounds = [
-                "/cash1.wav",
-                "/cash2.wav",
-                "/cash3.wav",
-            ]
-            pygame.mixer.music.load(cfgobj["voice"]["path_sounds"] + random.choice(cash_sounds))
+            pygame.mixer.music.load(cfgobj["voice"]["sounds"]["transaction_success"])
         elif what == "user":
-            pygame.mixer.music.load(cfgobj["voice"]["path_user_greetings"] + "/%s.ogg" % user)
+            pygame.mixer.music.load("{}{}.ogg".format(cfgobj["voice"]["path_user_greetings"], user))
 
         pygame.mixer.music.play()
 
