@@ -4,6 +4,9 @@ import swagger_client
 import urllib3
 
 
+DEFAULT_KEY = bytes([0xff, 0xff, 0xff, 0xff, 0xff, 0xff])
+
+
 def nfc_init():
     global mnfc
     from nfc import mnfc
@@ -11,7 +14,7 @@ def nfc_init():
 
 
 def nfc_detect():
-    key = bytes([0xff, 0xff, 0xff, 0xff, 0xff, 0xff])
+    key = DEFAULT_KEY.copy()
     v, uid, ttype, dat = mnfc.read(1, 1, key, False)
     header = ""
     try:
@@ -26,7 +29,7 @@ def nfc_detect():
 
 def nfc_read(uid, key=None):
     if key is None:
-        key = bytes([0xff, 0xff, 0xff, 0xff, 0xff, 0xff])
+        key = DEFAULT_KEY.copy()
     v, ruid, ttype, dat = mnfc.read(2, 14, key, False)
     if ruid == uid:
         return dat.decode().strip("\x00")
@@ -34,7 +37,7 @@ def nfc_read(uid, key=None):
 
 def nfc_write(uid, header, token, key=None):
     if key is None:
-        key = bytes([0xff, 0xff, 0xff, 0xff, 0xff, 0xff])
+        key = DEFAULT_KEY.copy()
 
     secLen = 3 * 16
     hb = header.encode()
