@@ -3,13 +3,14 @@ from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
 import os
-import sys
+
 
 # file read helper
 def read_from_file(path):
     if os.path.exists(path):
-        with open(path,"rb","utf-8") as input:
+        with open(path, "rb", "utf-8") as input:
             return input.read()
+
 
 version = "4.4.0"
 
