@@ -1,5 +1,4 @@
 from heiko.utils import log
-from datetime import datetime, timedelta
 import swagger_client
 import urllib3
 
@@ -72,7 +71,6 @@ def nfc_format_card(auth_client, username, password):
         except (ConnectionRefusedError, urllib3.exceptions.MaxRetryError):
             log("Connection to backend was refused!", serv="ERROR")
             return False
-        validstamp = (datetime.now() + timedelta(days=days)).timestamp()
         nfc_write(uid, "matomat1:" + username + ":", token)
         return True
     return False
