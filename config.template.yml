@@ -1,5 +1,6 @@
 accounting:
   userCanAddCredits: <true/false>
+  migration_database: <path to sqlite3 file> # optional
 maas:
   host: <hostname or IP addr>
   port: <numeric port number>
