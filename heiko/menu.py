@@ -231,7 +231,7 @@ def admin_menu(auth, auth_client, items_client, users_client, service_client, cf
         return admin_exit(cfgobj)
 
     if option == ADMIN_KEY_MIGRATE_USER:
-        migrate_user(auth, users_client)
+        migrate_user(auth, users_client, cfgobj)
 
     if option == ADMIN_KEY_DELETE_USER:
         delete_user(auth, users_client)
