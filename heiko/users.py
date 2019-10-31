@@ -156,7 +156,7 @@ def transfer_coins(auth, client):
 
     try:
         req = client.users_user_id_credits_transfer_patch(user_id=target_user['id'], credits=int(credits_to_transfer))
-        transferred_credits = float(req['credits']) / 100
+        transferred_credits = float(req.to_dict()['credits']) / 100
         log("Successfully transferred {:.2f} credits to user {}".format(transferred_credits, target_user['username']), serv="SUCCESS")
         return True
     except:
