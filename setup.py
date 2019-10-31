@@ -12,7 +12,7 @@ def read_from_file(path):
             return input.read()
 
 
-version = "4.5.0"
+version = "4.5.1"
 
 setup(
     name='heiko',
