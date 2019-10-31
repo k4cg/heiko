@@ -2,6 +2,19 @@ Changelog
 =========
 
 
+v4.5.1 (2019-10-31)
+-------------------
+
+Fix
+~~~
+- Typo in cfg option. [Florian Baumann]
+
+Other
+~~~~~
+- Release: 4.5.1. [Florian Baumann]
+- Changelog: 4.5.0. [Florian Baumann]
+
+
 v4.5.0 (2019-10-31)
 -------------------
 
