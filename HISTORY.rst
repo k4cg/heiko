@@ -2,6 +2,37 @@ Changelog
 =========
 
 
+v4.4.1 (2019-10-31)
+-------------------
+
+Fix
+~~~
+- Transfer raised. [Florian Baumann]
+
+Other
+~~~~~
+- Release: 4.4.1. [Florian Baumann]
+- Merge pull request #68 from blarz/flake8-setup-py. [Florian Baumann]
+
+  Fix linter warning in setup.py
+- Fix linter warning in setup.p. [Simon Kuhnle]
+
+  Whitespace and unused import
+- Merge pull request #69 from blarz/reorder-user-creation. [Florian
+  Baumann]
+
+  Reorder questions during user creation
+- Reorder questions during user creation. [Simon Kuhnle]
+
+  Fixes #66
+- Merge pull request #67 from blarz/nfc-remove-leftover-variable.
+  [ChrisC]
+- NFC: Remove unused variable. [Simon Kuhnle]
+- Merge pull request #58 from blarz/cleanup-nfc-code. [ChrisC]
+- NFC: Extract default key variable. [Simon Kuhnle]
+- Changelog: 4.4.0. [Florian Baumann]
+
+
 v4.4.0 (2019-10-24)
 -------------------
 - Release: 4.4.0. [Florian Baumann]
