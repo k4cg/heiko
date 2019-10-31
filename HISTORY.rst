@@ -2,6 +2,29 @@ Changelog
 =========
 
 
+v4.5.0 (2019-10-31)
+-------------------
+
+Fix
+~~~
+- Linter. [Florian Baumann]
+
+Other
+~~~~~
+- Release: 4.5.0. [Florian Baumann]
+- Merge pull request #70 from k4cg/migrate-improvements. [Florian
+  Baumann]
+
+  Serveral improvements for migrate.py
+- Merge Master. [Florian Baumann]
+- Merge pull request #71 from k4cg/accounting-rework. [Florian Baumann]
+
+  Accounting section rework
+- Accounting rework. [Florian Baumann]
+- Changelog: 4.4.1. [Florian Baumann]
+- Serveral improvements for migrate.py. [Florian Baumann]
+
+
 v4.4.1 (2019-10-31)
 -------------------
 
