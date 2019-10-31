@@ -16,7 +16,7 @@ def migrate_user(auth, client, cfgobj):
 
     # Check if configured database is there and can be read
     try:
-        migration_database = cfgobj["accouting"]["migration_database"]
+        migration_database = cfgobj["accounting"]["migration_database"]
         if os.access(migration_database, os.R_OK):
             matomat_db = sqlite3.connect(migration_database)
         else:
