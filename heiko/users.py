@@ -104,6 +104,13 @@ def create_user(auth, client):
     :returns: bool
     """
 
+    is_admin = input("Admin? (y/n): ").lower()[0]
+
+    if is_admin == 'y':
+        admin = 1
+    else:
+        admin = 0
+
     name = input("Username: ")
 
     if len(name) < 3:
@@ -113,13 +120,6 @@ def create_user(auth, client):
     if name.isalnum() is False:
         log("Username not valid. Please be alphanumerical.", serv="Error")
         return False
-
-    is_admin = input("Admin? (y/n): ").lower()[0]
-
-    if is_admin == 'y':
-        admin = 1
-    else:
-        admin = 0
 
     password = getpass.getpass("Password: ")
     passwordrepeat = getpass.getpass("Repeat password: ")
@@ -156,7 +156,7 @@ def transfer_coins(auth, client):
 
     try:
         req = client.users_user_id_credits_transfer_patch(user_id=target_user['id'], credits=int(credits_to_transfer))
-        transferred_credits = float(req['credits']) / 100
+        transferred_credits = float(req.to_dict()['credits']) / 100
         log("Successfully transferred {:.2f} credits to user {}".format(transferred_credits, target_user['username']), serv="SUCCESS")
         return True
     except:

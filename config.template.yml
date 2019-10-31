@@ -1,5 +1,5 @@
 accounting:
-  userCanAddCredits: <true/false>
+  user_can_add_credits: <true/false>
   migration_database: <path to sqlite3 file> # optional
 maas:
   host: <hostname or IP addr>
