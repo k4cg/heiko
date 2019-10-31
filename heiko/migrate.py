@@ -27,7 +27,7 @@ def migrate_user(auth, client, cfgobj):
 
     # First, ask for Admin yes/no
     admin = input("Should the migrated user be admin? (y/n): ").lower()[0]
-    if admin is 'y':
+    if admin == 'y':
         admin = 1
     else:
         admin = 0
