@@ -115,13 +115,8 @@ def user_menu(auth, auth_client, items_client, users_client, service_client, cfg
         say(cfgobj, "cheers")
 
     if option == USER_KEY_INSERT_COINS:
-        if ("accounting" not in cfgobj) or \
-                ("userCanAddCredits" not in cfgobj["accounting"]) or \
-                (cfgobj["accounting"]["userCanAddCredits"]):
-            add_credits(auth, users_client)
-            say(cfgobj, "transaction_success")
-        else:
-            log("not allowed", serv="ERROR")
+        add_credits(auth, users_client)
+        say(cfgobj, "transaction_success")
 
     if option == USER_KEY_SHOW_STATS:
         show_user_stats(auth, users_client)
@@ -347,14 +342,15 @@ def show_help(items_client, admin=False, cfgobj=None):
     """
 
     if admin is True:
-        actions = admin_actions
+        actions = admin_actions.copy()
     else:
         actions = user_actions.copy()
-        if cfgobj is not None:
-            if ("accounting" in cfgobj) and \
-                    ("userCanAddCredits" in cfgobj["accounting"]) and \
-                    (not cfgobj["accounting"]["userCanAddCredits"]):
+
+        try:
+            if cfgobj["accounting"]["user_can_add_credits"] is False:
                 del actions[USER_KEY_INSERT_COINS]
+        except KeyError:
+            pass
 
         # Reset consumables, to avoid stale entries:
         consumables.clear()
