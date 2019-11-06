@@ -4,7 +4,7 @@ import random
 import swagger_client
 from tabulate import tabulate
 
-from heiko.utils import log
+from heiko.utils import log, yes_or_no
 
 
 # ItemsApi Functions
@@ -33,12 +33,9 @@ def delete_item(auth, client):
 
     item_name = client.items_item_id_get(itemid).to_dict()["name"]
 
-    try:
-        really_delete = input("Do you really want to delete %s? (y/n): " % item_name).lower()[0]
-    except IndexError:
-        really_delete = 'n'
+    really_delete = yes_or_no("Do you really want to delete %s?" % item_name)
 
-    if really_delete != 'y':
+    if really_delete is False:
         log("Aborted")
         return False
 

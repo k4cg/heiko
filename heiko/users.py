@@ -4,7 +4,7 @@ import string
 from tabulate import tabulate
 import swagger_client
 
-from heiko.utils import log
+from heiko.utils import log, yes_or_no
 from heiko.nfc import nfc_format_card
 
 
@@ -104,9 +104,9 @@ def create_user(auth, client):
     :returns: bool
     """
 
-    is_admin = input("Admin? (y/n): ").lower()[0]
+    is_admin = yes_or_no("Admin?")
 
-    if is_admin == 'y':
+    if is_admin:
         admin = 1
     else:
         admin = 0
@@ -184,11 +184,12 @@ def create_user_nfc(auth_client, user_client):
         log("Username not valid. Please be alphanumerical.", serv="Error")
         return False
 
-    admin = input("Admin? (y/n): ").lower()[0]
+    is_admin = yes_or_no("Admin?")
 
-    admin = 0
-    if admin is 'y':
+    if is_admin:
         admin = 1
+    else:
+        admin = 0
 
     password = "".join(random.choice(string.ascii_letters + "0123456789") for i in range(23))
 
@@ -216,9 +217,9 @@ def delete_user(auth, client):
         log("Could not find user.", serv="ERROR")
         return False
 
-    confirmation = input("You really want to delete %s? (y/n): " % user_to_delete["username"]).lower()[0]
+    confirmation = yes_or_no("You really want to delete %s?" % user_to_delete["username"])
 
-    if confirmation != "y":
+    if confirmation is False:
         log("Aborted...")
         return False
 

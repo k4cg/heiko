@@ -1,6 +1,6 @@
 import sqlite3
 import getpass
-from heiko.utils import log
+from heiko.utils import log, yes_or_no
 import os
 
 
@@ -26,8 +26,8 @@ def migrate_user(auth, client, cfgobj):
         return False
 
     # First, ask for Admin yes/no
-    admin = input("Should the migrated user be admin? (y/n): ").lower()[0]
-    if admin == 'y':
+    is_admin = yes_or_no("Should the migrated user be admin?")
+    if is_admin:
         admin = 1
     else:
         admin = 0
@@ -62,8 +62,8 @@ def migrate_user(auth, client, cfgobj):
 
     log("Found user {} with credits {:.2f} Euro!".format(user_to_migrate, int(credits_to_migrate) / 100), serv="SUCCESS")
 
-    confirmation = input("Wanna migrate her? (y/n): ").lower()[0]
-    if confirmation != 'y':
+    confirmation = yes_or_no("Wanna migrate her?")
+    if confirmation is False:
         log("Aborting...")
         return False
 
