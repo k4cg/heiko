@@ -17,3 +17,16 @@ def log(msg, serv="INFO"):
     print(msg)
 
     return True
+
+
+def yes_or_no(question):
+    """
+    Ask the user a question that can be answered with yes or no.
+
+    :question: str, The question
+    :returns: bool, True if the answer was yes, False otherwise
+    """
+    answer = input("{} (y/n): ".format(question)).lower()
+    if answer == "y":
+        return True
+    return False
