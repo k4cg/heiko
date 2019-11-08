@@ -2,6 +2,22 @@ Changelog
 =========
 
 
+v4.6.0 (2019-11-08)
+-------------------
+- Release: 4.6.0. [Florian Baumann]
+- Merge pull request #73 from blarz/yesno-extract. [Florian Baumann]
+
+  Add a helper for yes/no questions
+- Add a helper for yes/no questions. [Simon Kuhnle]
+
+  Until now we used a weird combination of input() and lower() and [0]
+  (which kind of explodes for empty input...) and duplicated the logic for
+  this.
+
+  Extract this code into a helper function and use it everywhere.
+- Changelog: 4.5.1. [Florian Baumann]
+
+
 v4.5.1 (2019-10-31)
 -------------------
 
