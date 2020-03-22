@@ -320,7 +320,7 @@ def banner(auth=None):
 | |\/| | / _ \ | || | | | |\/| | / _ \ | |
 | |  | |/ ___ \| || |_| | |  | |/ ___ \| |
 |_|  |_/_/   \_\_| \___/|_|  |_/_/   \_\_|
-"""
+"""  # noqa: W605 (Invalid escape sequence)
     os.system('clear')
     log(mate_banner)
     if auth is not None:
