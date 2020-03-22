@@ -1,4 +1,3 @@
-import random
 import os
 from watson_developer_cloud import TextToSpeechV1
 import pygame
