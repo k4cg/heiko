@@ -187,8 +187,8 @@ def update_item(auth, client):
     try:
         client.items_item_id_patch(item_id, name=current_name, cost=int(new_cost))
         log("Successfully modified price of %s from %s to %s" % (current_name, float(current_cost) / 100, float(new_cost) / 100), serv="SUCCESS")
-    except swagger_client.rest.ApiException as api_expception:
-        log("Item could not be updated in the backend: " + api_expception.body, serv="ERROR")
+    except swagger_client.rest.ApiException as api_exception:
+        log("Item could not be updated in the backend: " + api_exception.body, serv="ERROR")
         return False
 
     return True
