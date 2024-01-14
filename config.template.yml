@@ -9,8 +9,6 @@ maas:
 voice:
   enable: <true/false>
   path_user_greetings: ./user_greetings
-  watson_api_key: <key>
-  watson_endpoint: <endpoint>
   sounds:
     welcome: ./sound/welcome.wav
     error: ./sound/error.wav

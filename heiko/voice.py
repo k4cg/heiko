@@ -1,6 +1,7 @@
 import os
-from watson_developer_cloud import TextToSpeechV1
+import time
 import pygame
+import pyttsx3
 
 
 def say(cfgobj, what, user=None):
@@ -25,7 +26,7 @@ def say(cfgobj, what, user=None):
         elif what == "transaction_success":
             pygame.mixer.music.load(cfgobj["voice"]["sounds"]["transaction_success"])
         elif what == "user":
-            pygame.mixer.music.load("{}{}.ogg".format(cfgobj["voice"]["path_user_greetings"], user))
+            pygame.mixer.music.load(os.path.join(cfgobj["voice"]["path_user_greetings"], f"{user}.mp3"))
 
         pygame.mixer.music.play()
 
@@ -33,23 +34,18 @@ def say(cfgobj, what, user=None):
         pass
 
 
-def generate_mp3(cfgobj, text, outfile):
+def generate_mp3(text, outfile):
     """
     Generate voice files
     """
 
-    text_to_speech = TextToSpeechV1(
-        iam_apikey=cfgobj["voice"]["watson_api_key"],
-        url=cfgobj["voice"]["watson_endpoint"]
-    )
-
-    with open(outfile, 'wb') as audio_file:
-        audio_file.write(
-            text_to_speech.synthesize(
-                text,
-                'audio/ogg;codecs=vorbis',
-                'en-US_MichaelVoice'
-            ).get_result().content)
+    engine = pyttsx3.init()
+    engine.setProperty("voice", "english-us")
+    engine.setProperty("rate", 160)
+    engine.save_to_file(text, outfile)
+    engine.runAndWait()
+    while engine.isBusy():
+        time.sleep(0.001)
 
 
 def greet_user(cfgobj, user):
@@ -63,9 +59,9 @@ def greet_user(cfgobj, user):
         return
 
     # generate sound if not existed
-    p = os.path.expanduser("%s/%s.ogg" % (cfgobj["voice"]["path_user_greetings"], user))
+    p = os.path.expanduser("%s/%s.mp3" % (cfgobj["voice"]["path_user_greetings"], user))
     if not os.path.isfile(p):
-        generate_mp3(cfgobj, "Hello %s!" % user, p)
+        generate_mp3("Hello %s!" % user, p)
 
     # play sound
     say(cfgobj, "user", user)
