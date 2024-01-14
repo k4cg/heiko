@@ -10,7 +10,7 @@ class MaasSimpleConfig:
         self.__config = []
         with open(file_path, 'r') as stream:
             try:
-                self.__config = yaml.load(stream)
+                self.__config = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
                 print(exc)
         return self
