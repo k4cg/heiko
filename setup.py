@@ -62,7 +62,7 @@ setup(
         'tabulate',
         'pyyaml',
         'pygame',
-        'watson_developer_cloud',
+        'pyttsx3',
     ],
 
     # extra_requires
