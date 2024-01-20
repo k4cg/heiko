@@ -145,7 +145,7 @@ def create_item(auth, client):
 
     try:
         client.items_post(name, int(cost))
-        log("Successfully added new item with name %.2f and cost %.2f" % (name, float(cost) / 100), serv="SUCCESS")
+        log("Successfully added new item with name %s and cost %.2f" % (name, float(cost) / 100), serv="SUCCESS")
     except swagger_client.rest.ApiException as api_expception:
         log("Item could not be created in the backend: " + api_expception.body, serv="ERROR")
         return False
