@@ -13,7 +13,7 @@ def nfc_init():
 
 
 def nfc_detect():
-    key = DEFAULT_KEY.copy()
+    key = DEFAULT_KEY
     v, uid, ttype, dat = mnfc.read(1, 1, key, False)
     header = ""
     try:
@@ -28,7 +28,7 @@ def nfc_detect():
 
 def nfc_read(uid, key=None):
     if key is None:
-        key = DEFAULT_KEY.copy()
+        key = DEFAULT_KEY
     v, ruid, ttype, dat = mnfc.read(2, 14, key, False)
     if ruid == uid:
         return dat.decode().strip("\x00")
@@ -36,7 +36,7 @@ def nfc_read(uid, key=None):
 
 def nfc_write(uid, header, token, key=None):
     if key is None:
-        key = DEFAULT_KEY.copy()
+        key = DEFAULT_KEY
 
     secLen = 3 * 16
     hb = header.encode()
