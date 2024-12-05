@@ -11,7 +11,7 @@ def say(cfgobj, what, user=None):
         return
 
     try:
-        pygame.mixer.init()
+        pygame.mixer.init(buffer=4096, frequency=22050)
 
         if what == "welcome":
             pygame.mixer.music.load(cfgobj["voice"]["sounds"]["welcome"])
