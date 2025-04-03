@@ -356,9 +356,9 @@ def show_help(items_client, admin=False, cfgobj=None):
         consumables.clear()
 
         try:
-            for item in items_client.items_get():
+            for idx, item in enumerate(items_client.items_get()):
                 item_dict = item.to_dict()
-                action_key = str(item_dict["id"])
+                action_key = str(idx+1)
                 consumables.update({action_key: item_dict})
                 actions.update({action_key: "Consume {} ({:.2f})".format(item_dict['name'], item_dict['cost'] / 100)})
         except swagger_client.rest.ApiException:
